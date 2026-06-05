@@ -1,58 +1,3 @@
-# Rules for AI
-
-This file provides guidance to AI Agent when working with code in this repository.
-
-## Commands
-
-- `npm run dev` — start dev server (Cloudflare workerd runtime)
-- `npm run build` — production build (SSR via `@astrojs/cloudflare`)
-- `npm run preview` — preview production build
-- `npm run lint` — ESLint with type-checked rules
-- `npm run lint:fix` — auto-fix lint issues
-- `npm run format` — Prettier (includes prettier-plugin-astro + prettier-plugin-tailwindcss)
-
-Pre-commit hooks: husky + lint-staged runs `eslint --fix` on `*.{ts,tsx,astro}` and `prettier --write` on `*.{json,css,md}`.
-
-## Architecture
-
-**Astro 6 SSR app** with React 19 islands, Tailwind 4, Supabase auth, and shadcn/ui components. Deployed to Cloudflare Workers.
-
-### Rendering mode
-
-Full server-side rendering (`output: "server"` in astro.config.mjs). All pages are server-rendered by default. API routes must export `const prerender = false`.
-
-### Auth flow
-
-- `src/lib/supabase.ts` — creates a Supabase SSR client using `@supabase/ssr` with cookie-based sessions. Uses `astro:env/server` for `SUPABASE_URL` and `SUPABASE_KEY` (server-only secrets declared in astro.config.mjs `env.schema`).
-- `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from routes listed in `PROTECTED_ROUTES`.
-- API endpoints: `src/pages/api/auth/{signin,signup,signout}.ts`
-- Auth pages: `src/pages/auth/{signin,signup,confirm-email}.astro`
-- Protected page example: `src/pages/dashboard.astro`
-
-### Key conventions
-
-- **Path alias**: `@/*` maps to `./src/*` (tsconfig paths).
-- **Astro components** for static content/layout; **React components** only when interactivity is needed.
-- **Tailwind class merging**: use the `cn()` helper from `@/lib/utils` (clsx + tailwind-merge) for conditional/merged class names. Do not concatenate class strings manually.
-- **shadcn/ui**: components live in `src/components/ui/`, "new-york" style variant. Install new ones with `npx shadcn@latest add [name]`.
-- **API routes**: use uppercase `GET`, `POST` exports; validate input with zod.
-- **Supabase migrations**: `supabase/migrations/` using naming format `YYYYMMDDHHmmss_short_description.sql`. Always enable RLS on new tables with granular per-operation, per-role policies.
-- **React**: no Next.js directives ("use client" etc.). Extract hooks to `src/components/hooks/`.
-- **Services/helpers** go in `src/lib/` (or `src/lib/services/` for extracted business logic).
-- **Shared types** (entities, DTOs) go in `src/types.ts`.
-
-### Environment
-
-- Node.js v22.14.0 (see `.nvmrc`)
-- Env vars: `SUPABASE_URL`, `SUPABASE_KEY` (copy `.env.example` to `.env` for Node, or `.dev.vars` for Cloudflare local dev)
-- Local Supabase: `npx supabase start` (requires Docker)
-- Cloudflare local dev: secrets go in `.dev.vars` (gitignored)
-- Deploy: `npx wrangler deploy` (requires Cloudflare account + `wrangler` auth)
-
-## CI
-
-GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint + build on every push and PR to master. Requires `SUPABASE_URL` and `SUPABASE_KEY` repository secrets for the build step.
-
 <!-- BEGIN @przeprogramowani/10x-cli -->
 
 ## 10xDevs AI Toolkit - Module 3, Lesson 1
@@ -252,7 +197,7 @@ The integration gate can stay **ad hoc** (not on every commit) when running loca
 - `context/foundation/test-plan.md` — §3 rollout state; §6 cookbook (filled in as phases ship)
 - `context/changes/<change-id>/research.md` — oracle source per rollout phase
 - `context/changes/<change-id>/plan.md` — ordered phases with `## Progress` as execution state
-- `.claude/prompts/m3l2-ad-hoc-testing.md` — ad-hoc file-level testing prompt
+- `the AI tool's configuration directory/prompts/m3l2-ad-hoc-testing.md` — ad-hoc file-level testing prompt
 
 ---
 
@@ -274,7 +219,7 @@ context/foundation/test-plan.md  (§4 Quality Gates: which check, required when)
 
 | You want to | Do this |
 | --- | --- |
-| React the instant the agent edits a file | A per-edit hook (`PostToolUse` matcher `Write\|Edit` in Claude Code). Right for fast checks: lint/format, and scoped tests on risk-area files. This is the **only** layer that can hand feedback to the agent mid-session. |
+| React the instant the agent edits a file | A per-edit hook (`PostToolUse` matcher `Write\|Edit` in your AI coding assistant). Right for fast checks: lint/format, and scoped tests on risk-area files. This is the **only** layer that can hand feedback to the agent mid-session. |
 | Run only the tests that depend on the edited file | Parse the path from the hook's stdin (`jq -r .tool_input.file_path`) and run your runner's related-tests mode (`vitest related "$FILE" --run`, `jest --findRelatedTests $FILE`). Gate it on whether the file is a risk area in `test-plan.md`; don't run tests on every helper or config edit. |
 | Catch changes that bypassed the agent (manual edits, a teammate's commit) | A pre-commit git hook (Lefthook or Husky+lint-staged) over staged files: lint + typecheck, and tests on staged risk files. |
 | Run heavier checks before code leaves the machine | Pre-push: full typecheck or a broader test set. Anything too slow for per-edit moves here. |
@@ -296,7 +241,7 @@ Every tool's hooks follow four steps:
 - **2** — blocking error; the agent sees the feedback and should react.
 - **anything else** — non-blocking error; logged, but does not interrupt work.
 
-On a blocking failure, stdout flows into the agent's context (in Claude Code via `additionalContext`, capped at 10,000 characters; other tools have similar mechanisms with their own limits). That is why the agent can self-correct: it sees the concrete message — missing type, unimported module, badly formatted line — not just "something failed".
+On a blocking failure, stdout flows into the agent's context (in your AI coding assistant via `additionalContext`, capped at 10,000 characters; other tools have similar mechanisms with their own limits). That is why the agent can self-correct: it sees the concrete message — missing type, unimported module, badly formatted line — not just "something failed".
 
 The boundary: the agent reliably fixes **trivial** corrections on its own. When a test fails because of wrong business logic, the hook surfaces it but the agent may not diagnose the real cause — it says "something is off" and tries a trivial fix. If that does not resolve in one or two tries, the signal comes back to you, and the problem may deserve its own change-id with the full `/10x-new → /10x-research → /10x-plan → /10x-implement` workflow.
 
@@ -309,7 +254,7 @@ The boundary: the agent reliably fixes **trivial** corrections on its own. When 
 | Pre-push | Heavier checks before pushing to remote (full typecheck, broader test set). | s–min |
 | CI | Integration problems, cross-module dependencies, checks needing infra unavailable locally. | min |
 
-Local layers do **not** replace CI — CI stays the key verification for shared repo state and environments you don't control. But each local layer that catches an error is one fewer CI round-trip. You don't need all layers from day one: start with one per-edit hook (lint) and one commit gate, add layers as you see what escapes. The quality gates in `test-plan.md §4` decide which checks are worth automating and when; a plan may legitimately defer per-edit hooks if the cost/signal ratio isn't there yet.
+Local layers do **not** replace CI — CI stays the key verification for shared repo state and environments you don't control. But each local layer that catches an error is one fewer CI round-trip. You don't need all layers from day one: start with one per-edit hook (lint) and one commit gate, add layers as you see what escapes. The quality gates in `test-plan.md §4` decide which checks are worth automating and at which layer; a plan may legitimately defer per-edit hooks if the cost/signal ratio isn't there yet.
 
 ### Key rules
 
@@ -318,13 +263,13 @@ Local layers do **not** replace CI — CI stays the key verification for shared 
 - `related` is a subcommand, not a flag (`vitest related`, not `--related`). Use `--run` so the hook terminates instead of entering watch mode.
 - `PostToolUse` fires once per tool use; three edits in one turn fire it three times independently — there is no built-in aggregation.
 - The git hook tool (Lefthook vs Husky+lint-staged) is an implementation detail; the rule is the same — run checks on staged files before commit. If Husky already works, don't migrate.
-- **Context injection is not universal.** Claude Code, Cursor, Codex, and Copilot (in VS Code) can pass a hook's result to the agent; Windsurf cannot — it can block (exit 2) but can't tell the agent what went wrong.
+- **Context injection is not universal.** Your AI coding assistant, Cursor, Codex, and Copilot (in VS Code) can pass a hook's result to the agent; Windsurf cannot — it can block (exit 2) but can't tell the agent what went wrong.
 
 ### The same pattern in every tool
 
 | Tool | Events | Handlers | Context injection | Config |
 | --- | --- | --- | --- | --- |
-| Claude Code | ~30 | command, http, mcp_tool, prompt, agent | yes | `.claude/settings.json` |
+| Your AI coding assistant | ~30 | command, http, mcp_tool, prompt, agent | yes | `the AI tool's configuration directory/settings.json` |
 | Cursor | ~18 | command, prompt | yes | `.cursor/hooks.json` |
 | Codex | 10 | command | yes | `.codex/hooks.json` |
 | Windsurf | 12 | command | **no** | `.windsurf/hooks.json` |
@@ -341,7 +286,7 @@ Local layers do **not** replace CI — CI stays the key verification for shared 
 
 ### Paths used by this lesson
 
-- `.claude/settings.json` — hook configuration (`~/.claude/settings.json` global, `.claude/settings.json` project, `.claude/settings.local.json` local overrides). Other tools use their own config file (see the table).
+- `the AI tool's configuration directory/settings.json` — hook configuration (`~/.claude/settings.json` global, `the AI tool's configuration directory/settings.json` project, `the AI tool's configuration directory/settings.local.json` local overrides). Other tools use their own config file (see the table).
 - `lefthook.yml` — pre-commit git hook config (lint + typecheck + tests on `{staged_files}`).
 - `context/foundation/test-plan.md` — §4 quality gates decide which checks to automate and at which layer; risk areas decide which edits warrant scoped tests.
 
