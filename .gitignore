@@ -1,5 +1,13 @@
 .claude/*
 
+# 10x toolkit — copilot & generic tool mirrors (kept local, like .claude/)
+.ai/
+AGENTS.md
+.github/skills/
+.github/prompts/
+.github/copilot-instructions.md
+.github/.10x-cli-manifest.json
+
 # from 10x-astro-starter
 # build output
 dist/
