@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astro - Kompletny przewodnik po frameworku webowym</title>
+    <style>
+        :root {
+            --color-primary: #7c3aed;
+            --color-primary-light: #a78bfa;
+            --color-bg: #0f172a;
+            --color-surface: #1e293b;
+            --color-surface-light: #334155;
+            --color-text: #e2e8f0;
+            --color-text-muted: #94a3b8;
+            --color-accent: #f97316;
+            --color-border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--color-primary), #4f46e5, var(--color-accent));
+            border-radius: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.85);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--color-primary-light);
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-surface-light);
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--color-accent);
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--color-text-muted);
+        }
+
+        .timeline {
+            list-style: none;
+            border-left: 3px solid var(--color-primary);
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline li {
+            position: relative;
+            margin-bottom: 1rem;
+            color: var(--color-text-muted);
+        }
+
+        .timeline li::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            position: absolute;
+            left: -1.85rem;
+            top: 0.4rem;
+        }
+
+        .timeline li strong {
+            color: var(--color-text);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-primary-light);
+        }
+
+        .card h4 {
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid var(--color-border);
+        }
+
+        th {
+            background: var(--color-surface);
+            color: var(--color-primary-light);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--color-text-muted);
+        }
+
+        .audience-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .audience-list li {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--color-surface);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--color-primary);
+            color: var(--color-text-muted);
+        }
+
+        .audience-list li strong {
+            color: var(--color-text);
+        }
+
+        .quote {
+            border-left: 4px solid var(--color-accent);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            background: var(--color-surface);
+            border-radius: 0 0.5rem 0.5rem 0;
+            font-style: italic;
+            color: var(--color-text-muted);
+        }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #e6edf3;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--color-surface-light);
+            color: var(--color-primary-light);
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.3rem;
+            font-size: 0.8rem;
+            margin: 0.2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            background: var(--color-surface);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--color-border);
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary-light);
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-top: 0.3rem;
+        }
+
+        .not-for {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .not-for li {
+            color: var(--color-text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--color-border);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Astro</h1>
+            <p>Framework webowy nowej generacji - szybkosc przez prostote</p>
+        </header>
+
+        <section>
+            <h2>Historia</h2>
+            <p>Astro zostal stworzony przez <strong>Freda Schotta</strong> i <strong>Nate'a Moore'a</strong> - tworcow Snowpack i Skypack. Pierwsza publiczna beta zostala ogloszona 8 czerwca 2021 roku pod haslem <em>"Ship Less JavaScript"</em>.</p>
+
+            <ul class="timeline">
+                <li><strong>Czerwiec 2021</strong> - Pierwsza publiczna beta. Koncepcja "Islands Architecture"</li>
+                <li><strong>Sierpien 2022</strong> - Astro 1.0 - stabilna wersja produkcyjna</li>
+                <li><strong>Styczen 2023</strong> - Astro 2.0 - Content Collections, tryb Hybrid</li>
+                <li><strong>Sierpien 2023</strong> - Astro 3.0 - View Transitions, optymalizacja obrazow</li>
+                <li><strong>Marzec 2024</strong> - Astro 4.0 - Dev Toolbar, i18n routing</li>
+                <li><strong>Grudzien 2024</strong> - Astro 5.0 - Content Layer, Server Islands, Vite 6</li>
+                <li><strong>2025</strong> - Astro 6.x - dalszy rozwoj wydajnosci i DX</li>
+            </ul>
+
+            <p>Astro jest projektem open source (licencja MIT), wspieranym przez The Astro Technology Company i spolecznosc 900+ kontrybutorów.</p>
+        </section>
+
+        <section>
+            <h2>Dla kogo jest Astro?</h2>
+
+            <h3>Idealne zastosowania:</h3>
+            <ul class="audience-list">
+                <li><strong>Tworcy stron content-driven</strong> - blogi, strony marketingowe, dokumentacja, portfolio</li>
+                <li><strong>Zespoly e-commerce</strong> - szybkie strony produktowe z dynamicznymi elementami</li>
+                <li><strong>Deweloperzy SEO-first</strong> - strony wymagajace doskonalej wydajnosci</li>
+                <li><strong>Zespoly wielotechnologiczne</strong> - projekty laczace React, Vue, Svelte</li>
+                <li><strong>Agencje webowe</strong> - szybkie dostarczanie wydajnych stron</li>
+                <li><strong>Tworcy dokumentacji</strong> - Starlight jako standard branzy</li>
+            </ul>
+
+            <h3>Astro NIE jest najlepsze dla:</h3>
+            <div class="not-for">
+                <ul>
+                    <li>Aplikacji typu SPA z intensywna interaktywnoscia (dashboardy, edytory)</li>
+                    <li>Aplikacji real-time wymagajacych ciaglego WebSocket</li>
+                    <li>Gier przegladarkowych lub aplikacji 3D</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Glowne cechy</h2>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Islands Architecture</h4>
+                    <p>Cala strona to statyczny HTML. JavaScript laduje sie tylko dla interaktywnych "wysp" - niezaleznie od siebie.</p>
+                </div>
+                <div class="card">
+                    <h4>Zero JS domyslnie</h4>
+                    <p>Brak JavaScript w przegladarce, chyba ze jawnie go zazadasz. Strony laduja sie blyskawicznie.</p>
+                </div>
+                <div class="card">
+                    <h4>Bring Your Own Framework</h4>
+                    <p>Uzywaj React, Vue, Svelte, Preact, Solid lub Lit w jednym projekcie. Kazdy komponent w innej technologii.</p>
+                </div>
+                <div class="card">
+                    <h4>Content Layer</h4>
+                    <p>Type-safe zarzadzanie trescia z dowolnego zrodla: Markdown, CMS, API, bazy danych. Jedno API.</p>
+                </div>
+                <div class="card">
+                    <h4>Server Islands</h4>
+                    <p>Statyczny HTML + dynamiczne komponenty serwerowe. Personalizacja bez rezygnacji z cache.</p>
+                </div>
+                <div class="card">
+                    <h4>View Transitions</h4>
+                    <p>Natywne animacje przejsc miedzy stronami bez dodatkowego JavaScript.</p>
+                </div>
+                <div class="card">
+                    <h4>Wydajnosc budowania</h4>
+                    <p>Do 5x szybszy build Markdown, 25-50% mniej pamieci. Vite 6 pod spodem.</p>
+                </div>
+                <div class="card">
+                    <h4>astro:env</h4>
+                    <p>Type-safe zmienne srodowiskowe z walidacja, rozdzieleniem client/server i ochrona sekretow.</p>
+                </div>
+                <div class="card">
+                    <h4>Ekosystem</h4>
+                    <p>500+ integracji. Adaptery: Cloudflare, Vercel, Netlify, Node.js, Deno.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Glowni konkurenci</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Framework</th>
+                        <th>Roznice wzgledem Astro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Next.js</strong></td>
+                        <td>Pelny framework React, ciezszy, lepszy dla SPA/aplikacji. Astro szybsze dla content-driven.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nuxt</strong></td>
+                        <td>Odpowiednik Next.js dla Vue. Wieksze zuzycie JS, lepszy ekosystem Vue.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gatsby</strong></td>
+                        <td>Kiedys lider stron statycznych, teraz mniej aktywny. Astro jest szybsze i prostsze.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hugo</strong></td>
+                        <td>Ekstremalnie szybki build (Go), ale brak komponentow JS i ograniczona dynamika.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eleventy (11ty)</strong></td>
+                        <td>Podobna filozofia HTML-first, ale brak natywnych komponentow React/Vue.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SvelteKit</strong></td>
+                        <td>Lepszy dla pelnych aplikacji Svelte, Astro bardziej elastyczne (multi-framework).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Remix</strong></td>
+                        <td>Skupiony na SSR i formularzach, ciezszy. Astro wygrywa na statyce.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Qwik</strong></td>
+                        <td>Innowacyjne resumability, mniejszy ekosystem, bardziej eksperymentalny.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Opinie deweloperow</h2>
+
+            <h3>Zalety:</h3>
+            <div class="quote">"Astro to game-changer dla stron content-driven - Lighthouse 100 bez wysilku"</div>
+            <div class="quote">"BYOF to genialne rozwiazanie - moge uzyc React tam gdzie potrzebuje, bez kary za caly framework"</div>
+            <div class="quote">"Dokumentacja jest wzorcowa - jedna z najlepszych w ekosystemie JS"</div>
+            <div class="quote">"Server Islands to przelamanie - statyczne strony z dynamicznymi elementami bez kompromisow"</div>
+
+            <h3>Ograniczenia:</h3>
+            <div class="quote">"Dla mocno interaktywnych aplikacji nadal lepiej wybrac Next.js lub SvelteKit"</div>
+            <div class="quote">"Ekosystem pluginow jest mniejszy niz w Next.js"</div>
+            <div class="quote">"Debugowanie hydracji wysp moze byc trudne na poczatku"</div>
+
+            <h3>Statystyki (2025):</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">50k+</div>
+                    <div class="label">Gwiazdek na GitHub</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">900+</div>
+                    <div class="label">Kontrybutorów</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">500+</div>
+                    <div class="label">Integracji</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">MIT</div>
+                    <div class="label">Licencja</div>
+                </div>
+            </div>
+
+            <p>Uzywany przez: <span class="tag">NASA</span> <span class="tag">Google</span> <span class="tag">Microsoft</span> <span class="tag">Porsche</span> <span class="tag">Nordstrom</span></p>
+        </section>
+
+        <section>
+            <h2>Przyklady uzycia</h2>
+
+            <h3>1. Blog z Content Collections</h3>
+            <div class="code-block"><pre>---
+// src/pages/blog/[slug].astro
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post =&gt; ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+&lt;Layout title={post.data.title}&gt;
+  &lt;article&gt;
+    &lt;h1&gt;{post.data.title}&lt;/h1&gt;
+    &lt;Content /&gt;
+  &lt;/article&gt;
+&lt;/Layout&gt;</pre></div>
+
+            <h3>2. Server Islands (e-commerce)</h3>
+            <div class="code-block"><pre>---
+// Statyczne + dynamiczne na jednej stronie
+import Product from '../../components/Product.astro';
+import Cart from '../../components/Cart.astro';
+---
+&lt;Layout&gt;
+  &lt;!-- Statyczne, cachowane --&gt;
+  &lt;Product id={Astro.params.id} /&gt;
+
+  &lt;!-- Dynamiczne Server Island --&gt;
+  &lt;Cart server:defer&gt;
+    &lt;p slot="fallback"&gt;Ladowanie koszyka...&lt;/p&gt;
+  &lt;/Cart&gt;
+&lt;/Layout&gt;</pre></div>
+
+            <h3>3. Multi-framework (BYOF)</h3>
+            <div class="code-block"><pre>---
+import ReactHero from '../components/Hero.tsx';
+import SvelteSlider from '../components/Slider.svelte';
+import VueForm from '../components/Form.vue';
+---
+&lt;Layout&gt;
+  &lt;ReactHero client:load /&gt;
+  &lt;SvelteSlider client:visible /&gt;
+  &lt;VueForm client:idle /&gt;
+&lt;/Layout&gt;</pre></div>
+
+            <h3>4. Projekt 10xcards</h3>
+            <p>Ten projekt wykorzystuje Astro 6.x z React, Supabase, Tailwind CSS 4, i Cloudflare jako platforme hostingowa.</p>
+        </section>
+
+        <footer>
+            <p>Artykul zaktualizowany: Czerwiec 2025</p>
+            <p>Zrodla: astro.build, dokumentacja Astro, GitHub</p>
+        </footer>
+    </div>
+</body>
+</html>

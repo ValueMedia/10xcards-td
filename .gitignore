@@ -13,6 +13,8 @@ AGENTS.md
 dist/
 supabase.bat
 run.bat
+podman-start.sh
+
 
 # generated types
 .astro/
