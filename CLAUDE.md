@@ -73,24 +73,24 @@ PRD + roadmap + archive
 
 ### Task Router - Where to start
 
-| Skill | Use it when |
-| --- | --- |
-| **Quality strategy as a rules-file (lesson focus)** | |
-| `/10x-test-plan` | You have a PRD (and ideally a roadmap and a few archived slices) and you are about to write the project's first tests, or you noticed that AI-generated tests are landing on helpers while critical flows go uncovered. First invocation runs discovery (PRD + roadmap + archive + hot-spot scan), a 5-question user interview, and a synthesis pass with a mandatory challenger check, then writes `test-plan.md` in `context/foundation/` with a risk map (5–7 failure scenarios), a phased rollout table, a stack table, a quality-gates table, a cookbook section (`§6`, fills in as phases ship), and a negative-space section (what we deliberately don't test). Subsequent invocations advance the rollout one handoff at a time. |
-| `/10x-test-plan --status` | A `test-plan.md` already exists and you want a compact snapshot of where the rollout stands — which phases are `not started`, `change opened`, `researched`, `planned`, `implementing`, or `complete`, and what the next action is. Does no work; safe to run any time. |
-| `/10x-test-plan --refresh` | A `test-plan.md` already exists and one of: a new top-3 risk surfaced from the roadmap or archive, a tool's `checked:` date is older than three months, the project's tech stack changed, or §7 negative-space no longer matches what the team believes. Opens a new `test-plan-refresh-<YYYY-MM-DD>` change folder rather than editing the guide in place. |
+| Skill                                               | Use it when                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Quality strategy as a rules-file (lesson focus)** |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `/10x-test-plan`                                    | You have a PRD (and ideally a roadmap and a few archived slices) and you are about to write the project's first tests, or you noticed that AI-generated tests are landing on helpers while critical flows go uncovered. First invocation runs discovery (PRD + roadmap + archive + hot-spot scan), a 5-question user interview, and a synthesis pass with a mandatory challenger check, then writes `test-plan.md` in `context/foundation/` with a risk map (5–7 failure scenarios), a phased rollout table, a stack table, a quality-gates table, a cookbook section (`§6`, fills in as phases ship), and a negative-space section (what we deliberately don't test). Subsequent invocations advance the rollout one handoff at a time. |
+| `/10x-test-plan --status`                           | A `test-plan.md` already exists and you want a compact snapshot of where the rollout stands — which phases are `not started`, `change opened`, `researched`, `planned`, `implementing`, or `complete`, and what the next action is. Does no work; safe to run any time.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `/10x-test-plan --refresh`                          | A `test-plan.md` already exists and one of: a new top-3 risk surfaced from the roadmap or archive, a tool's `checked:` date is older than three months, the project's tech stack changed, or §7 negative-space no longer matches what the team believes. Opens a new `test-plan-refresh-<YYYY-MM-DD>` change folder rather than editing the guide in place.                                                                                                                                                                                                                                                                                                                                                                              |
 
 ### Rollout chain — what happens after the guide is written
 
-The guide's §3 *Phased Rollout* table is the orchestrator's state. For each non-`complete` row the orchestrator selects the next handoff based on which artifacts exist in `context/changes/<change-id>/`:
+The guide's §3 _Phased Rollout_ table is the orchestrator's state. For each non-`complete` row the orchestrator selects the next handoff based on which artifacts exist in `context/changes/<change-id>/`:
 
-| State on disk | Next handoff | Status transitions to |
-| --- | --- | --- |
-| change folder missing | `/10x-new <change-id>` | `change opened` |
-| `change.md` only | `/10x-research` (with a risks-to-verify brief) | `researched` |
-| `+ research.md` | `/10x-plan` (with cost × signal + cookbook-update constraints) | `planned` |
-| `+ plan.md` with pending `## Progress` items | `/10x-implement <change-id> phase <N>` | `implementing` / `complete` |
-| `+ plan.md` fully `[x]` | Mark §3 row `complete`; loop to next pending row | — |
+| State on disk                                | Next handoff                                                   | Status transitions to       |
+| -------------------------------------------- | -------------------------------------------------------------- | --------------------------- |
+| change folder missing                        | `/10x-new <change-id>`                                         | `change opened`             |
+| `change.md` only                             | `/10x-research` (with a risks-to-verify brief)                 | `researched`                |
+| `+ research.md`                              | `/10x-plan` (with cost × signal + cookbook-update constraints) | `planned`                   |
+| `+ plan.md` with pending `## Progress` items | `/10x-implement <change-id> phase <N>`                         | `implementing` / `complete` |
+| `+ plan.md` fully `[x]`                      | Mark §3 row `complete`; loop to next pending row               | —                           |
 
 Each handoff is a **STOP point**. The orchestrator copies the next command to the clipboard, asks the user to `/clear` and run it, then exits. Re-invoke `/10x-test-plan` (no arguments) to advance.
 
@@ -100,7 +100,7 @@ Each handoff is a **STOP point**. The orchestrator copies the next command to th
 - 5 to 7 risks. Fewer is too coarse; more makes prioritization useless.
 - Impact and likelihood are user/business ratings, not technical complexity.
 - Every risk traces to a source: PRD section, archived slice, roadmap entry, Phase 2 interview question, hot-spot **directory** with churn count, or a tech-stack constraint. No invented risks.
-- **Signal, not knowledge.** §2 cites *evidence that raised the risk*, never a file as "where the failure lives." File:line anchors, function names, schema names, and module names are forbidden in §2 — they belong in `/10x-research`'s output, produced per rollout phase against current code. The plan is a QA spec; it is not a code audit.
+- **Signal, not knowledge.** §2 cites _evidence that raised the risk_, never a file as "where the failure lives." File:line anchors, function names, schema names, and module names are forbidden in §2 — they belong in `/10x-research`'s output, produced per rollout phase against current code. The plan is a QA spec; it is not a code audit.
 - Coverage is not the metric. **Risk coverage** is the metric.
 
 ### Dual-layer mapping rules
@@ -164,19 +164,20 @@ context/foundation/test-plan.md (§3 Phased Rollout)
 
 ### Task Router — Where to start
 
-| Skill / Prompt | Use it when |
-| --- | --- |
-| `/10x-research` | Before writing any test for a risk. Research produces the oracle — what behaviour a test must prove — from sources (PRD, tech-stack, docs), not from the implementation shape. Also reveals whether a risk is already covered or has two separate faces (one safe, one real). |
-| `/10x-plan` | Research is done. Plan decomposes the risk into ordered phases: environment setup first, then rules that depend on it, then hermetic stubs for failures that real infra cannot trigger, then cookbook update. Each phase names the behaviour it asserts and the regression it catches. |
-| `/10x-implement` | Default executor for plan phases. Use for environment setup, existing code, scaffolding, and any phase where you cannot define a red test before writing code. |
-| `/10x-tdd` | Optional. Use instead of `/10x-implement` for a phase where you can name the first red test in one sentence. Agent writes the failing test first, then the minimal code to green it, then refactors. Stops at the assertion before touching the implementation — that pause is the point. |
+| Skill / Prompt               | Use it when                                                                                                                                                                                                                                                                                       |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/10x-research`              | Before writing any test for a risk. Research produces the oracle — what behaviour a test must prove — from sources (PRD, tech-stack, docs), not from the implementation shape. Also reveals whether a risk is already covered or has two separate faces (one safe, one real).                     |
+| `/10x-plan`                  | Research is done. Plan decomposes the risk into ordered phases: environment setup first, then rules that depend on it, then hermetic stubs for failures that real infra cannot trigger, then cookbook update. Each phase names the behaviour it asserts and the regression it catches.            |
+| `/10x-implement`             | Default executor for plan phases. Use for environment setup, existing code, scaffolding, and any phase where you cannot define a red test before writing code.                                                                                                                                    |
+| `/10x-tdd`                   | Optional. Use instead of `/10x-implement` for a phase where you can name the first red test in one sentence. Agent writes the failing test first, then the minimal code to green it, then refactors. Stops at the assertion before touching the implementation — that pause is the point.         |
 | `m3l2-ad-hoc-testing` prompt | You have a single file and want tests now, without the full research→plan→implement cycle. The prompt forces oracle-from-sources (reads PRD + TECH_STACK before asserting), behavioural assertions, edge cases from risk, and a regression table. Use it knowing you are trading depth for speed. |
 
 ### When to use `/10x-tdd` vs `/10x-implement`
 
-The deciding question: *Can you name the first red test in one sentence?*
+The deciding question: _Can you name the first red test in one sentence?_
 
 Good conditions for `/10x-tdd`:
+
 - "promuje wyłącznie drafty w stanie `accepted`, a `pending`/`rejected` nigdy nie trafiają do talii"
 - "zwraca `ok: true` i loguje `orphan_review_state`, gdy upsert stanu powtórek padnie w trakcie zapisu"
 - "zwraca 401, gdy użytkownik nie ma dostępu do kursu"
@@ -201,33 +202,34 @@ Both write progress to the same `## Progress` section in `plan.md`.
 
 For each risk, pick the **cheapest test that gives a real signal**. Do not default to e2e "because it's safest", and do not chase coverage percentage.
 
-| Layer | When to use | When NOT to use |
-| --- | --- | --- |
+| Layer                              | When to use                                                                                              | When NOT to use                                                                                          |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Integration (real DB / real infra) | The rule involves DB constraints, cascades, real SQL, or unique constraints that a mock would lie about. | Auth flows gated by RLS that belong to a separate phase; anything where setup cost exceeds signal value. |
-| Hermetic (stub client) | Partial failures that real infra cannot trigger easily (e.g. second operation in a sequence fails). | Rules that depend on actual DB state — a stub will lie about constraint violations and cascades. |
+| Hermetic (stub client)             | Partial failures that real infra cannot trigger easily (e.g. second operation in a sequence fails).      | Rules that depend on actual DB state — a stub will lie about constraint violations and cascades.         |
 
 A non-atomic save sequence (multiple independent operations without a transaction) means: write hermetic tests for partial-failure branches, not integration tests that force a mid-sequence error.
 
 ### Oracle rules
 
-- The oracle — what the code *should* do — must come from sources: PRD, docs, tech-stack constraints, domain knowledge. It must **not** come from reading the implementation.
+- The oracle — what the code _should_ do — must come from sources: PRD, docs, tech-stack constraints, domain knowledge. It must **not** come from reading the implementation.
 - If the implementation has a bug, copying its output as the expected value produces a mirror test that passes against the bug.
 - When sources do not resolve the expected behaviour unambiguously, **stop and ask** rather than guessing.
 - Research's job is to surface the oracle before any test is written.
 
 ### Vibe-testing anti-patterns to avoid
 
-| Anti-pattern | How it looks | What to do instead |
-| --- | --- | --- |
+| Anti-pattern          | How it looks                                                                  | What to do instead                                                                               |
+| --------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | Mirror implementation | Assertion computes the expected value with the same logic as the tested code. | Assert against a value derived from the oracle (PRD / domain rule), not from the implementation. |
-| Happy paths only | Tests only pass valid inputs; edge cases absent. | Add at least one edge case per risk: `null`, empty, dependency error, invalid input. |
-| Redundant copies | Six nearly identical tests checking the same absence of a sentinel. | One parameterised test (`it.each`) per property; each test catches a different regression. |
+| Happy paths only      | Tests only pass valid inputs; edge cases absent.                              | Add at least one edge case per risk: `null`, empty, dependency error, invalid input.             |
+| Redundant copies      | Six nearly identical tests checking the same absence of a sentinel.           | One parameterised test (`it.each`) per property; each test catches a different regression.       |
 
 ### Mutation testing (Stryker) — selective quality gate
 
 Coverage says "this line was executed". Mutation score says "would a test fail if I broke this line?" Use Stryker as a **selective gate** after a risk phase, not as a CI gate on every commit.
 
 Workflow:
+
 1. Tests pass for the risk phase.
 2. Run `npx stryker run --mutate "path/to/file.ts"` (narrow scope to the changed module).
 3. Open the HTML report; find survived mutants.
@@ -272,14 +274,14 @@ context/foundation/test-plan.md  (§4 Quality Gates: which check, required when)
 
 ### Task Router — Which layer for this check
 
-| You want to | Do this |
-| --- | --- |
-| React the instant the agent edits a file | A per-edit hook (`PostToolUse` matcher `Write\|Edit` in Claude Code). Right for fast checks: lint/format, and scoped tests on risk-area files. This is the **only** layer that can hand feedback to the agent mid-session. |
-| Run only the tests that depend on the edited file | Parse the path from the hook's stdin (`jq -r .tool_input.file_path`) and run your runner's related-tests mode (`vitest related "$FILE" --run`, `jest --findRelatedTests $FILE`). Gate it on whether the file is a risk area in `test-plan.md`; don't run tests on every helper or config edit. |
-| Catch changes that bypassed the agent (manual edits, a teammate's commit) | A pre-commit git hook (Lefthook or Husky+lint-staged) over staged files: lint + typecheck, and tests on staged risk files. |
-| Run heavier checks before code leaves the machine | Pre-push: full typecheck or a broader test set. Anything too slow for per-edit moves here. |
-| Decide where a given gate belongs | Ask: is it fast enough (a few seconds) for per-edit, or should it wait for commit/push/CI? Slow checks block the agent loop on every edit — push them up a layer. |
-| Use the same hook across tools | The trigger → matcher → handler → signal pattern is the same in Cursor, Codex, Windsurf, and Copilot; only the config file and event names change. See the cross-tool table below. |
+| You want to                                                               | Do this                                                                                                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| React the instant the agent edits a file                                  | A per-edit hook (`PostToolUse` matcher `Write\|Edit` in Claude Code). Right for fast checks: lint/format, and scoped tests on risk-area files. This is the **only** layer that can hand feedback to the agent mid-session.                                                                     |
+| Run only the tests that depend on the edited file                         | Parse the path from the hook's stdin (`jq -r .tool_input.file_path`) and run your runner's related-tests mode (`vitest related "$FILE" --run`, `jest --findRelatedTests $FILE`). Gate it on whether the file is a risk area in `test-plan.md`; don't run tests on every helper or config edit. |
+| Catch changes that bypassed the agent (manual edits, a teammate's commit) | A pre-commit git hook (Lefthook or Husky+lint-staged) over staged files: lint + typecheck, and tests on staged risk files.                                                                                                                                                                     |
+| Run heavier checks before code leaves the machine                         | Pre-push: full typecheck or a broader test set. Anything too slow for per-edit moves here.                                                                                                                                                                                                     |
+| Decide where a given gate belongs                                         | Ask: is it fast enough (a few seconds) for per-edit, or should it wait for commit/push/CI? Slow checks block the agent loop on every edit — push them up a layer.                                                                                                                              |
+| Use the same hook across tools                                            | The trigger → matcher → handler → signal pattern is the same in Cursor, Codex, Windsurf, and Copilot; only the config file and event names change. See the cross-tool table below.                                                                                                             |
 
 ### Hook lifecycle — the universal pattern
 
@@ -302,12 +304,12 @@ The boundary: the agent reliably fixes **trivial** corrections on its own. When 
 
 ### Three local layers (plus CI)
 
-| Layer | Catches | Timing |
-| --- | --- | --- |
-| Per-edit (agent hooks) | Formatting, simple type errors, failing unit tests on risk files. Only layer that feeds the agent mid-work. | ms–s |
-| Pre-commit (git hooks) | What slipped past per-edit: manual edits, files changed outside the hook, checks too slow for per-edit. Operates on staged files. | s |
-| Pre-push | Heavier checks before pushing to remote (full typecheck, broader test set). | s–min |
-| CI | Integration problems, cross-module dependencies, checks needing infra unavailable locally. | min |
+| Layer                  | Catches                                                                                                                           | Timing |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Per-edit (agent hooks) | Formatting, simple type errors, failing unit tests on risk files. Only layer that feeds the agent mid-work.                       | ms–s   |
+| Pre-commit (git hooks) | What slipped past per-edit: manual edits, files changed outside the hook, checks too slow for per-edit. Operates on staged files. | s      |
+| Pre-push               | Heavier checks before pushing to remote (full typecheck, broader test set).                                                       | s–min  |
+| CI                     | Integration problems, cross-module dependencies, checks needing infra unavailable locally.                                        | min    |
 
 Local layers do **not** replace CI — CI stays the key verification for shared repo state and environments you don't control. But each local layer that catches an error is one fewer CI round-trip. You don't need all layers from day one: start with one per-edit hook (lint) and one commit gate, add layers as you see what escapes. The quality gates in `test-plan.md §4` decide which checks are worth automating and when; a plan may legitimately defer per-edit hooks if the cost/signal ratio isn't there yet.
 
@@ -322,13 +324,13 @@ Local layers do **not** replace CI — CI stays the key verification for shared 
 
 ### The same pattern in every tool
 
-| Tool | Events | Handlers | Context injection | Config |
-| --- | --- | --- | --- | --- |
-| Claude Code | ~30 | command, http, mcp_tool, prompt, agent | yes | `.claude/settings.json` |
-| Cursor | ~18 | command, prompt | yes | `.cursor/hooks.json` |
-| Codex | 10 | command | yes | `.codex/hooks.json` |
-| Windsurf | 12 | command | **no** | `.windsurf/hooks.json` |
-| Copilot | ~13 | command, http, prompt | yes (VS Code) | `.github/hooks/*.json` |
+| Tool        | Events | Handlers                               | Context injection | Config                  |
+| ----------- | ------ | -------------------------------------- | ----------------- | ----------------------- |
+| Claude Code | ~30    | command, http, mcp_tool, prompt, agent | yes               | `.claude/settings.json` |
+| Cursor      | ~18    | command, prompt                        | yes               | `.cursor/hooks.json`    |
+| Codex       | 10     | command                                | yes               | `.codex/hooks.json`     |
+| Windsurf    | 12     | command                                | **no**            | `.windsurf/hooks.json`  |
+| Copilot     | ~13    | command, http, prompt                  | yes (VS Code)     | `.github/hooks/*.json`  |
 
 ### Lesson boundaries
 
@@ -336,7 +338,7 @@ Local layers do **not** replace CI — CI stays the key verification for shared 
 - Do not write E2E tests, configure Playwright/MCP, or run browser scenarios. That is Lesson 4.
 - Do not run the bug-to-fix-to-regression-test debugging workflow. That is Lesson 5.
 - Do not change the risk strategy or quality-gate definitions. That is Lesson 1 (`/10x-test-plan`); read current state with `/10x-test-plan --status`.
-- Do not write unit/integration test code from scratch here. That is Lesson 2 — hooks only *run* the tests those lessons produced.
+- Do not write unit/integration test code from scratch here. That is Lesson 2 — hooks only _run_ the tests those lessons produced.
 - Do not author CI/CD pipelines. That is Module 1 Lesson 5 / Module 2 Lesson 5; hooks are the local layers in front of CI.
 
 ### Paths used by this lesson

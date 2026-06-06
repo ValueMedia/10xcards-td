@@ -110,11 +110,11 @@ jeden `supabase start` obsłuży wiele sesji `npm run dev`.
 
 ## Przydatne adresy (po `supabase start`)
 
-| Usługa        | URL                              |
-| ------------- | -------------------------------- |
-| Project / API | http://127.0.0.1:54321           |
-| Studio        | http://127.0.0.1:54323           |
-| Mailpit       | http://127.0.0.1:54324           |
+| Usługa        | URL                                                     |
+| ------------- | ------------------------------------------------------- |
+| Project / API | http://127.0.0.1:54321                                  |
+| Studio        | http://127.0.0.1:54323                                  |
+| Mailpit       | http://127.0.0.1:54324                                  |
 | Postgres      | postgresql://postgres:postgres@127.0.0.1:54322/postgres |
 
 ## Trwałość danych
@@ -180,10 +180,10 @@ npx wrangler deploy
 `.github/workflows/ci.yml` buduje projekt z sekretami repozytorium. Ustaw je raz
 w GitHub: **Settings → Secrets and variables → Actions → New repository secret**:
 
-| Sekret repo    | Wartość                                      |
-| -------------- | -------------------------------------------- |
-| `SUPABASE_URL` | `https://aoraelgjkiiexwhfotqf.supabase.co`   |
-| `SUPABASE_KEY` | `sb_publishable_...` (produkcyjny)           |
+| Sekret repo    | Wartość                                    |
+| -------------- | ------------------------------------------ |
+| `SUPABASE_URL` | `https://aoraelgjkiiexwhfotqf.supabase.co` |
+| `SUPABASE_KEY` | `sb_publishable_...` (produkcyjny)         |
 
 ### 3. Lokalny build/preview na danych produkcyjnych (opcjonalnie)
 

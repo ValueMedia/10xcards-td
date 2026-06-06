@@ -62,50 +62,64 @@ Model ról: płaski — jedna rola `user`; brak ról administracyjnych w MVP. Br
 ## Success Criteria
 
 ### Primary
+
 - 75% fiszek wygenerowanych przez AI jest akceptowanych przez użytkownika bez edycji lub z minimalną edycją — mierzone jako stosunek zaakceptowanych do wygenerowanych w sesji.
 
 ### Secondary
+
 - 75% wszystkich fiszek tworzonych przez użytkowników pochodzi z generatora AI (nie ręcznie).
 - Integracja z gotowym algorytmem SR (biblioteka, np. ts-fsrs) działa bez widocznych błędów w sesjach powtórkowych.
 
 ### Guardrails
+
 - Dane jednego użytkownika (fiszki, zestawy, historia powtórek) nie są dostępne dla innych użytkowników — naruszenie tej zasady to regresja krytyczna.
 - Czas generowania fiszek przez AI < 10 sekund na zestaw (przy typowej długości tekstu wejściowego) — przekroczenie tego progu dyskwalifikuje UX flow jako workable.
 
 ## Functional Requirements
 
 ### Konta użytkowników
+
 - FR-001: Użytkownik może zarejestrować się i zalogować. Priority: must-have
   > Socrates: Kontrargument rozważony: "MVP bez kont — dane w localStorage, konta w v2." Odrzucony: konta są niezbędne do przechowywania fiszek między sesjami i urządzeniami — app bez nich jest bezstanowa.
 
 ### Fiszki
+
 - FR-002: Użytkownik może wkleić tekst i otrzymać zestaw propozycji fiszek wygenerowanych przez AI. Priority: must-have
+
   > Socrates: Kontrargument rozważony: "Jakość AI może być za niska by uzasadnić MVP — ryzyko unknowne." Pozostaje: to core value proposition; jakość weryfikuje kryterium sukcesu (75% akceptacji), nie FR. Bez FR-002 nie ma co weryfikować.
 
 - FR-003: Użytkownik przegląda wygenerowane fiszki zbiorczo i edytuje/usuwa wybrane przed zapisem zestawu. Priority: must-have
+
   > Socrates: Kontrargument rozważony: "Zapis od razu, edycja później — mniej kodu w flow generowania." Odrzucony: bez podglądu przed zapisem niemożliwe jest mierzenie kryterium sukcesu (75% akceptacji bez edycji).
 
 - FR-004: Użytkownik może ręcznie stworzyć fiszkę (pytanie / odpowiedź). Priority: must-have
+
   > Socrates: Kontrargument rozważony: "Usuń ręczne tworzenie — zostaw tylko AI." Odrzucony: ręczne tworzenie to fallback dla treści trudnych do AI-generowania; usuwa frustrację użytkownika przy edge casach.
 
 - FR-005: Użytkownik może edytować istniejącą fiszkę. Priority: must-have
+
   > Socrates: Brak kontrargumentu — podstawowe CRUD, nie ma produktu bez możliwości korekty.
 
 - FR-006: Użytkownik może usunąć fiszkę. Priority: must-have
   > Socrates: Brak kontrargumentu — podstawowe CRUD.
 
 ### Zestawy
+
 - FR-007: Użytkownik może organizować fiszki w zestawy. Priority: must-have
+
   > Socrates: Kontrargument rozważony: "MVP z jednym domyślnym zestawem — segmentacja w v2." Odrzucony: bez zestawów niemożliwe jest uruchomienie celowanej sesji SR ani wygenerowanie linku do konkretnej kolekcji.
 
 - FR-008: Użytkownik może wygenerować link read-only do zestawu dostępny bez logowania. Priority: nice-to-have
+
   > Socrates: Kontrargument rozważony: "Usunąć z MVP całkowicie — dodatkowa powierzchnia ataku i dodatkowy widok." Pozostaje jako nice-to-have: wartość społeczna i demonstracyjna jest wysoka przy niskim ryzyku, o ile widok gościa jest czysto read-only.
 
 - FR-009: Użytkownik może zaimportować fiszki z pliku CSV/TXT w formacie Anki. Priority: must-have
   > Socrates: Kontrargument rozważony: "Import do nice-to-have — MVP skupia się na nowych użytkownikach." Odrzucony: bez importu użytkownicy Anki z latami danych nie wykonają migracji; bariera wejścia eliminuje kluczowy segment adopcji.
 
 ### Nauka
+
 - FR-010: Użytkownik może przeprowadzić sesję powtórkową zestawu z użyciem algorytmu SR. Priority: must-have
+
   > Socrates: Kontrargument rozważony: "Biblioteka SR może okazać się trudna do integracji — ryzyko techniczne." Pozostaje: bez SR app jest tylko generatorem fiszek, nie rozwiązuje problemu nauki. Ryzyko integracji zarządzane przez wybór dojrzałej biblioteki (ts-fsrs).
 
 - FR-011: Użytkownik może przeglądać statystyki i historię uczenia się dla zestawu. Priority: must-have
@@ -120,6 +134,7 @@ Model ról: płaski — jedna rola `user`; brak ról administracyjnych w MVP. Br
 - **Then** widzi zbiorczy podgląd wygenerowanych fiszek (pytanie / odpowiedź), może edytować lub usunąć wybrane fiszki, a następnie zapisać cały zestaw
 
 #### Acceptance Criteria
+
 - AI generuje co najmniej jedną fiszkę z podanego tekstu
 - Każda fiszka ma pole "pytanie" i "odpowiedź" widoczne od razu w podglądzie
 - Użytkownik może edytować treść każdej fiszki inline przed zapisem
@@ -153,6 +168,3 @@ Algorytm spaced repetition (biblioteka zewnętrzna, np. ts-fsrs) następnie decy
 
 Acknowledged on 2026-05-26: 5–6-week MVP requires sustained after-hours dedication; user accepted.
 SR algorithm: ready-made library (e.g. ts-fsrs) — no custom algorithm in MVP.
-
-
-

@@ -1,17 +1,15 @@
-/* eslint-disable @typescript-eslint/no-deprecated -- tseslint.config() is the only way to use extends; core defineConfig has incompatible API */
-import { includeIgnoreFile } from "@eslint/config-helpers";
+import { defineConfig, includeIgnoreFile } from "eslint/config";
+import eslintReact from "@eslint-react/eslint-plugin";
 import eslint from "@eslint/js";
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
 import eslintPluginAstro from "eslint-plugin-astro";
-import pluginReact from "eslint-plugin-react";
 import reactCompiler from "eslint-plugin-react-compiler";
-import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import path from "node:path";
 import tseslint from "typescript-eslint";
 
 const gitignorePath = path.resolve(import.meta.dirname, ".gitignore");
 
-const baseConfig = tseslint.config({
+const baseConfig = defineConfig({
   extends: [eslint.configs.recommended, tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked],
   languageOptions: {
     parserOptions: {
@@ -37,29 +35,25 @@ const baseConfig = tseslint.config({
   },
 });
 
-const reactConfig = tseslint.config({
+const reactConfig = defineConfig({
   files: ["**/*.{js,jsx,ts,tsx}"],
-  extends: [pluginReact.configs.flat.recommended],
+  extends: [eslintReact.configs["recommended-typescript"]],
   languageOptions: {
-    ...pluginReact.configs.flat.recommended.languageOptions,
     globals: {
       window: true,
       document: true,
     },
   },
   plugins: {
-    "react-hooks": eslintPluginReactHooks,
     "react-compiler": reactCompiler,
   },
   settings: { react: { version: "detect" } },
   rules: {
-    ...eslintPluginReactHooks.configs.recommended.rules,
-    "react/react-in-jsx-scope": "off",
     "react-compiler/react-compiler": "error",
   },
 });
 
-const astroConfig = tseslint.config({
+const astroConfig = defineConfig({
   files: ["**/*.astro"],
   rules: {
     "astro/no-set-html-directive": "error",
@@ -68,7 +62,7 @@ const astroConfig = tseslint.config({
   },
 });
 
-export default tseslint.config(
+export default defineConfig(
   includeIgnoreFile(gitignorePath),
   baseConfig,
   reactConfig,

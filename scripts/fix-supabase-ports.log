@@ -1,0 +1,21 @@
+﻿[2026-06-05T18:59:50.1367640+02:00] reserving Supabase ports 54320-54329
+Stopping winnat (with dependents)...
+  stop winnat warning: Service 'Sterownik translatora adresów sieciowych (NAT) systemu Windows (winnat)' cannot be stopped due to the following error: Nie można zatrzymać usługi winnat na komputerze '.'.
+Adding persistent excludedportrange tcp 54320 +10 ...
+  netsh add exit=0
+    Ok.
+    
+Starting winnat...
+  start winnat warning: Failed to start service 'Sterownik translatora adresów sieciowych (NAT) systemu Windows (winnat)'.
+Resulting excluded ranges:
+  
+  Protocol tcp Port Exclusion Ranges
+  
+  Start Port    End Port      
+  ----------    --------      
+       50000       50059     *
+       54320       54329     *
+  
+  * - Administered port exclusions.
+  
+DONE.
