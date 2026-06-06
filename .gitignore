@@ -11,6 +11,8 @@ AGENTS.md
 # from 10x-astro-starter
 # build output
 dist/
+supabase.bat
+run.bat
 
 # generated types
 .astro/
