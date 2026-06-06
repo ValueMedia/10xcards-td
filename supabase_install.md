@@ -1,6 +1,7 @@
 # Supabase — kontynuacja instalacji po restarcie
 
 ## Wymagania przed startem
+
 - Docker Desktop musi być uruchomiony (na Windows: backend WSL2).
 - Node.js zgodny z `.nvmrc` (v22.14.0).
 
@@ -80,11 +81,11 @@ npm run dev
 
 ## Przydatne adresy (po `supabase start`)
 
-| Usługa        | URL                                                   |
-|---------------|-------------------------------------------------------|
-| Project / API | http://127.0.0.1:54321                                |
-| Studio        | http://127.0.0.1:54323                                |
-| Mailpit       | http://127.0.0.1:54324                                |
+| Usługa        | URL                                                     |
+| ------------- | ------------------------------------------------------- |
+| Project / API | http://127.0.0.1:54321                                  |
+| Studio        | http://127.0.0.1:54323                                  |
+| Mailpit       | http://127.0.0.1:54324                                  |
 | Postgres      | postgresql://postgres:postgres@127.0.0.1:54322/postgres |
 
 ---

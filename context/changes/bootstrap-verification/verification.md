@@ -42,10 +42,10 @@ Solo developer building a flashcard MVP over 5 after-hours weeks. 10xCards needs
 
 ## Pre-scaffold verification
 
-| Signal      | Value                                      | Severity | Notes                                           |
-| ----------- | ------------------------------------------ | -------- | ----------------------------------------------- |
-| npm package | not run                                    | —        | cmd_template uses `git clone`; npm check skipped |
-| GitHub repo | not run                                    | —        | `gh` not installed; recency check unavailable   |
+| Signal      | Value   | Severity | Notes                                            |
+| ----------- | ------- | -------- | ------------------------------------------------ |
+| npm package | not run | —        | cmd_template uses `git clone`; npm check skipped |
+| GitHub repo | not run | —        | `gh` not installed; recency check unavailable    |
 
 ---
 
@@ -78,10 +78,12 @@ None.
 #### MODERATE findings
 
 Direct:
+
 - **@astrojs/check** ≥0.9.3 — via @astrojs/language-server — fix: downgrade to 0.9.2 (semver-major break)
 - **wrangler** 3.108.0–4.93.0 — via miniflare → ws — fix available
 
 Transitive:
+
 - **@astrojs/language-server** ≥2.14.0 — via volar-service-yaml
 - **@cloudflare/vite-plugin** ≤0.0.0-fff677e35 || 0.0.7–1.37.2 — via miniflare, wrangler, ws
 - **miniflare** — via ws
@@ -98,21 +100,21 @@ None.
 
 ## Hints recorded but not acted on
 
-| Hint                    | Value              |
-| ----------------------- | ------------------ |
-| bootstrapper_confidence | first-class        |
-| quality_override        | false              |
-| path_taken              | standard           |
-| self_check_answers      | null               |
-| team_size               | solo               |
-| deployment_target       | cloudflare-pages   |
-| ci_provider             | github-actions     |
+| Hint                    | Value                |
+| ----------------------- | -------------------- |
+| bootstrapper_confidence | first-class          |
+| quality_override        | false                |
+| path_taken              | standard             |
+| self_check_answers      | null                 |
+| team_size               | solo                 |
+| deployment_target       | cloudflare-pages     |
+| ci_provider             | github-actions       |
 | ci_default_flow         | auto-deploy-on-merge |
-| has_auth                | true               |
-| has_payments            | false              |
-| has_realtime            | false              |
-| has_ai                  | true               |
-| has_background_jobs     | false              |
+| has_auth                | true                 |
+| has_payments            | false                |
+| has_realtime            | false                |
+| has_ai                  | true                 |
+| has_background_jobs     | false                |
 
 These fields were read from the hand-off and preserved in this log. No automated action was taken on them in bootstrapper v1. CI/CD scaffolding, CLAUDE.md/AGENTS.md generation, and feature-flag-aware scaffold modifications are deferred to a future skill.
 
@@ -123,6 +125,7 @@ These fields were read from the hand-off and preserved in this log. No automated
 Next: a future skill will set up agent context (CLAUDE.md, AGENTS.md). For now, your project is scaffolded and verified — happy hacking.
 
 Useful manual steps in the meantime:
+
 - `git init` (if you have not already) to start your own repo history.
 - Review `CLAUDE.md.scaffold` — the starter ships its own agent rules file; merge the relevant parts into your existing `CLAUDE.md`.
 - Address audit findings per your project's risk tolerance — the full breakdown is in this log.

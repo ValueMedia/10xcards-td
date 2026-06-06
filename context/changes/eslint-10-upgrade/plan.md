@@ -128,9 +128,9 @@ Brak zmian w kodzie — faza weryfikacyjna.
 
 #### Automated
 
-- [x] 1.1 `npm install` wykonuje się bez błędów
-- [x] 1.2 `npm run lint` przechodzi bez błędów
-- [x] 1.3 `package.json` nie zawiera `@eslint/compat` ani `@eslint/config-helpers`
+- [x] 1.1 `npm install` wykonuje się bez błędów — d628637
+- [x] 1.2 `npm run lint` przechodzi bez błędów — d628637
+- [x] 1.3 `package.json` nie zawiera `@eslint/compat` ani `@eslint/config-helpers` — d628637
 
 #### Manual
 
@@ -140,8 +140,8 @@ Brak zmian w kodzie — faza weryfikacyjna.
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` — 0 errors
-- [ ] 2.2 `npm run build` przechodzi
+- [x] 2.1 `npm run lint` — 0 errors
+- [x] 2.2 `npm run build` przechodzi
 
 #### Manual
 
