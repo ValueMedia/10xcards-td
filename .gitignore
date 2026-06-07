@@ -1,7 +1,7 @@
 .claude/*
 
 # 10x toolkit — copilot & generic tool mirrors (kept local, like .claude/)
-.ai/
+.ai/*
 AGENTS.md
 .github/skills/
 .github/prompts/
