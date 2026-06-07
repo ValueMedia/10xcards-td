@@ -7,7 +7,7 @@ Status: **first deploy completed**. This document now serves as an operations re
 - Worker name: `10xcards-td` (see `wrangler.jsonc`)
 - Runtime: Cloudflare Workers via `@astrojs/cloudflare`
 - Secrets: `SUPABASE_URL` + `SUPABASE_KEY` (set in Cloudflare dashboard and in GitHub repo secrets)
-- Branch: **`master`** (not `main`)
+- Branch: **`main`**
 
 ## How deploys happen
 
@@ -16,7 +16,7 @@ Status: **first deploy completed**. This document now serves as an operations re
 Push to `master` triggers a deploy via **Cloudflare dashboard ↔ GitHub Git integration** (configured in the Cloudflare Workers dashboard, not in GitHub Actions). The `.github/workflows/ci.yml` workflow runs lint + build only — it does **not** deploy.
 
 ```
-git push origin master   # triggers auto-deploy via Cloudflare Git integration
+git push origin main   # triggers auto-deploy via Cloudflare Git integration
 ```
 
 ### Manual re-deploy (secondary path)
