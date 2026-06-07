@@ -1,27 +1,53 @@
 # Deployment Plan
 
-Problem: ship the first Cloudflare deployment for 10xCards using the recorded infrastructure decision and the existing Astro/Supabase stack.
+Status: **first deploy completed**. This document now serves as an operations reference.
 
-Proposed approach:
-1. Verify Wrangler CLI availability/auth, then verify or create the Cloudflare account / Worker target and confirm GitHub repo access for deployment secrets.
-2. Confirm the Supabase env-var naming for deploy-time and local dev use.
-3. Normalize any legacy `NEXT_PUBLIC_*` values to the stack’s server-only Supabase variables while keeping the existing local `.dev.vars` `SUPABASE_KEY`.
-4. Set Cloudflare production secrets and any required GitHub Actions secrets from the decided Supabase values.
-5. Run the production build and first Wrangler deploy.
-6. Verify the deployed app and note the rollback path.
+## Stack
 
-Todos:
-- Verifying Wrangler CLI auth/setup
-- Configuring Cloudflare deployment access
-- Configuring GitHub Actions secrets
-- Normalizing dev environment variables
-- Setting Cloudflare Supabase secrets
-- Running the first Cloudflare deploy
-- Verifying the first rollout
+- Worker name: `10xcards-td` (see `wrangler.jsonc`)
+- Runtime: Cloudflare Workers via `@astrojs/cloudflare`
+- Secrets: `SUPABASE_URL` + `SUPABASE_KEY` (set in Cloudflare dashboard and in GitHub repo secrets)
+- Branch: **`master`** (not `main`)
 
-Notes:
-- Use `SUPABASE_URL` and `SUPABASE_KEY`; ignore the legacy `NEXT_PUBLIC_*` aliases.
-- Local development already has `SUPABASE_KEY` in `.dev.vars`; keep it and only wire production secrets into Cloudflare.
-- Cloudflare account setup and GitHub Actions secret setup are part of the rollout plan, not preconditions.
-- Wrangler CLI setup/auth is part of the rollout plan, not a separate prerequisite.
-- Durable reference for the infrastructure decision lives at `context/foundation/infrastructure.md`.
+## How deploys happen
+
+### Auto-deploy (primary path)
+
+Push to `master` triggers a deploy via **Cloudflare dashboard ↔ GitHub Git integration** (configured in the Cloudflare Workers dashboard, not in GitHub Actions). The `.github/workflows/ci.yml` workflow runs lint + build only — it does **not** deploy.
+
+```
+git push origin master   # triggers auto-deploy via Cloudflare Git integration
+```
+
+### Manual re-deploy (secondary path)
+
+Use when you need to deploy without pushing new code (e.g. after rotating secrets):
+
+```
+npm run build
+npx wrangler deploy
+```
+
+Wrangler auth: OAuth token for `domino30.td+10x@gmail.com` (run `npx wrangler whoami` to verify).
+
+## Rollback
+
+Cloudflare Workers keeps previous deployments. Roll back via:
+- Cloudflare dashboard → Workers → `10xcards-td` → Deployments → select a previous version → "Set as production"
+- Or redeploy an older commit: `git push origin <older-sha>:master --force`
+
+## Environment variables
+
+| Variable | Where set | Used by |
+|---|---|---|
+| `SUPABASE_URL` | Cloudflare secrets + GitHub Actions secret | production build + runtime |
+| `SUPABASE_KEY` | Cloudflare secrets + GitHub Actions secret | production build + runtime |
+| `SUPABASE_URL` | `.dev.vars` | local dev (`npm run dev`) |
+| `SUPABASE_KEY` | `.dev.vars` | local dev (`npm run dev`) |
+
+Do **not** use `NEXT_PUBLIC_*` aliases — only the names above.
+
+## Notes
+
+- Durable infrastructure decision: `context/foundation/infrastructure.md`
+- Local dev uses `.dev.vars` (gitignored); production secrets live in Cloudflare dashboard only
