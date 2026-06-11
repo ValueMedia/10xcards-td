@@ -312,25 +312,25 @@ This is the initial migration — no existing data to handle. For future schema 
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly: `npx supabase db reset` exits 0
-- [x] 1.2 Build passes: `npm run build`
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` exits 0 — bff2090
+- [x] 1.2 Build passes: `npm run build` — bff2090
 
 #### Manual
 
-- [x] 1.3 Supabase Studio shows `sets`, `flashcards`, `reviews` with correct columns and types
-- [x] 1.4 RLS enabled on all three tables; six policies visible in Studio
+- [x] 1.3 Supabase Studio shows `sets`, `flashcards`, `reviews` with correct columns and types — bff2090
+- [x] 1.4 RLS enabled on all three tables; six policies visible in Studio — bff2090
 
 ### Phase 2: TypeScript Layer
 
 #### Automated
 
-- [ ] 2.1 Dependencies install: `npm install` exits 0
-- [ ] 2.2 Build passes: `npm run build`
-- [ ] 2.3 Lint passes: `npm run lint`
+- [x] 2.1 Dependencies install: `npm install` exits 0
+- [x] 2.2 Build passes: `npm run build`
+- [x] 2.3 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.4 `State` and `Rating` importable from `@/types`; ts-fsrs in node_modules
+- [x] 2.4 `State` and `Rating` importable from `@/types`; ts-fsrs in node_modules
 
 ### Phase 3: Seed Data
 
