@@ -3,5 +3,10 @@
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "astro"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
+  },
+  "chat.tools.terminal.autoApprove": {
+    "ForEach-Object": true,
+    "Test-Path": true,
+    "npx supabase": true
   }
 }

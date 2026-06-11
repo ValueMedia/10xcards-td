@@ -22,7 +22,7 @@ Create the foundational Supabase PostgreSQL schema for 10xCards: three tables (`
 
 ## Desired End State
 
-Three tables exist in the local Supabase PostgreSQL instance (and in production via migration), each with RLS enabled and per-operation policies. Any authenticated user can fully manage their own sets, flashcards, and review history, and cannot access another user's data. Anonymous users can read sets and flashcards reachable by a non-null `share_token`. TypeScript entity types for `Set`, `Flashcard`, and `Review` are importable from `@/types`. ts-fsrs v5 is installed. Running `npx supabase db reset` on a fresh local instance produces a clean schema plus sample data.
+Three tables exist in the local Supabase PostgreSQL instance (and in production via migration), each with RLS enabled and per-operation policies. Any authenticated user can fully manage their own sets and flashcards, can read and append their own review history, and cannot access another user's data. Anonymous users can read sets and flashcards reachable by a non-null `share_token`. TypeScript entity types for `Set`, `Flashcard`, and `Review` are importable from `@/types`. ts-fsrs v5 is installed. Running `npx supabase db reset` on a fresh local instance produces a clean schema plus sample data.
 
 ## What We're NOT Doing
 
@@ -43,7 +43,9 @@ A single initial migration file covers the complete schema. TypeScript types mir
 
 **Anon RLS intent**: The anon SELECT policies use `share_token IS NOT NULL` as their predicate, not a token match. This is the correct design for capability-URL access control: UUID unguessability is the security mechanism; the server-side Astro route then filters by `WHERE share_token = :token`. The RLS only gates which role can query which rows — the server does the actual token check in the query.
 
-**`user_id` on `reviews`**: `reviews.user_id` is a denormalised FK to `auth.users`. Without it, RLS would need `flashcard_id IN (SELECT id FROM flashcards WHERE set_id IN (SELECT id FROM sets WHERE user_id = auth.uid()))` on every query. The denormalised column makes the RLS policy a single equality check. Populate it from `auth.uid()` at insert time.
+Accepted risk: anon role can query all rows where `share_token IS NOT NULL`. For MVP, public sharing is supported only via server-side token-filtered routes; direct client-side anon queries are explicitly unsupported.
+
+**`user_id` on `reviews`**: `reviews.user_id` is a denormalised FK to `auth.users`. Keep `SELECT` policy as a single equality check (`user_id = auth.uid()`), but enforce ownership on `INSERT` with an additional `WITH CHECK` that `flashcard_id` belongs to a set owned by `auth.uid()`. Populate `user_id` from `auth.uid()` at insert time.
 
 ---
 
@@ -133,7 +135,8 @@ RLS: Enable on all three tables. Per-operation policies:
 | sets | anon | SELECT | `share_token IS NOT NULL` |
 | flashcards | authenticated | SELECT / INSERT / UPDATE / DELETE | `set_id IN (SELECT id FROM sets WHERE user_id = auth.uid())` |
 | flashcards | anon | SELECT | `set_id IN (SELECT id FROM sets WHERE share_token IS NOT NULL)` |
-| reviews | authenticated | SELECT / INSERT | `user_id = auth.uid()` |
+| reviews | authenticated | SELECT | `user_id = auth.uid()` |
+| reviews | authenticated | INSERT | `user_id = auth.uid() AND EXISTS (SELECT 1 FROM flashcards f JOIN sets s ON s.id = f.set_id WHERE f.id = reviews.flashcard_id AND s.user_id = auth.uid())` |
 
 ### Success Criteria
 
@@ -309,13 +312,13 @@ This is the initial migration — no existing data to handle. For future schema 
 
 #### Automated
 
-- [ ] 1.1 Migration applies cleanly: `npx supabase db reset` exits 0
-- [ ] 1.2 Build passes: `npm run build`
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` exits 0
+- [x] 1.2 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 1.3 Supabase Studio shows `sets`, `flashcards`, `reviews` with correct columns and types
-- [ ] 1.4 RLS enabled on all three tables; six policies visible in Studio
+- [x] 1.3 Supabase Studio shows `sets`, `flashcards`, `reviews` with correct columns and types
+- [x] 1.4 RLS enabled on all three tables; six policies visible in Studio
 
 ### Phase 2: TypeScript Layer
 
