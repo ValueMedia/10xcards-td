@@ -336,4 +336,4 @@ This is the initial migration — no existing data to handle. For future schema 
 
 #### Manual
 
-- [x] 3.1 After `npx supabase db reset`: Studio shows 1 set + 3 flashcards
+- [x] 3.1 After `npx supabase db reset`: Studio shows 1 set + 3 flashcards — d87e721
