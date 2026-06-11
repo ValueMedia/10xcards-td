@@ -324,16 +324,16 @@ This is the initial migration — no existing data to handle. For future schema 
 
 #### Automated
 
-- [x] 2.1 Dependencies install: `npm install` exits 0
-- [x] 2.2 Build passes: `npm run build`
-- [x] 2.3 Lint passes: `npm run lint`
+- [x] 2.1 Dependencies install: `npm install` exits 0 — bdb99f0
+- [x] 2.2 Build passes: `npm run build` — bdb99f0
+- [x] 2.3 Lint passes: `npm run lint` — bdb99f0
 
 #### Manual
 
-- [x] 2.4 `State` and `Rating` importable from `@/types`; ts-fsrs in node_modules
+- [x] 2.4 `State` and `Rating` importable from `@/types`; ts-fsrs in node_modules — bdb99f0
 
 ### Phase 3: Seed Data
 
 #### Manual
 
-- [ ] 3.1 After `npx supabase db reset`: Studio shows 1 set + 3 flashcards
+- [x] 3.1 After `npx supabase db reset`: Studio shows 1 set + 3 flashcards
