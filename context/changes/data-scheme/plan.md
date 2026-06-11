@@ -337,3 +337,15 @@ This is the initial migration — no existing data to handle. For future schema 
 #### Manual
 
 - [x] 3.1 After `npx supabase db reset`: Studio shows 1 set + 3 flashcards — d87e721
+
+## Review Addendum (2026-06-12, impl-review F1/F2)
+
+The "Accepted risk" in *Critical Implementation Details* understated the anon-policy exposure: RLS filters rows, not columns, so the anon role can enumerate **all** non-null `share_token` values (and `user_id`s) via PostgREST (`?share_token=not.is.null`), defeating token unguessability. Additionally, the shared-select policies are `TO anon` only, so authenticated users cannot read sets via a share link at all.
+
+**Hard constraint for S-07 (sharing slice):**
+- Shared reads MUST go through a `SECURITY DEFINER` RPC (e.g. `get_shared_set(token uuid)`) or a column-restricted view that never returns `share_token` / `user_id`.
+- The S-07 migration MUST drop `sets_select_shared_anon` and `flashcards_select_shared_anon`.
+- Shared reads MUST work for both anon and authenticated callers.
+- Until S-07 lands, no slice may issue client-side anon-key queries against `sets` / `flashcards`.
+
+**Contract drift accepted in review (F4/F5):** the `Set` entity interface in `src/types.ts` is named `FlashcardSet` (avoids shadowing the global ES2015 `Set`); `State`/`Rating` are value re-exports (they are runtime enums) and `Flashcard.state` / `Review.grade` / `Review.state` are typed with those enums instead of `number`. Downstream slices import `FlashcardSet`, not `Set`.

@@ -1,9 +1,12 @@
 // Entity types mirroring the Supabase schema (supabase/migrations/20260610000000_initial_schema.sql).
 // Supabase JS returns timestamp columns as ISO 8601 strings, hence `string` not `Date`.
 
-export { State, Rating } from "ts-fsrs";
+import { State, Rating } from "ts-fsrs";
 
-export interface Set {
+export { State, Rating };
+
+// Named FlashcardSet (not Set) to avoid shadowing the global ES2015 Set.
+export interface FlashcardSet {
   id: string;
   user_id: string;
   name: string;
@@ -26,7 +29,7 @@ export interface Flashcard {
   learning_steps: number;
   reps: number;
   lapses: number;
-  state: number; // State enum value
+  state: State;
   last_review: string | null;
   created_at: string;
   updated_at: string;
@@ -36,8 +39,8 @@ export interface Review {
   id: string;
   flashcard_id: string;
   user_id: string;
-  grade: number; // Rating enum value
-  state: number;
+  grade: Rating;
+  state: State;
   due: string;
   stability: number;
   difficulty: number;

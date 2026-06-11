@@ -15,6 +15,14 @@ begin
     return;
   end if;
 
+  if exists (
+    select 1 from public.sets
+    where user_id = dev_user_id and name = 'Sample: Polish Basics'
+  ) then
+    raise notice 'seed: sample data already present, skipping';
+    return;
+  end if;
+
   insert into public.sets (user_id, name)
   values (dev_user_id, 'Sample: Polish Basics')
   returning id into new_set_id;
