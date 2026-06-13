@@ -1,5 +1,11 @@
 import type { APIRoute } from "astro";
-import { updateFlashcard, deleteFlashcard, flashcardContentSchema } from "@/lib/services/flashcards";
+import {
+  updateFlashcard,
+  deleteFlashcard,
+  flashcardContentSchema,
+  errorMessage,
+  isNotFound,
+} from "@/lib/services/flashcards";
 
 export const PATCH: APIRoute = async (context) => {
   const user = context.locals.user;
@@ -40,11 +46,11 @@ export const PATCH: APIRoute = async (context) => {
     );
   }
 
-  const { data, error } = await updateFlashcard(supabase, id, parsed.data);
+  const { data, error } = await updateFlashcard(supabase, user.id, id, parsed.data);
 
   if (error) {
-    const status = error.includes("not found") ? 404 : 500;
-    return new Response(JSON.stringify({ error }), {
+    const status = isNotFound(error) ? 404 : 500;
+    return new Response(JSON.stringify({ error: errorMessage(error) }), {
       status,
       headers: { "Content-Type": "application/json" },
     });
@@ -74,11 +80,11 @@ export const DELETE: APIRoute = async (context) => {
     });
   }
 
-  const { error } = await deleteFlashcard(supabase, id);
+  const { error } = await deleteFlashcard(supabase, user.id, id);
 
   if (error) {
-    const status = error.includes("not found") ? 404 : 500;
-    return new Response(JSON.stringify({ error }), {
+    const status = isNotFound(error) ? 404 : 500;
+    return new Response(JSON.stringify({ error: errorMessage(error) }), {
       status,
       headers: { "Content-Type": "application/json" },
     });

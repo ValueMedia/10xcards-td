@@ -1,10 +1,12 @@
 import type { FlashcardSet } from "@/types";
 import { SetCard } from "@/components/sets/SetCard";
 
+type SetWithCount = FlashcardSet & { flashcard_count: number };
+
 interface Props {
-  sets: FlashcardSet[];
-  onRename: (set: FlashcardSet) => void;
-  onDelete: (set: FlashcardSet) => void;
+  sets: SetWithCount[];
+  onRename: (set: SetWithCount) => void;
+  onDelete: (set: SetWithCount) => void;
 }
 
 export function SetGrid({ sets, onRename, onDelete }: Props) {

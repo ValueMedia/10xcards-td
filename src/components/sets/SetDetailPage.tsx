@@ -1,0 +1,155 @@
+import { useState, useCallback } from "react";
+import { toast } from "sonner";
+import type { Flashcard, FlashcardSet } from "@/types";
+import { FlashcardList } from "@/components/sets/FlashcardList";
+import { CreateFlashcardDialog } from "@/components/sets/CreateFlashcardDialog";
+import { EditFlashcardDialog } from "@/components/sets/EditFlashcardDialog";
+import { DeleteFlashcardDialog } from "@/components/sets/DeleteFlashcardDialog";
+import { Button } from "@/components/ui/button";
+
+interface Props {
+  initialData: string;
+}
+
+interface ParsedData {
+  set: FlashcardSet;
+  flashcards: Flashcard[];
+}
+
+export default function SetDetailPage({ initialData }: Props) {
+  const [state, setState] = useState<ParsedData>(() => {
+    try {
+      return JSON.parse(initialData) as ParsedData;
+    } catch {
+      return { set: null as unknown as FlashcardSet, flashcards: [] };
+    }
+  });
+  const { set, flashcards } = state;
+
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Flashcard | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Flashcard | null>(null);
+
+  const handleCreate = useCallback((flashcard: Flashcard) => {
+    setState((prev) => ({
+      ...prev,
+      flashcards: [flashcard, ...prev.flashcards],
+    }));
+    setCreateOpen(false);
+    toast.success("Flashcard created");
+  }, []);
+
+  const handleUpdate = useCallback((flashcard: Flashcard) => {
+    setState((prev) => ({
+      ...prev,
+      flashcards: prev.flashcards.map((f) => (f.id === flashcard.id ? flashcard : f)),
+    }));
+    setEditTarget(null);
+    toast.success("Flashcard updated");
+  }, []);
+
+  const handleDelete = useCallback((flashcardId: string) => {
+    setState((prev) => ({
+      ...prev,
+      flashcards: prev.flashcards.filter((f) => f.id !== flashcardId),
+    }));
+    setDeleteTarget(null);
+    toast.success("Flashcard deleted");
+  }, []);
+
+  return (
+    <div className="bg-cosmic min-h-screen p-4 text-white">
+      <div className="mx-auto max-w-3xl">
+        <a
+          href="/dashboard"
+          className="mb-6 inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
+        >
+          <BackIcon />
+          Back to dashboard
+        </a>
+
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+              {set.name}
+            </h1>
+            <p className="mt-2 text-sm text-blue-100/50">
+              {flashcards.length}&nbsp;{flashcards.length === 1 ? "card" : "cards"}
+            </p>
+          </div>
+          <Button
+            type="button"
+            onClick={() => {
+              setCreateOpen(true);
+            }}
+            className="bg-purple-600 hover:bg-purple-500"
+          >
+            <PlusIcon />
+            New flashcard
+          </Button>
+        </div>
+
+        <FlashcardList flashcards={flashcards} onEdit={setEditTarget} onDelete={setDeleteTarget} />
+      </div>
+
+      <CreateFlashcardDialog open={createOpen} onOpenChange={setCreateOpen} setId={set.id} onCreate={handleCreate} />
+
+      <EditFlashcardDialog
+        key={editTarget?.id ?? "empty"}
+        flashcard={editTarget}
+        open={editTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setEditTarget(null);
+        }}
+        onUpdate={handleUpdate}
+      />
+
+      <DeleteFlashcardDialog
+        flashcard={deleteTarget}
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        onDelete={handleDelete}
+      />
+    </div>
+  );
+}
+
+function BackIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="size-4"
+    >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  );
+}

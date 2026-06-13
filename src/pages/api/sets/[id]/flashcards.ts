@@ -19,7 +19,7 @@ export const GET: APIRoute = async (context) => {
     });
   }
 
-  const { data, error } = await getSetWithFlashcards(supabase, id);
+  const { data, error } = await getSetWithFlashcards(supabase, user.id, id);
 
   if (error) {
     const status = error === "Set not found" ? 404 : 500;

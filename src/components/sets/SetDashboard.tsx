@@ -6,14 +6,16 @@ import { CreateSetDialog } from "@/components/sets/CreateSetDialog";
 import { RenameSetDialog } from "@/components/sets/RenameSetDialog";
 import { DeleteSetDialog } from "@/components/sets/DeleteSetDialog";
 
+type SetWithCount = FlashcardSet & { flashcard_count: number };
+
 interface Props {
   initialSets: string;
 }
 
 export default function SetDashboard({ initialSets }: Props) {
-  const [sets, setSets] = useState<FlashcardSet[]>(() => {
+  const [sets, setSets] = useState<SetWithCount[]>(() => {
     try {
-      return JSON.parse(initialSets) as FlashcardSet[];
+      return JSON.parse(initialSets) as SetWithCount[];
     } catch {
       return [];
     }
@@ -24,13 +26,13 @@ export default function SetDashboard({ initialSets }: Props) {
   const [deleteTarget, setDeleteTarget] = useState<FlashcardSet | null>(null);
 
   const handleCreate = useCallback((newSet: FlashcardSet) => {
-    setSets((prev) => [newSet, ...prev]);
+    setSets((prev) => [{ ...newSet, flashcard_count: 0 }, ...prev]);
     setCreateOpen(false);
     toast.success(`Set "${newSet.name}" created`);
   }, []);
 
   const handleRename = useCallback((updated: FlashcardSet) => {
-    setSets((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    setSets((prev) => prev.map((s) => (s.id === updated.id ? { ...s, ...updated } : s)));
     setRenameTarget(null);
     toast.success(`Set renamed to "${updated.name}"`);
   }, []);

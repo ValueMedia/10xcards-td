@@ -1,13 +1,13 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { listSets } from "@/lib/services/sets";
+import { listSetsWithFlashcardCounts } from "@/lib/services/sets";
 import SetDashboard from "@/components/sets/SetDashboard";
 
 const { user, supabase } = Astro.locals;
-let sets: import("@/types").FlashcardSet[] = [];
+let sets: (import("@/types").FlashcardSet & { flashcard_count: number })[] = [];
 let dbError: string | null = null;
 if (user && supabase) {
-  const result = await listSets(supabase, user.id);
+  const result = await listSetsWithFlashcardCounts(supabase, user.id);
   sets = result.data ?? [];
   dbError = result.error;
 }

@@ -1,11 +1,13 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { getSetWithFlashcards } from "@/lib/services/sets";
+import SetDetailPage from "@/components/sets/SetDetailPage";
 
 const { id } = Astro.params;
-const { supabase } = Astro.locals;
+const { user, supabase } = Astro.locals;
 
-const { data, error: fetchError } = supabase ? await getSetWithFlashcards(supabase, id) : { data: null, error: null };
+const { data, error: fetchError } =
+  user && supabase ? await getSetWithFlashcards(supabase, user.id, id) : { data: null, error: null };
 
 const isServerError = !!fetchError && !data;
 
@@ -62,58 +64,7 @@ if (!isServerError && !data) {
 {
   data && (
     <Layout title={data.set.name}>
-      <div class="bg-cosmic min-h-screen p-4 text-white">
-        <div class="mx-auto max-w-3xl">
-          <a
-            href="/dashboard"
-            class="mb-6 inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="size-4"
-            >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-            Back to dashboard
-          </a>
-
-          <div class="mb-8">
-            <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-              {data.set.name}
-            </h1>
-            <p class="mt-2 text-sm text-blue-100/50">
-              {data.flashcards.length}&nbsp;{data.flashcards.length === 1 ? "card" : "cards"}
-            </p>
-          </div>
-
-          {data.flashcards.length === 0 ? (
-            <div class="flex flex-col items-center justify-center py-20 text-center">
-              <p class="text-lg font-medium text-blue-100/60">No flashcards yet</p>
-              <p class="mt-1 text-sm text-blue-100/40">Flashcards will appear here once created.</p>
-            </div>
-          ) : (
-            <div class="space-y-4">
-              {data.flashcards.map((card) => (
-                <div class="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
-                  <p class="text-sm font-medium text-blue-100/50">Front</p>
-                  <p class="mt-1 text-white">{card.front}</p>
-                  <div class="my-3 h-px bg-white/10" />
-                  <p class="text-sm font-medium text-blue-100/50">Back</p>
-                  <p class="mt-1 text-white">{card.back}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      <SetDetailPage initialData={JSON.stringify(data)} client:load />
     </Layout>
   )
 }

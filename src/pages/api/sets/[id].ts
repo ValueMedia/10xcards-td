@@ -79,8 +79,9 @@ export const DELETE: APIRoute = async (context) => {
   const { error } = await deleteSet(supabase, user.id, id);
 
   if (error) {
+    const status = error.includes("not found") ? 404 : 500;
     return new Response(JSON.stringify({ error }), {
-      status: 500,
+      status,
       headers: { "Content-Type": "application/json" },
     });
   }

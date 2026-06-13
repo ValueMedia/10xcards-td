@@ -94,6 +94,7 @@ export async function deleteSet(
 
 export async function getSetWithFlashcards(
   client: SupabaseClient | null,
+  userId: string,
   setId: string,
 ): Promise<{
   data: { set: FlashcardSet; flashcards: Flashcard[] } | null;
@@ -101,16 +102,15 @@ export async function getSetWithFlashcards(
 }> {
   if (!client) return { data: null, error: "Supabase client not available" };
 
-  const setResult = await client.from("sets").select("*").eq("id", setId).maybeSingle();
+  const setResult = await client.from("sets").select("*").eq("id", setId).eq("user_id", userId).maybeSingle();
 
   if (setResult.error) return { data: null, error: setResult.error.message };
   if (!setResult.data) return { data: null, error: "Set not found" };
 
-  const fcResult = await client
-    .from("flashcards")
-    .select("*")
-    .eq("set_id", setId)
-    .order("created_at", { ascending: true });
+  const [fcResult, _lastOpenedResult] = await Promise.all([
+    client.from("flashcards").select("*").eq("set_id", setId).order("created_at", { ascending: false }),
+    client.from("sets").update({ last_opened_at: new Date().toISOString() }).eq("id", setId).eq("user_id", userId),
+  ]);
 
   if (fcResult.error) return { data: null, error: fcResult.error.message };
 

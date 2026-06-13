@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { createFlashcard, flashcardContentSchema } from "@/lib/services/flashcards";
+import { createFlashcard, flashcardContentSchema, errorMessage, isNotFound } from "@/lib/services/flashcards";
 import { z } from "zod";
 
 const createFlashcardBodySchema = z.object({
@@ -39,14 +39,14 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
-  const { data, error } = await createFlashcard(supabase, parsed.data.set_id, {
+  const { data, error } = await createFlashcard(supabase, user.id, parsed.data.set_id, {
     front: parsed.data.front,
     back: parsed.data.back,
   });
 
   if (error) {
-    const status = error.includes("not found") ? 404 : 500;
-    return new Response(JSON.stringify({ error }), {
+    const status = isNotFound(error) ? 404 : 500;
+    return new Response(JSON.stringify({ error: errorMessage(error) }), {
       status,
       headers: { "Content-Type": "application/json" },
     });

@@ -77,9 +77,9 @@ Extend middleware to protect the new flashcard API, create `src/lib/services/fla
 
 - `flashcardContentSchema` — `z.object({ front: z.string().min(1).max(1000), back: z.string().min(1).max(1000) })`.
 - `FlashcardContent = z.infer<typeof flashcardContentSchema>`.
-- `createFlashcard(client, setId, content)` → `Promise<{ data: Flashcard | null; error: string | null }>` — inserts `{ set_id, front, back }`. Returns the created row.
-- `updateFlashcard(client, flashcardId, content)` → `Promise<{ data: Flashcard | null; error: string | null }>` — updates `front`, `back`, and lets the trigger bump `updated_at`. Verifies ownership indirectly by joining to the user's set; returns `"Flashcard not found"` if the row is not accessible. Note: the service does not need to reorder rows; the UI prepends updated cards to match the `created_at DESC` display order.
-- `deleteFlashcard(client, flashcardId)` → `Promise<{ error: string | null }>` — deletes the flashcard if accessible; returns `"Flashcard not found"` otherwise.
+- `createFlashcard(client, userId, setId, content)` → `Promise<{ data: Flashcard | null; error: string | null }>` — verifies that the target set belongs to `userId`, then inserts `{ set_id, front, back }`. Returns the created row or `"Set not found"` if the set is inaccessible.
+- `updateFlashcard(client, userId, flashcardId, content)` → `Promise<{ data: Flashcard | null; error: string | null }>` — verifies ownership by joining the flashcard to the user's set, then updates `front`, `back`, and lets the trigger bump `updated_at`. Returns `"Flashcard not found"` if the row is not accessible. Note: the service does not need to reorder rows; the UI prepends updated cards to match the `created_at DESC` display order.
+- `deleteFlashcard(client, userId, flashcardId)` → `Promise<{ error: string | null }>` — verifies ownership by joining the flashcard to the user's set, then deletes the flashcard. Returns `"Flashcard not found"` if the row is not accessible.
 
 All functions handle `null` client by returning `{ data: null, error: "Supabase client not available" }`.
 

@@ -19,7 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 
 interface Props {
-  set: FlashcardSet;
+  set: FlashcardSet & { flashcard_count: number };
   onRename: () => void;
   onDelete: () => void;
 }
@@ -67,7 +67,9 @@ export function SetCard({ set, onRename, onDelete }: Props) {
           </DropdownMenu>
         </CardAction>
         <CardTitle className="text-white">{set.name}</CardTitle>
-        <CardDescription className="text-blue-100/50">&mdash; cards</CardDescription>
+        <CardDescription className="text-blue-100/50">
+          {set.flashcard_count}&nbsp;{set.flashcard_count === 1 ? "card" : "cards"}
+        </CardDescription>
       </CardHeader>
       <CardContent className="text-sm text-blue-100/40">
         <p>
