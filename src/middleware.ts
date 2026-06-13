@@ -16,8 +16,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
       data: { user },
     } = await supabase.auth.getUser();
     context.locals.user = user ?? null;
+    context.locals.supabase = supabase;
   } else {
     context.locals.user = null;
+    context.locals.supabase = null;
   }
 
   if (

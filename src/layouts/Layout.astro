@@ -37,7 +37,7 @@ const { title = "10x Astro Starter" } = Astro.props;
       ))
     }
     <slot />
-    <Toaster client:load richColors closeButton />
+    <Toaster client:only="react" richColors closeButton />
   </body>
 </html>
 

@@ -29,6 +29,7 @@ export function SetCard({ set, onRename, onDelete, onOpen }: Props) {
   return (
     <Card
       className={cn("cursor-pointer border-white/10 bg-white/5 backdrop-blur-xl transition-colors hover:bg-white/10")}
+      onClick={onOpen}
     >
       <CardHeader>
         <CardAction>
@@ -68,7 +69,7 @@ export function SetCard({ set, onRename, onDelete, onOpen }: Props) {
             </DropdownMenuContent>
           </DropdownMenu>
         </CardAction>
-        <button type="button" onClick={onOpen} className="text-left">
+        <button type="button" className="text-left">
           <CardTitle className="text-white">{set.name}</CardTitle>
         </button>
         <CardDescription className="text-blue-100/50">&mdash; cards</CardDescription>

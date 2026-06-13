@@ -1,10 +1,10 @@
 import type { APIRoute } from "astro";
-import { createClient } from "@/lib/supabase";
 import { renameSet, deleteSet, setNameSchema } from "@/lib/services/sets";
 
 export const PATCH: APIRoute = async (context) => {
   const user = context.locals.user;
-  if (!user?.id) {
+  const supabase = context.locals.supabase;
+  if (!user?.id || !supabase) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -42,7 +42,6 @@ export const PATCH: APIRoute = async (context) => {
     );
   }
 
-  const supabase = createClient(context.request.headers, context.cookies);
   const { data, error } = await renameSet(supabase, user.id, id, parsed.data);
 
   if (error) {
@@ -61,7 +60,8 @@ export const PATCH: APIRoute = async (context) => {
 
 export const DELETE: APIRoute = async (context) => {
   const user = context.locals.user;
-  if (!user?.id) {
+  const supabase = context.locals.supabase;
+  if (!user?.id || !supabase) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -76,7 +76,6 @@ export const DELETE: APIRoute = async (context) => {
     });
   }
 
-  const supabase = createClient(context.request.headers, context.cookies);
   const { error } = await deleteSet(supabase, user.id, id);
 
   if (error) {

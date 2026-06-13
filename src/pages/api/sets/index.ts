@@ -1,17 +1,16 @@
 import type { APIRoute } from "astro";
-import { createClient } from "@/lib/supabase";
 import { listSets, createSet, setNameSchema } from "@/lib/services/sets";
 
 export const GET: APIRoute = async (context) => {
   const user = context.locals.user;
-  if (!user?.id) {
+  const supabase = context.locals.supabase;
+  if (!user?.id || !supabase) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });
   }
 
-  const supabase = createClient(context.request.headers, context.cookies);
   const { data, error } = await listSets(supabase, user.id);
 
   if (error) {
@@ -29,7 +28,8 @@ export const GET: APIRoute = async (context) => {
 
 export const POST: APIRoute = async (context) => {
   const user = context.locals.user;
-  if (!user?.id) {
+  const supabase = context.locals.supabase;
+  if (!user?.id || !supabase) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -59,7 +59,6 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
-  const supabase = createClient(context.request.headers, context.cookies);
   const { data, error } = await createSet(supabase, user.id, parsed.data);
 
   if (error) {

@@ -502,31 +502,31 @@ No data migration needed. The `sets` and `flashcards` tables already exist from 
 
 #### Automated
 
-- [x] 4.1 Build passes: `npm run build`
-- [x] 4.2 Lint passes: `npm run lint`
+- [x] 4.1 Build passes: `npm run build` — 789512d
+- [x] 4.2 Lint passes: `npm run lint` — 789512d
 
 #### Manual
 
-- [ ] 4.3 Dashboard shows grid of set cards (or empty state)
-- [ ] 4.4 "New Set" dialog creates a set with success toast
-- [ ] 4.5 Empty name shows validation error inline
-- [ ] 4.6 Dropdown menu has Rename and Delete actions
-- [ ] 4.7 Rename dialog updates card + shows toast
-- [ ] 4.8 Delete confirmation dialog removes card + shows toast
-- [ ] 4.9 Clicking a card navigates to `/sets/[id]`
-- [ ] 4.10 Dashboard is responsive (1/2/3 columns)
+- [x] 4.3 Dashboard shows grid of set cards (or empty state) — 789512d
+- [x] 4.4 "New Set" dialog creates a set with success toast — 789512d
+- [x] 4.5 Empty name shows validation error inline — 789512d
+- [x] 4.6 Dropdown menu has Rename and Delete actions — 789512d
+- [x] 4.7 Rename dialog updates card + shows toast — 789512d
+- [x] 4.8 Delete confirmation dialog removes card + shows toast — 789512d
+- [x] 4.9 Clicking a card navigates to `/sets/[id]` — 789512d
+- [x] 4.10 Dashboard is responsive (1/2/3 columns) — 789512d
 
 ### Phase 5: Set Detail Page
 
 #### Automated
 
-- [ ] 5.1 Build passes: `npm run build`
-- [ ] 5.2 Lint passes: `npm run lint`
+- [x] 5.1 Build passes: `npm run build`
+- [x] 5.2 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 5.3 `/sets/[valid-id]` shows set name + flashcards
-- [ ] 5.4 `/sets/[non-existent-id]` shows 404 / not found
-- [ ] 5.5 Cross-user set access returns 404 / not found
-- [ ] 5.6 Back link returns to dashboard
-- [ ] 5.7 Empty set shows appropriate empty state
+- [x] 5.3 `/sets/[valid-id]` shows set name + flashcards
+- [x] 5.4 `/sets/[non-existent-id]` shows 404 / not found
+- [x] 5.5 Cross-user set access returns 404 / not found
+- [x] 5.6 Back link returns to dashboard
+- [x] 5.7 Empty set shows appropriate empty state

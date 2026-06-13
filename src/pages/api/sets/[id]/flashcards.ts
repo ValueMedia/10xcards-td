@@ -1,10 +1,10 @@
 import type { APIRoute } from "astro";
-import { createClient } from "@/lib/supabase";
 import { getSetWithFlashcards } from "@/lib/services/sets";
 
 export const GET: APIRoute = async (context) => {
   const user = context.locals.user;
-  if (!user?.id) {
+  const supabase = context.locals.supabase;
+  if (!user?.id || !supabase) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -19,7 +19,6 @@ export const GET: APIRoute = async (context) => {
     });
   }
 
-  const supabase = createClient(context.request.headers, context.cookies);
   const { data, error } = await getSetWithFlashcards(supabase, id);
 
   if (error) {

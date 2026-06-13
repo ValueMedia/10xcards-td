@@ -1,12 +1,10 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { createClient } from "@/lib/supabase";
 import { listSets } from "@/lib/services/sets";
 import SetDashboard from "@/components/sets/SetDashboard";
 
-const { user } = Astro.locals;
-const supabase = createClient(Astro.request.headers, Astro.cookies);
-const { data: sets } = user ? await listSets(supabase, user.id) : { data: [] };
+const { user, supabase } = Astro.locals;
+const { data: sets } = user && supabase ? await listSets(supabase, user.id) : { data: [] };
 ---
 
 <Layout title="Dashboard">
