@@ -27,25 +27,25 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 
 ## At a glance
 
-| ID   | Change ID               | Outcome (user can …)                                                | Prerequisites    | PRD refs                       | Status   |
-|------|-------------------------|---------------------------------------------------------------------|------------------|--------------------------------|----------|
-| F-01 | data-schema             | (foundation) tabele sets, flashcards, reviews z RLS                | —                | FR-001, §Access Control        | done     |
-| S-01 | ai-flashcard-generation | wkleić tekst, otrzymać propozycje AI i zapisać fiszki do zestawu   | F-01             | FR-002, FR-003, US-01          | proposed |
-| S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać               | F-01             | FR-007                         | done     |
-| S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie               | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | proposed |
-| S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                  | F-01, S-02       | FR-009, US-009                 | proposed |
-| S-07 | public-share-link       | wygenerować link read-only do zestawu dostępny bez logowania        | F-01, S-02       | FR-008, US-008                 | proposed |
-| S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition       | F-01, S-01, S-02 | FR-010, US-019                 | proposed |
-| S-06 | learning-stats          | przeglądać statystyki i historię nauki                              | F-01, S-05       | FR-011, US-011                 | proposed |
+| ID   | Change ID               | Outcome (user can …)                                             | Prerequisites    | PRD refs                       | Status   |
+| ---- | ----------------------- | ---------------------------------------------------------------- | ---------------- | ------------------------------ | -------- |
+| F-01 | data-schema             | (foundation) tabele sets, flashcards, reviews z RLS              | —                | FR-001, §Access Control        | done     |
+| S-01 | ai-flashcard-generation | wkleić tekst, otrzymać propozycje AI i zapisać fiszki do zestawu | F-01             | FR-002, FR-003, US-01          | proposed |
+| S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać             | F-01             | FR-007                         | done     |
+| S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie             | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | done     |
+| S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | proposed |
+| S-07 | public-share-link       | wygenerować link read-only do zestawu dostępny bez logowania     | F-01, S-02       | FR-008, US-008                 | proposed |
+| S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition    | F-01, S-01, S-02 | FR-010, US-019                 | proposed |
+| S-06 | learning-stats          | przeglądać statystyki i historię nauki                           | F-01, S-05       | FR-011, US-011                 | proposed |
 
 ## Streams
 
 Navigation aid — groups items that share a Prerequisites chain. Canonical ordering still lives in the dependency graph below; this table is the proposed reading order across parallel tracks.
 
-| Stream | Theme               | Chain                              | Note                                                                     |
-|--------|---------------------|------------------------------------|--------------------------------------------------------------------------|
-| A      | AI core + nauka     | `F-01` → `S-01` → `S-05` → `S-06` | Gwiazda przewodnia; waliduje kryterium sukcesu 75% akceptacji AI.        |
-| B      | Zarządzanie treścią | `S-02` → `S-03` / `S-04` / `S-07` | Równolegle z S-01 po wylądowaniu F-01; S-05 (Stream A) zależy od S-02.  |
+| Stream | Theme               | Chain                             | Note                                                                   |
+| ------ | ------------------- | --------------------------------- | ---------------------------------------------------------------------- |
+| A      | AI core + nauka     | `F-01` → `S-01` → `S-05` → `S-06` | Gwiazda przewodnia; waliduje kryterium sukcesu 75% akceptacji AI.      |
+| B      | Zarządzanie treścią | `S-02` → `S-03` / `S-04` / `S-07` | Równolegle z S-01 po wylądowaniu F-01; S-05 (Stream A) zależy od S-02. |
 
 ## Baseline
 
@@ -111,7 +111,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Ręczne tworzenie jest fallbackiem dla treści trudnych dla AI i dla użytkowników chcących zacząć bez tekstu źródłowego. Wymaga kontekstu zestawu (S-02) w UI edytora.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Import CSV/TXT
 
@@ -166,16 +166,16 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Backlog Handoff
 
-| Roadmap ID | Change ID               | Suggested issue title                               | Ready for `/10x-plan` | Notes                                           |
-|------------|-------------------------|-----------------------------------------------------|-----------------------|-------------------------------------------------|
-| F-01       | data-schema             | [DB] Schema: sets, flashcards, reviews + RLS        | yes                   | Run `/10x-plan data-schema`                     |
-| S-01       | ai-flashcard-generation | [Feature] AI flashcard generation and review flow   | no                    | Awaits F-01; resolve AI provider Unknown first  |
-| S-02       | set-and-deck-management | [Feature] Sets dashboard — browse, create, manage   | no                    | Awaits F-01; parallel with S-01                 |
-| S-03       | flashcard-crud          | [Feature] Manual flashcard create/edit/delete       | no                    | Awaits F-01 + S-02                              |
-| S-04       | csv-import              | [Feature] CSV/TXT import (Anki format)              | no                    | Awaits F-01 + S-02                              |
-| S-07       | public-share-link       | [Feature] Read-only shareable link per set          | no                    | Awaits F-01 + S-02; nice-to-have — plan last    |
-| S-05       | sr-review-session       | [Feature] Spaced repetition review session          | no                    | Awaits F-01 + S-01 + S-02; pick SR lib first   |
-| S-06       | learning-stats          | [Feature] Learning stats dashboard                  | no                    | Awaits S-05                                     |
+| Roadmap ID | Change ID               | Suggested issue title                             | Ready for `/10x-plan` | Notes                                          |
+| ---------- | ----------------------- | ------------------------------------------------- | --------------------- | ---------------------------------------------- |
+| F-01       | data-schema             | [DB] Schema: sets, flashcards, reviews + RLS      | yes                   | Run `/10x-plan data-schema`                    |
+| S-01       | ai-flashcard-generation | [Feature] AI flashcard generation and review flow | no                    | Awaits F-01; resolve AI provider Unknown first |
+| S-02       | set-and-deck-management | [Feature] Sets dashboard — browse, create, manage | no                    | Awaits F-01; parallel with S-01                |
+| S-03       | flashcard-crud          | [Feature] Manual flashcard create/edit/delete     | no                    | Awaits F-01 + S-02                             |
+| S-04       | csv-import              | [Feature] CSV/TXT import (Anki format)            | no                    | Awaits F-01 + S-02                             |
+| S-07       | public-share-link       | [Feature] Read-only shareable link per set        | no                    | Awaits F-01 + S-02; nice-to-have — plan last   |
+| S-05       | sr-review-session       | [Feature] Spaced repetition review session        | no                    | Awaits F-01 + S-01 + S-02; pick SR lib first   |
+| S-06       | learning-stats          | [Feature] Learning stats dashboard                | no                    | Awaits S-05                                    |
 
 ## Open Roadmap Questions
 
@@ -193,5 +193,6 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 - **F-01: (foundation) tabele sets, flashcards, reviews z RLS** — Archived 2026-06-13 → `context/archive/2026-06-10-data-scheme/`. Lesson: —.
 - **S-02: user can view a dashboard listing all their sets, create a new set, rename an existing set, delete a set, and browse flashcards within a set.** — Archived 2026-06-13 → `context/archive/2026-06-13-set-and-deck-management/`. Lesson: —.
+- **S-03: user can manually create a new flashcard (front + back text), edit the content of an existing flashcard inline, and delete a flashcard from a set.** — Archived 2026-06-13 → `context/archive/2026-06-13-flashcard-crud/`. Lesson: —.
 
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches a roadmap item is archived.)
