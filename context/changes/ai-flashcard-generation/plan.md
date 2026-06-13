@@ -501,20 +501,20 @@ No database migration is required. The existing `flashcards` and `sets` tables a
 
 #### Automated
 
-- [x] 1.1 `astro.config.mjs` env schema extended with `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`
-- [x] 1.2 `.env.example` and `.dev.vars` updated with placeholders
-- [x] 1.3 `wrangler.jsonc` includes `AI_RATE_LIMIT` KV namespace binding
-- [x] 1.4 `src/lib/services/ai.ts` implemented with prompt, fetch, parse, zod validation, and timeout
-- [x] 1.5 `src/lib/services/ai-rate-limit.ts` implemented with per-user hourly counter
-- [x] 1.6 `src/pages/api/sets/[id]/generate.ts` created and added to protected API routes
-- [x] 1.7 Unit tests for AI service pass
-- [x] 1.8 `npm run lint` passes
-- [x] 1.9 `npm run build` passes
+- [x] 1.1 `astro.config.mjs` env schema extended with `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` — 3639859
+- [x] 1.2 `.env.example` and `.dev.vars` updated with placeholders — 3639859
+- [x] 1.3 `wrangler.jsonc` includes `AI_RATE_LIMIT` KV namespace binding — 3639859
+- [x] 1.4 `src/lib/services/ai.ts` implemented with prompt, fetch, parse, zod validation, and timeout — 3639859
+- [x] 1.5 `src/lib/services/ai-rate-limit.ts` implemented with per-user hourly counter — 3639859
+- [x] 1.6 `src/pages/api/sets/[id]/generate.ts` created and added to protected API routes — 3639859
+- [x] 1.7 Unit tests for AI service pass — 3639859
+- [x] 1.8 `npm run lint` passes — 3639859
+- [x] 1.9 `npm run build` passes — 3639859
 
 #### Manual
 
-- [ ] 1.10 Dev server generates real proposals from OpenRouter under 10 s
-- [ ] 1.11 API key is not exposed in client responses or bundles
+- [x] 1.10 Dev server generates real proposals from OpenRouter under 10 s
+- [x] 1.11 API key is not exposed in client responses or bundles
 
 ### Phase 2: Bulk Save Endpoint
 
