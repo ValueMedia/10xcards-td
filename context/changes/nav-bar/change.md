@@ -1,7 +1,7 @@
 ---
 change_id: nav-bar
 title: Top navigation bar with user info
-status: implementing
+status: implemented
 created: 2026-06-13
 updated: 2026-06-13
 archived_at: null

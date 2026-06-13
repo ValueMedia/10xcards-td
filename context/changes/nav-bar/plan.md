@@ -113,13 +113,13 @@ Create the NavBar Astro component and wire it into the Layout. Auth pages automa
 
 #### Automated
 
-- [x] 1.1 Build passes: `npm run build`
-- [x] 1.2 Lint passes: `npm run lint`
+- [x] 1.1 Build passes: `npm run build` — 57d006b
+- [x] 1.2 Lint passes: `npm run lint` — 57d006b
 
 #### Manual
 
-- [x] 1.3 `/dashboard` shows NavBar with logo, Dashboard link, email, Sign out button
-- [x] 1.4 NavBar sticks to top of viewport when scrolling
-- [x] 1.5 Clicking "Sign out" signs the user out and redirects to `/`
-- [x] 1.6 `/auth/signin` and `/auth/signup` show no NavBar
-- [x] 1.7 Logo links to `/`, Dashboard link navigates to `/dashboard`
+- [x] 1.3 `/dashboard` shows NavBar with logo, Dashboard link, email, Sign out button — 57d006b
+- [x] 1.4 NavBar sticks to top of viewport when scrolling — 57d006b
+- [x] 1.5 Clicking "Sign out" signs the user out and redirects to `/` — 57d006b
+- [x] 1.6 `/auth/signin` and `/auth/signup` show no NavBar — 57d006b
+- [x] 1.7 Logo links to `/`, Dashboard link navigates to `/dashboard` — 57d006b
