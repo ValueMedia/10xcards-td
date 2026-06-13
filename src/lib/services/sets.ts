@@ -21,6 +21,30 @@ export async function listSets(
   return { data: result.data as FlashcardSet[], error: null };
 }
 
+export async function listSetsWithFlashcardCounts(
+  client: SupabaseClient | null,
+  userId: string,
+): Promise<{ data: (FlashcardSet & { flashcard_count: number })[] | null; error: string | null }> {
+  if (!client) return { data: null, error: "Supabase client not available" };
+
+  const result = await client
+    .from("sets")
+    .select("*, flashcard_count:flashcards(count)")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false });
+
+  if (result.error) return { data: null, error: result.error.message };
+
+  const mapped = (result.data as (FlashcardSet & { flashcard_count?: { count: number }[] | number })[]).map((set) => ({
+    ...set,
+    flashcard_count: Array.isArray(set.flashcard_count)
+      ? (set.flashcard_count[0]?.count ?? 0)
+      : (set.flashcard_count ?? 0),
+  })) as (FlashcardSet & { flashcard_count: number })[];
+
+  return { data: mapped, error: null };
+}
+
 export async function createSet(
   client: SupabaseClient | null,
   userId: string,
