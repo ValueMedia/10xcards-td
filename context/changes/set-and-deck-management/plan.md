@@ -472,21 +472,21 @@ No data migration needed. The `sets` and `flashcards` tables already exist from 
 
 #### Automated
 
-- [x] 2.1 Build passes: `npm run build`
-- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.1 Build passes: `npm run build` — 33a0bb4
+- [x] 2.2 Lint passes: `npm run lint` — 33a0bb4
 
 #### Manual
 
-- [ ] 2.3 Unauthenticated access to `/sets`, `/api/sets` redirects to sign-in
-- [ ] 2.4 Authenticated access to `/dashboard`, `/sets` passes through
-- [ ] 2.5 `/settings` (hypothetical) is NOT caught by `/sets` protection
+- [x] 2.3 Unauthenticated access to `/sets`, `/api/sets` redirects to sign-in — 33a0bb4
+- [x] 2.4 Authenticated access to `/dashboard`, `/sets` passes through — 33a0bb4
+- [x] 2.5 `/settings` (hypothetical) is NOT caught by `/sets` protection — 33a0bb4
 
 ### Phase 3: Service Layer & API Routes
 
 #### Automated
 
-- [ ] 3.1 Build passes: `npm run build`
-- [ ] 3.2 Lint passes: `npm run lint`
+- [x] 3.1 Build passes: `npm run build`
+- [x] 3.2 Lint passes: `npm run lint`
 
 #### Manual
 
