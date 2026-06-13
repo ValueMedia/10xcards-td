@@ -1,5 +1,5 @@
 ---
-project: "10xCards (10x-astro-starter)"
+project: "10xCards (10x-cards-td)"
 checked_at: 2026-06-06T00:00:00Z
 health_status: needs-attention
 context_type: brownfield

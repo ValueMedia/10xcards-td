@@ -1,5 +1,5 @@
 ---
-project: "10xCards (10x-astro-starter)"
+project: "10xCards (10x-cards-td)"
 assessed_at: 2026-06-06T00:00:00Z
 agent_readiness: ready-with-compensation
 context_type: brownfield

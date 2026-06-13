@@ -1,5 +1,5 @@
 ---
-starter_id: 10x-astro-starter
+starter_id: 10x-cards-td
 package_manager: npm
 project_name: 10x-cards
 hints:
