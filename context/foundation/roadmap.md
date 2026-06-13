@@ -31,7 +31,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 |------|-------------------------|---------------------------------------------------------------------|------------------|--------------------------------|----------|
 | F-01 | data-schema             | (foundation) tabele sets, flashcards, reviews z RLS                | —                | FR-001, §Access Control        | done     |
 | S-01 | ai-flashcard-generation | wkleić tekst, otrzymać propozycje AI i zapisać fiszki do zestawu   | F-01             | FR-002, FR-003, US-01          | proposed |
-| S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać               | F-01             | FR-007                         | proposed |
+| S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać               | F-01             | FR-007                         | done     |
 | S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie               | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | proposed |
 | S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                  | F-01, S-02       | FR-009, US-009                 | proposed |
 | S-07 | public-share-link       | wygenerować link read-only do zestawu dostępny bez logowania        | F-01, S-02       | FR-008, US-008                 | proposed |
@@ -99,7 +99,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Zestawy to główny kontener nawigacyjny aplikacji; bez S-02 użytkownik nie może dotrzeć do SR session ani statystyk. Sekwencjonowany równolegle z S-01, by minimalizować czas do działającej nawigacji.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Ręczne zarządzanie fiszkami
 
@@ -192,5 +192,6 @@ Foundations below assume these are present and do NOT re-scaffold them.
 ## Done
 
 - **F-01: (foundation) tabele sets, flashcards, reviews z RLS** — Archived 2026-06-13 → `context/archive/2026-06-10-data-scheme/`. Lesson: —.
+- **S-02: user can view a dashboard listing all their sets, create a new set, rename an existing set, delete a set, and browse flashcards within a set.** — Archived 2026-06-13 → `context/archive/2026-06-13-set-and-deck-management/`. Lesson: —.
 
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches a roadmap item is archived.)
