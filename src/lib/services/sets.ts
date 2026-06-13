@@ -122,3 +122,16 @@ export async function getSetWithFlashcards(
     error: null,
   };
 }
+
+export async function getSetByIdForUser(
+  client: SupabaseClient | null,
+  userId: string,
+  setId: string,
+): Promise<{ data: FlashcardSet | null; error: string | null }> {
+  if (!client) return { data: null, error: "Supabase client not available" };
+
+  const result = await client.from("sets").select("*").eq("id", setId).eq("user_id", userId).maybeSingle();
+
+  if (result.error) return { data: null, error: result.error.message };
+  return { data: result.data as FlashcardSet, error: null };
+}

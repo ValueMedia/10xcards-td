@@ -77,16 +77,25 @@ export default function SetDetailPage({ initialData }: Props) {
               {flashcards.length}&nbsp;{flashcards.length === 1 ? "card" : "cards"}
             </p>
           </div>
-          <Button
-            type="button"
-            onClick={() => {
-              setCreateOpen(true);
-            }}
-            className="bg-purple-600 hover:bg-purple-500"
-          >
-            <PlusIcon />
-            New flashcard
-          </Button>
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+            <a
+              href={`/generate?setId=${set.id}`}
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-blue-500"
+            >
+              <SparklesIcon />
+              Generate with AI
+            </a>
+            <Button
+              type="button"
+              onClick={() => {
+                setCreateOpen(true);
+              }}
+              className="bg-purple-600 hover:bg-purple-500"
+            >
+              <PlusIcon />
+              New flashcard
+            </Button>
+          </div>
         </div>
 
         <FlashcardList flashcards={flashcards} onEdit={setEditTarget} onDelete={setDeleteTarget} />
@@ -150,6 +159,28 @@ function PlusIcon() {
     >
       <path d="M5 12h14" />
       <path d="M12 5v14" />
+    </svg>
+  );
+}
+
+function SparklesIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+      <path d="M5 3v4" />
+      <path d="M19 17v4" />
+      <path d="M3 5h4" />
+      <path d="M17 19h4" />
     </svg>
   );
 }

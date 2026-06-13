@@ -13,6 +13,10 @@
     "enabled": true,
   },
   "kv_namespaces": [
-    { "binding": "AI_RATE_LIMIT", "id": "<your-kv-namespace-id>" }
+    {
+      "binding": "AI_RATE_LIMIT",
+      "id": "ed19eb9c04eb4a95845a09c9bdea3e65",
+      "preview_id": "eee82fc112ea4425bf0e94fa73d9eb4c"
+    }
   ],
 }

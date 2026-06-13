@@ -533,17 +533,17 @@ No database migration is required. The existing `flashcards` and `sets` tables a
 
 #### Automated
 
-- [ ] 3.1 `src/components/sets/SetDetailPage.tsx` includes "Generate with AI" link
-- [ ] 3.2 `src/pages/generate.astro` renders shell and validates set ownership
-- [ ] 3.3 `src/components/ai/GenerateFlashcardsPage.tsx` implements input + review + save flow
-- [ ] 3.4 `src/components/ai/FlashcardProposalCard.tsx` supports inline edit and delete
-- [ ] 3.5 `npm run lint` and `npm run build` pass
+- [x] 3.1 `src/components/sets/SetDetailPage.tsx` includes "Generate with AI" link
+- [x] 3.2 `src/pages/generate.astro` renders shell and validates set ownership
+- [x] 3.3 `src/components/ai/GenerateFlashcardsPage.tsx` implements input + review + save flow
+- [x] 3.4 `src/components/ai/FlashcardProposalCard.tsx` supports inline edit and delete
+- [x] 3.5 `npm run lint` and `npm run build` pass — b1a1ed3
 
 #### Manual
 
-- [ ] 3.6 Full end-to-end generate → edit → delete → save → redirect works
-- [ ] 3.7 Validation rejects too-short and too-long input
-- [ ] 3.8 Layout is usable on mobile
+- [x] 3.6 Full end-to-end generate → edit → delete → save → redirect works
+- [x] 3.7 Validation rejects too-short and too-long input
+- [x] 3.8 Layout is usable on mobile
 
 ### Phase 4: Polish + Observability
 
