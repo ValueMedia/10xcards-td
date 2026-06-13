@@ -361,15 +361,15 @@ No schema or data migration needed. Existing `flashcards` table and RLS policies
 
 #### Automated
 
-- [x] 1.1 Dependencies install without conflicts: `npx shadcn@latest add textarea`
-- [x] 1.2 Build passes: `npm run build`
-- [x] 1.3 Lint passes: `npm run lint`
+- [x] 1.1 Dependencies install without conflicts: `npx shadcn@latest add textarea` — b4556ab
+- [x] 1.2 Build passes: `npm run build` — b4556ab
+- [x] 1.3 Lint passes: `npm run lint` — b4556ab
 
 #### Manual
 
-- [ ] 1.4 `/api/flashcards` endpoints return `401` without session
-- [x] 1.5 `listSetsWithFlashcardCounts()` returns sets with counts
-- [ ] 1.6 `Textarea` component exists in `src/components/ui/`
+- [x] 1.4 `/api/flashcards` endpoints return `401` without session — b4556ab
+- [x] 1.5 `listSetsWithFlashcardCounts()` returns sets with counts — b4556ab
+- [x] 1.6 `Textarea` component exists in `src/components/ui/` — b4556ab
 
 ### Phase 2: Flashcard API Routes
 
