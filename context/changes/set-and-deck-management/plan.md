@@ -485,25 +485,25 @@ No data migration needed. The `sets` and `flashcards` tables already exist from 
 
 #### Automated
 
-- [x] 3.1 Build passes: `npm run build`
-- [x] 3.2 Lint passes: `npm run lint`
+- [x] 3.1 Build passes: `npm run build` — 91a989f
+- [x] 3.2 Lint passes: `npm run lint` — 91a989f
 
 #### Manual
 
-- [ ] 3.3 `GET /api/sets` returns JSON array (empty for new user)
-- [ ] 3.4 `POST /api/sets` creates a set, returns 201
-- [ ] 3.5 `POST /api/sets` with empty name returns 400 validation error
-- [ ] 3.6 `PATCH /api/sets/[id]` renames a set, returns 200
-- [ ] 3.7 `DELETE /api/sets/[id]` deletes a set, returns 200
-- [ ] 3.8 `GET /api/sets/[id]/flashcards` returns set + flashcards
-- [ ] 3.9 All endpoints return 401 without valid session
+- [x] 3.3 `GET /api/sets` returns JSON array (empty for new user) — 91a989f
+- [x] 3.4 `POST /api/sets` creates a set, returns 201 — 91a989f
+- [x] 3.5 `POST /api/sets` with empty name returns 400 validation error — 91a989f
+- [x] 3.6 `PATCH /api/sets/[id]` renames a set, returns 200 — 91a989f
+- [x] 3.7 `DELETE /api/sets/[id]` deletes a set, returns 200 — 91a989f
+- [x] 3.8 `GET /api/sets/[id]/flashcards` returns set + flashcards — 91a989f
+- [x] 3.9 All endpoints return 401 without valid session — 91a989f
 
 ### Phase 4: Dashboard Page & React Components
 
 #### Automated
 
-- [ ] 4.1 Build passes: `npm run build`
-- [ ] 4.2 Lint passes: `npm run lint`
+- [x] 4.1 Build passes: `npm run build`
+- [x] 4.2 Lint passes: `npm run lint`
 
 #### Manual
 
