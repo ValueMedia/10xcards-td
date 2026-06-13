@@ -3,7 +3,7 @@ project: 10xCards
 version: 1
 status: draft
 created: 2026-06-10
-updated: 2026-06-10
+updated: 2026-06-13
 prd_version: 1
 main_goal: market-feedback
 top_blocker: capacity
@@ -29,7 +29,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 
 | ID   | Change ID               | Outcome (user can …)                                                | Prerequisites    | PRD refs                       | Status   |
 |------|-------------------------|---------------------------------------------------------------------|------------------|--------------------------------|----------|
-| F-01 | data-schema             | (foundation) tabele sets, flashcards, reviews z RLS                | —                | FR-001, §Access Control        | ready    |
+| F-01 | data-schema             | (foundation) tabele sets, flashcards, reviews z RLS                | —                | FR-001, §Access Control        | done     |
 | S-01 | ai-flashcard-generation | wkleić tekst, otrzymać propozycje AI i zapisać fiszki do zestawu   | F-01             | FR-002, FR-003, US-01          | proposed |
 | S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać               | F-01             | FR-007                         | proposed |
 | S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie               | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | proposed |
@@ -72,7 +72,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** Schemat tabeli `reviews` musi być zgodny z wymaganiami biblioteki SR (ts-fsrs) co do kolumn stanów, interwałów i historii — weryfikacja API biblioteki przed tworzeniem migracji. — Owner: author. Block: no.
 - **Risk:** Brak schematu blokuje całą resztę roadmapy; zaprojektowanie `reviews` z uwzględnieniem wymagań ts-fsrs od razu eliminuje późniejszą łamiącą migrację danych SR.
-- **Status:** ready
+- **Status:** done
 
 ## Slices
 
@@ -190,5 +190,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Aplikacje mobilne natywne** — Why parked: PRD §Non-Goals. Tylko responsive web; dedykowane aplikacje iOS/Android poza scope MVP.
 
 ## Done
+
+- **F-01: (foundation) tabele sets, flashcards, reviews z RLS** — Archived 2026-06-13 → `context/archive/2026-06-10-data-scheme/`. Lesson: —.
 
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches a roadmap item is archived.)
