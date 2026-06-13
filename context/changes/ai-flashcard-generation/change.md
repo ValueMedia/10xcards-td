@@ -2,7 +2,8 @@
 change_id: ai-flashcard-generation
 created: 2026-06-13
 updated: 2026-06-13
-status: plan_reviewed
+status: implementing
+updated: 2026-06-13
 reviewed: 2026-06-13
 verdict: sound
 ---

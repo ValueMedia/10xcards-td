@@ -12,4 +12,7 @@
   "observability": {
     "enabled": true,
   },
+  "kv_namespaces": [
+    { "binding": "AI_RATE_LIMIT", "id": "<your-kv-namespace-id>" }
+  ],
 }
