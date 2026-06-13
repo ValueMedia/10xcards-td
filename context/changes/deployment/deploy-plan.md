@@ -47,7 +47,43 @@ Cloudflare Workers keeps previous deployments. Roll back via:
 
 Do **not** use `NEXT_PUBLIC_*` aliases — only the names above.
 
+## Database migrations
+
+Cloudflare deployment only ships the Worker code; it **does not** run Supabase migrations. After every schema change you must apply `supabase/migrations/*.sql` to the production database manually.
+
+### Current production database status
+
+- Production Supabase project: `aoraelgjkiiexwhfotqf`
+- Tables required by the app: `sets`, `flashcards`, `reviews`
+- First migration applied: **no** (this caused dashboard "Failed to load sets" error on 2026-06-13).
+
+### How to apply migrations
+
+1. Concatenate all migration files in order:
+   ```powershell
+   Get-ChildItem supabase\migrations -Filter *.sql | Sort-Object Name | ForEach-Object { Get-Content $_.FullName -Raw } | Out-File production-migrations.sql -Encoding utf8
+   ```
+2. Open the production Supabase project dashboard → SQL Editor → New query.
+3. Paste the SQL and run it.
+4. Verify the tables exist:
+   ```sql
+   select tablename from pg_tables where schemaname = 'public';
+   ```
+5. Re-deploy the Worker if the schema change requires code updates:
+   ```bash
+   npm run build
+   npx wrangler deploy
+   ```
+
+### Idempotent migration script
+
+For the initial schema, an idempotent version was prepared at:
+`C:\Users\fract\AppData\Local\Temp\10xcards_production_migrations.sql`
+
+Use it for the first-time setup; later changes should be applied as numbered migrations from `supabase/migrations/`.
+
 ## Notes
 
 - Durable infrastructure decision: `context/foundation/infrastructure.md`
 - Local dev uses `.dev.vars` (gitignored); production secrets live in Cloudflare dashboard only
+- `SUPABASE_KEY` stored in Cloudflare secrets must be a **service role / secret key** (`sb_secret_*`) with full access to the database; the publishable/anon key is not sufficient
