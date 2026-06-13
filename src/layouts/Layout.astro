@@ -3,7 +3,7 @@ import "../styles/global.css";
 import Banner from "@/components/Banner.astro";
 import NavBar from "@/components/NavBar.astro";
 import { missingConfigs } from "@/lib/config-status";
-import { Toaster } from "sonner";
+import SonnerToaster from "@/components/ui/SonnerToaster.tsx";
 
 interface Props {
   title?: string;
@@ -39,7 +39,7 @@ const { title = "10x Astro Starter" } = Astro.props;
     }
     <NavBar />
     <slot />
-    <Toaster client:only="react" richColors closeButton />
+    <SonnerToaster client:load />
   </body>
 </html>
 
