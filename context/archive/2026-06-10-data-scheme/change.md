@@ -1,9 +1,10 @@
 ---
 id: data-scheme
 title: Database Schema & RLS (F-01)
-status: impl_reviewed
+status: archived
 created: 2026-06-10
-updated: 2026-06-12
+updated: 2026-06-13
+archived_at: 2026-06-13T06:12:50Z
 roadmap_id: F-01
 ---
 
