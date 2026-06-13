@@ -61,9 +61,10 @@ export async function deleteSet(
 ): Promise<{ error: string | null }> {
   if (!client) return { error: "Supabase client not available" };
 
-  const result = await client.from("sets").delete().eq("id", setId).eq("user_id", userId);
+  const result = await client.from("sets").delete().eq("id", setId).eq("user_id", userId).select("id");
 
   if (result.error) return { error: result.error.message };
+  if (result.data.length === 0) return { error: "Set not found" };
   return { error: null };
 }
 
@@ -76,7 +77,7 @@ export async function getSetWithFlashcards(
 }> {
   if (!client) return { data: null, error: "Supabase client not available" };
 
-  const setResult = await client.from("sets").select("*").eq("id", setId).single();
+  const setResult = await client.from("sets").select("*").eq("id", setId).maybeSingle();
 
   if (setResult.error) return { data: null, error: setResult.error.message };
   if (!setResult.data) return { data: null, error: "Set not found" };

@@ -22,11 +22,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     context.locals.supabase = null;
   }
 
-  if (
-    isProtected(context.url.pathname, PROTECTED_PAGE_ROUTES) ||
-    isProtected(context.url.pathname, PROTECTED_API_ROUTES)
-  ) {
-    if (!context.locals.user) {
+  if (!context.locals.user) {
+    if (isProtected(context.url.pathname, PROTECTED_API_ROUTES)) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    if (isProtected(context.url.pathname, PROTECTED_PAGE_ROUTES)) {
       return context.redirect("/auth/signin");
     }
   }

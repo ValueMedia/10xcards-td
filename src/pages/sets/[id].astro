@@ -5,15 +5,27 @@ import { getSetWithFlashcards } from "@/lib/services/sets";
 const { id } = Astro.params;
 const { supabase } = Astro.locals;
 
-const { data } = supabase ? await getSetWithFlashcards(supabase, id) : { data: null };
+const { data, error: fetchError } = supabase ? await getSetWithFlashcards(supabase, id) : { data: null, error: null };
 
-if (!data) {
+const isServerError = !!fetchError && !data;
+
+if (!isServerError && !data) {
   Astro.response.status = 404;
 }
 ---
 
 {
-  !data && (
+  isServerError && (
+    <Layout title="Error">
+      <div class="bg-cosmic flex min-h-screen items-center justify-center p-4 text-white">
+        <p class="text-red-400">Failed to load set. Please try again later.</p>
+      </div>
+    </Layout>
+  )
+}
+
+{
+  !isServerError && !data && (
     <Layout title="Set not found">
       <div class="bg-cosmic min-h-screen p-4 text-white">
         <div class="mx-auto max-w-3xl">

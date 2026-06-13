@@ -22,17 +22,14 @@ interface Props {
   set: FlashcardSet;
   onRename: () => void;
   onDelete: () => void;
-  onOpen: () => void;
 }
 
-export function SetCard({ set, onRename, onDelete, onOpen }: Props) {
+export function SetCard({ set, onRename, onDelete }: Props) {
   return (
-    <Card
-      className={cn("cursor-pointer border-white/10 bg-white/5 backdrop-blur-xl transition-colors hover:bg-white/10")}
-      onClick={onOpen}
-    >
+    <Card className={cn("relative border-white/10 bg-white/5 backdrop-blur-xl transition-colors hover:bg-white/10")}>
+      <a href={`/sets/${set.id}`} className="absolute inset-0 z-0" aria-label={set.name} />
       <CardHeader>
-        <CardAction>
+        <CardAction className="relative z-10">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -40,7 +37,7 @@ export function SetCard({ set, onRename, onDelete, onOpen }: Props) {
                 size="icon"
                 className="h-8 w-8 text-blue-100/50 hover:text-white"
                 onClick={(e) => {
-                  e.stopPropagation();
+                  e.preventDefault();
                 }}
               >
                 <MoreHorizontal className="h-4 w-4" />
@@ -49,7 +46,7 @@ export function SetCard({ set, onRename, onDelete, onOpen }: Props) {
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem
                 onClick={(e) => {
-                  e.stopPropagation();
+                  e.preventDefault();
                   onRename();
                 }}
               >
@@ -59,7 +56,7 @@ export function SetCard({ set, onRename, onDelete, onOpen }: Props) {
               <DropdownMenuItem
                 variant="destructive"
                 onClick={(e) => {
-                  e.stopPropagation();
+                  e.preventDefault();
                   onDelete();
                 }}
               >
@@ -69,9 +66,7 @@ export function SetCard({ set, onRename, onDelete, onOpen }: Props) {
             </DropdownMenuContent>
           </DropdownMenu>
         </CardAction>
-        <button type="button" className="text-left">
-          <CardTitle className="text-white">{set.name}</CardTitle>
-        </button>
+        <CardTitle className="text-white">{set.name}</CardTitle>
         <CardDescription className="text-blue-100/50">&mdash; cards</CardDescription>
       </CardHeader>
       <CardContent className="text-sm text-blue-100/40">

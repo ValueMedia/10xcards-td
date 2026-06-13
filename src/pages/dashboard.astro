@@ -4,9 +4,23 @@ import { listSets } from "@/lib/services/sets";
 import SetDashboard from "@/components/sets/SetDashboard";
 
 const { user, supabase } = Astro.locals;
-const { data: sets } = user && supabase ? await listSets(supabase, user.id) : { data: [] };
+let sets: import("@/types").FlashcardSet[] = [];
+let dbError: string | null = null;
+if (user && supabase) {
+  const result = await listSets(supabase, user.id);
+  sets = result.data ?? [];
+  dbError = result.error;
+}
 ---
 
 <Layout title="Dashboard">
-  <SetDashboard initialSets={JSON.stringify(sets ?? [])} client:load />
+  {
+    dbError ? (
+      <div class="bg-cosmic flex min-h-screen items-center justify-center p-4 text-white">
+        <p class="text-red-400">Failed to load sets. Please try again later.</p>
+      </div>
+    ) : (
+      <SetDashboard initialSets={JSON.stringify(sets)} client:load />
+    )
+  }
 </Layout>

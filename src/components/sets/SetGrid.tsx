@@ -5,10 +5,9 @@ interface Props {
   sets: FlashcardSet[];
   onRename: (set: FlashcardSet) => void;
   onDelete: (set: FlashcardSet) => void;
-  onOpen: (setId: string) => void;
 }
 
-export function SetGrid({ sets, onRename, onDelete, onOpen }: Props) {
+export function SetGrid({ sets, onRename, onDelete }: Props) {
   if (sets.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -46,9 +45,6 @@ export function SetGrid({ sets, onRename, onDelete, onOpen }: Props) {
           }}
           onDelete={() => {
             onDelete(set);
-          }}
-          onOpen={() => {
-            onOpen(set.id);
           }}
         />
       ))}

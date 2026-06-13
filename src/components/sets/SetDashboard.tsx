@@ -45,10 +45,6 @@ export default function SetDashboard({ initialSets }: Props) {
     [sets],
   );
 
-  const handleOpenSet = useCallback((setId: string) => {
-    window.location.href = `/sets/${setId}`;
-  }, []);
-
   return (
     <div className="bg-cosmic min-h-screen p-4 text-white">
       <div className="mx-auto max-w-5xl">
@@ -68,12 +64,13 @@ export default function SetDashboard({ initialSets }: Props) {
           </button>
         </div>
 
-        <SetGrid sets={sets} onRename={setRenameTarget} onDelete={setDeleteTarget} onOpen={handleOpenSet} />
+        <SetGrid sets={sets} onRename={setRenameTarget} onDelete={setDeleteTarget} />
       </div>
 
       <CreateSetDialog open={createOpen} onOpenChange={setCreateOpen} onCreate={handleCreate} />
 
       <RenameSetDialog
+        key={renameTarget?.id ?? "empty"}
         set={renameTarget}
         open={renameTarget !== null}
         onOpenChange={(open) => {
