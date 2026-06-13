@@ -16,6 +16,7 @@ interface Props {
 interface GenerateResponse {
   flashcards: FlashcardProposal[];
   error?: string;
+  kind?: string;
 }
 
 interface SaveResponse {
@@ -25,6 +26,22 @@ interface SaveResponse {
 
 const MIN_INPUT_LENGTH = 10;
 const MAX_INPUT_LENGTH = 8000;
+
+const FRIENDLY_ERROR_MESSAGES: Record<string, string> = {
+  timeout: "AI generation timed out. Please try again with a shorter text.",
+  apiError: "AI service temporarily unavailable. Please try again in a moment.",
+  unconfigured: "AI generation is not configured. Contact support.",
+  parseError: "AI returned an unexpected response. Try a different text.",
+  noProposals: "No flashcards could be generated. Try a longer or clearer text.",
+  rateLimit: "Too many AI requests. Please wait an hour before trying again.",
+};
+
+function friendlyErrorMessage(error: string | undefined, kind: string | undefined): string {
+  if (kind && kind in FRIENDLY_ERROR_MESSAGES) {
+    return FRIENDLY_ERROR_MESSAGES[kind];
+  }
+  return error ?? "Something went wrong";
+}
 
 export default function GenerateFlashcardsPage({ setId, setName }: Props) {
   const [text, setText] = useState("");
@@ -54,7 +71,8 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
       const result: GenerateResponse = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error ?? `Generation failed (${response.status})`);
+        const message = friendlyErrorMessage(result.error, result.kind);
+        throw new Error(message);
       }
 
       const cards = result.flashcards;
@@ -110,7 +128,7 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
       }
 
       const count = result.count;
-      toast.success(`${count} flashcards saved`);
+      toast.success(`${count} flashcard${count === 1 ? "" : "s"} saved to ${setName}`);
       window.location.href = `/sets/${setId}`;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Save failed";

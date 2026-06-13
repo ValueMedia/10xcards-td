@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { generateFlashcardProposals, parseProposals } from "./ai";
+import { generateFlashcardProposals, parseProposals, getAiErrorHttpStatus } from "./ai";
 
 function makeOpenRouterResponse(content: string) {
   return {
@@ -116,5 +116,17 @@ describe("generateFlashcardProposals", () => {
     });
     expect(data).toHaveLength(0);
     expect(error?.kind).toBe("unconfigured");
+  });
+});
+
+describe("getAiErrorHttpStatus", () => {
+  it.each([
+    [{ kind: "unconfigured", message: "x" }, 500],
+    [{ kind: "apiError", message: "x" }, 502],
+    [{ kind: "timeout", message: "x" }, 504],
+    [{ kind: "parseError", message: "x" }, 422],
+    [{ kind: "noProposals", message: "x" }, 422],
+  ] as const)("maps %s to status %i", (error, expected) => {
+    expect(getAiErrorHttpStatus(error)).toBe(expected);
   });
 });

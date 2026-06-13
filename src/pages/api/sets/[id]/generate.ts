@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import { generateFlashcardProposals, generateInputSchema, errorKind, errorMessage } from "@/lib/services/ai";
+import { generateFlashcardProposals, generateInputSchema, getAiErrorHttpStatus, errorMessage } from "@/lib/services/ai";
 import { checkRateLimit } from "@/lib/services/ai-rate-limit";
 import { env } from "cloudflare:workers";
 
@@ -78,9 +78,8 @@ export const POST: APIRoute = async (context) => {
   });
 
   if (error) {
-    const kind = errorKind(error);
-    const status = kind === "timeout" ? 504 : kind === "apiError" ? 502 : kind === "unconfigured" ? 500 : 422;
-    return new Response(JSON.stringify({ error: errorMessage(error) }), {
+    const status = getAiErrorHttpStatus(error);
+    return new Response(JSON.stringify({ error: errorMessage(error), kind: error.kind }), {
       status,
       headers: { "Content-Type": "application/json" },
     });

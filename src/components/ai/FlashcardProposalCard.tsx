@@ -32,6 +32,11 @@ export default function FlashcardProposalCard({ proposal, index, onChange, onDel
   const backEmpty = proposal.back.trim().length === 0;
   const isInvalid = frontTooLong || backTooLong || frontEmpty || backEmpty;
 
+  const handleDelete = () => {
+    onDelete(index);
+    toast.success("Proposal removed");
+  };
+
   return (
     <div
       className={cn(
@@ -45,10 +50,7 @@ export default function FlashcardProposalCard({ proposal, index, onChange, onDel
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => {
-            onDelete(index);
-            toast.success("Proposal removed");
-          }}
+          onClick={handleDelete}
           className="h-8 text-red-400 hover:bg-red-400/10 hover:text-red-300"
         >
           <TrashIcon />

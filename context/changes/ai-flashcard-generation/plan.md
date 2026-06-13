@@ -549,12 +549,12 @@ No database migration is required. The existing `flashcards` and `sets` tables a
 
 #### Automated
 
-- [ ] 4.1 Endpoint maps all AI error kinds to correct HTTP statuses
-- [ ] 4.2 Toast feedback integrated for success, error, and info states
-- [ ] 4.3 `npm run lint` and `npm run build` pass
-- [ ] 4.4 All earlier tests still pass
+- [x] 4.1 Endpoint maps all AI error kinds to correct HTTP statuses
+- [x] 4.2 Toast feedback integrated for success, error, and info states
+- [x] 4.3 `npm run lint` and `npm run build` pass
+- [x] 4.4 All earlier tests still pass
 
 #### Manual
 
-- [ ] 4.5 Timeout/rate-limit errors show graceful UI messages
+- [x] 4.5 Timeout/rate-limit errors show graceful UI messages
 - [ ] 4.6 Quality run on 3-5 texts records acceptance rate (target ≥ 60% raw, iterate toward 75%)

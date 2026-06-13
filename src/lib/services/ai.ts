@@ -49,6 +49,28 @@ const proposalsResponseSchema = z.object({
   ),
 });
 
+const HTTP_STATUS_BY_ERROR_KIND: Record<AiServiceError["kind"], number> = {
+  unconfigured: 500,
+  apiError: 502,
+  timeout: 504,
+  parseError: 422,
+  noProposals: 422,
+};
+
+export function getAiErrorHttpStatus(error: AiServiceError): number {
+  return HTTP_STATUS_BY_ERROR_KIND[error.kind];
+}
+
+export function isAiServiceError(value: unknown): value is AiServiceError {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "kind" in value &&
+    typeof value.kind === "string" &&
+    ["unconfigured", "timeout", "parseError", "apiError", "noProposals"].includes((value as { kind: string }).kind)
+  );
+}
+
 export function errorMessage(error: AiServiceError): string {
   return error.message;
 }
