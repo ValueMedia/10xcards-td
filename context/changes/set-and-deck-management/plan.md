@@ -520,13 +520,13 @@ No data migration needed. The `sets` and `flashcards` tables already exist from 
 
 #### Automated
 
-- [x] 5.1 Build passes: `npm run build`
-- [x] 5.2 Lint passes: `npm run lint`
+- [x] 5.1 Build passes: `npm run build` — 232bbd5
+- [x] 5.2 Lint passes: `npm run lint` — 232bbd5
 
 #### Manual
 
-- [x] 5.3 `/sets/[valid-id]` shows set name + flashcards
-- [x] 5.4 `/sets/[non-existent-id]` shows 404 / not found
-- [x] 5.5 Cross-user set access returns 404 / not found
-- [x] 5.6 Back link returns to dashboard
-- [x] 5.7 Empty set shows appropriate empty state
+- [x] 5.3 `/sets/[valid-id]` shows set name + flashcards — 232bbd5
+- [x] 5.4 `/sets/[non-existent-id]` shows 404 / not found — 232bbd5
+- [x] 5.5 Cross-user set access returns 404 / not found — 232bbd5
+- [x] 5.6 Back link returns to dashboard — 232bbd5
+- [x] 5.7 Empty set shows appropriate empty state — 232bbd5

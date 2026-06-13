@@ -1,7 +1,7 @@
 ---
 change_id: set-and-deck-management
 title: Set and deck management
-status: implementing
+status: implemented
 created: 2026-06-13
 updated: 2026-06-13
 archived_at: null
