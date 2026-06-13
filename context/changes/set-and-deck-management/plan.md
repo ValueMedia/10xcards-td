@@ -459,21 +459,21 @@ No data migration needed. The `sets` and `flashcards` tables already exist from 
 
 #### Automated
 
-- [x] 1.1 Dependencies install without conflicts: `npm install` exits 0
-- [x] 1.2 Build passes: `npm run build`
-- [x] 1.3 Lint passes: `npm run lint`
+- [x] 1.1 Dependencies install without conflicts: `npm install` exits 0 — adbf0ed
+- [x] 1.2 Build passes: `npm run build` — adbf0ed
+- [x] 1.3 Lint passes: `npm run lint` — adbf0ed
 
 #### Manual
 
-- [ ] 1.4 Four shadcn component files exist in `src/components/ui/`
-- [ ] 1.5 `zod` and `sonner` appear in `package.json` `dependencies`
+- [x] 1.4 Four shadcn component files exist in `src/components/ui/` — adbf0ed
+- [x] 1.5 `zod` and `sonner` appear in `package.json` `dependencies` — adbf0ed
 
 ### Phase 2: Middleware & Protected Routes
 
 #### Automated
 
-- [ ] 2.1 Build passes: `npm run build`
-- [ ] 2.2 Lint passes: `npm run lint`
+- [x] 2.1 Build passes: `npm run build`
+- [x] 2.2 Lint passes: `npm run lint`
 
 #### Manual
 
