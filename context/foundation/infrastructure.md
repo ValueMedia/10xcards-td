@@ -18,14 +18,14 @@ It is the cheapest fit for this MVP, it already matches the live repo’s Cloudf
 
 ## Platform Comparison
 
-| Platform | CLI-first | Managed / serverless | Agent-readable docs | Stable deploy API | MCP / Integration | Total | Notes |
-|---|---|---|---|---|---|---:|---|
-| Cloudflare | Pass | Pass | Pass | Pass | Pass | 10 | Cheapest option; already aligned with the current Workers-based repo. |
-| Railway | Pass | Pass | Pass | Pass | Pass | 10 | Best low-cost always-on fallback; small monthly floor, good for persistent Node services. |
-| Fly.io | Pass | Pass | Pass | Pass | Partial | 9 | Strongest always-on/process story, but pricier and rollback is more manual. |
-| Render | Pass | Pass | Pass | Pass | Pass | 10 | Viable, but higher minimum cost than Cloudflare/Railway for this MVP. |
-| Vercel | Pass | Pass | Pass | Pass | Pass | 10 | Dropped by hard filter: serverless-only for this use case and Hobby timeout is too tight for AI generation. |
-| Netlify | Pass | Pass | Pass | Pass | Pass | 10 | Dropped by hard filter: no persistent server process. |
+| Platform   | CLI-first | Managed / serverless | Agent-readable docs | Stable deploy API | MCP / Integration | Total | Notes                                                                                                       |
+| ---------- | --------- | -------------------- | ------------------- | ----------------- | ----------------- | ----: | ----------------------------------------------------------------------------------------------------------- |
+| Cloudflare | Pass      | Pass                 | Pass                | Pass              | Pass              |    10 | Cheapest option; already aligned with the current Workers-based repo.                                       |
+| Railway    | Pass      | Pass                 | Pass                | Pass              | Pass              |    10 | Best low-cost always-on fallback; small monthly floor, good for persistent Node services.                   |
+| Fly.io     | Pass      | Pass                 | Pass                | Pass              | Partial           |     9 | Strongest always-on/process story, but pricier and rollback is more manual.                                 |
+| Render     | Pass      | Pass                 | Pass                | Pass              | Pass              |    10 | Viable, but higher minimum cost than Cloudflare/Railway for this MVP.                                       |
+| Vercel     | Pass      | Pass                 | Pass                | Pass              | Pass              |    10 | Dropped by hard filter: serverless-only for this use case and Hobby timeout is too tight for AI generation. |
+| Netlify    | Pass      | Pass                 | Pass                | Pass              | Pass              |    10 | Dropped by hard filter: no persistent server process.                                                       |
 
 ### Shortlisted Platforms
 
@@ -71,13 +71,13 @@ Six months from now the team has shipped the MVP on Cloudflare because it was ch
 
 ## Risk Register
 
-| Risk | Source | Likelihood | Impact | Mitigation |
-|---|---|---|---|---|
-| Future work needs a real always-on process | Devil's advocate / pre-mortem | M | H | Keep the current app stateless; move only the long-lived piece to a process platform if that need appears. |
-| Environment-variable / compatibility-flag surprises | Unknown unknowns | M | M | Pin compatibility dates, keep secrets in Wrangler, and rely on Astro env schema instead of ad hoc `process.env` reads. |
-| Direct Postgres/TCP usage breaks on Workers | Research finding | M | H | Stay on `@supabase/supabase-js` / `@supabase/ssr`; do not introduce raw `pg` connections. |
-| Bundle size or CPU ceilings become a bottleneck | Research finding | M | M | Keep React islands small, watch build size, and avoid pulling heavy Node-only libraries into the worker bundle. |
-| Workers/Pages confusion causes deployment drift | Research finding | M | M | Document one canonical path (`npm run build` + `npx wrangler deploy`) and stick to it. |
+| Risk                                                | Source                        | Likelihood | Impact | Mitigation                                                                                                             |
+| --------------------------------------------------- | ----------------------------- | ---------- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
+| Future work needs a real always-on process          | Devil's advocate / pre-mortem | M          | H      | Keep the current app stateless; move only the long-lived piece to a process platform if that need appears.             |
+| Environment-variable / compatibility-flag surprises | Unknown unknowns              | M          | M      | Pin compatibility dates, keep secrets in Wrangler, and rely on Astro env schema instead of ad hoc `process.env` reads. |
+| Direct Postgres/TCP usage breaks on Workers         | Research finding              | M          | H      | Stay on `@supabase/supabase-js` / `@supabase/ssr`; do not introduce raw `pg` connections.                              |
+| Bundle size or CPU ceilings become a bottleneck     | Research finding              | M          | M      | Keep React islands small, watch build size, and avoid pulling heavy Node-only libraries into the worker bundle.        |
+| Workers/Pages confusion causes deployment drift     | Research finding              | M          | M      | Document one canonical path (`npm run build` + `npx wrangler deploy`) and stick to it.                                 |
 
 ## Getting Started
 
@@ -90,6 +90,7 @@ Six months from now the team has shipped the MVP on Cloudflare because it was ch
 ## Out of Scope
 
 The following were not evaluated in this research:
+
 - Docker image configuration
 - CI/CD pipeline setup
 - Production-scale architecture (multi-region, HA, DR)

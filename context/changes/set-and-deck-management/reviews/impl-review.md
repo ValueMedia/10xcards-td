@@ -1,4 +1,5 @@
 <!-- IMPL-REVIEW-REPORT -->
+
 # Implementation Review: Set & Deck Management
 
 - **Plan**: `context/changes/set-and-deck-management/plan.md`
@@ -9,14 +10,14 @@
 
 ## Verdicts
 
-| Dimension            | Verdict |
-|----------------------|---------|
-| Plan Adherence       | WARNING |
-| Scope Discipline     | PASS    |
-| Safety & Quality     | WARNING |
-| Architecture         | WARNING |
-| Pattern Consistency  | PASS    |
-| Success Criteria     | PASS    |
+| Dimension           | Verdict |
+| ------------------- | ------- |
+| Plan Adherence      | WARNING |
+| Scope Discipline    | PASS    |
+| Safety & Quality    | WARNING |
+| Architecture        | WARNING |
+| Pattern Consistency | PASS    |
+| Success Criteria    | PASS    |
 
 ## Findings
 
@@ -37,7 +38,7 @@
   - Tradeoff: Every new API route must remember to add its own auth check; more boilerplate.
   - Confidence: MEDIUM — current handlers do already check auth, so this works, but it's harder to audit.
   - Blind spot: Any future API route that forgets the check becomes publicly accessible.
-- **Decision**: FIXED via Fix A — middleware returns JSON 401 for /api/* paths
+- **Decision**: FIXED via Fix A — middleware returns JSON 401 for /api/\* paths
 
 ### F2 — `getSetWithFlashcards` uses `.single()` — returns 500 for not-found instead of 404
 

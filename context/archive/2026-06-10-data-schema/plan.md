@@ -66,6 +66,7 @@ Create `supabase/migrations/20260610000000_initial_schema.sql` with all three ta
 **Contract**: The migration must produce the following tables with the exact columns listed. Downstream slices depend on these names and types.
 
 `sets`:
+
 ```
 id             UUID         PRIMARY KEY DEFAULT gen_random_uuid()
 user_id        UUID         NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE
@@ -77,6 +78,7 @@ updated_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 ```
 
 `flashcards`:
+
 ```
 id             UUID             PRIMARY KEY DEFAULT gen_random_uuid()
 set_id         UUID             NOT NULL REFERENCES sets(id) ON DELETE CASCADE
@@ -98,6 +100,7 @@ updated_at     TIMESTAMPTZ      NOT NULL DEFAULT NOW()
 ```
 
 `reviews` (append-only):
+
 ```
 id                UUID             PRIMARY KEY DEFAULT gen_random_uuid()
 flashcard_id      UUID             NOT NULL REFERENCES flashcards(id) ON DELETE CASCADE
@@ -117,6 +120,7 @@ created_at        TIMESTAMPTZ      NOT NULL DEFAULT NOW()
 ```
 
 Indexes to create:
+
 - `sets(user_id)`
 - `sets(share_token) UNIQUE` — allows multiple NULLs, enforces uniqueness when non-null
 - `flashcards(set_id)`
@@ -128,15 +132,15 @@ Indexes to create:
 
 RLS: Enable on all three tables. Per-operation policies:
 
-| Table | Role | Operation | Predicate |
-|---|---|---|---|
-| sets | authenticated | SELECT / UPDATE / DELETE | `user_id = auth.uid()` |
-| sets | authenticated | INSERT | `user_id = auth.uid()` |
-| sets | anon | SELECT | `share_token IS NOT NULL` |
-| flashcards | authenticated | SELECT / INSERT / UPDATE / DELETE | `set_id IN (SELECT id FROM sets WHERE user_id = auth.uid())` |
-| flashcards | anon | SELECT | `set_id IN (SELECT id FROM sets WHERE share_token IS NOT NULL)` |
-| reviews | authenticated | SELECT | `user_id = auth.uid()` |
-| reviews | authenticated | INSERT | `user_id = auth.uid() AND EXISTS (SELECT 1 FROM flashcards f JOIN sets s ON s.id = f.set_id WHERE f.id = reviews.flashcard_id AND s.user_id = auth.uid())` |
+| Table      | Role          | Operation                         | Predicate                                                                                                                                                  |
+| ---------- | ------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| sets       | authenticated | SELECT / UPDATE / DELETE          | `user_id = auth.uid()`                                                                                                                                     |
+| sets       | authenticated | INSERT                            | `user_id = auth.uid()`                                                                                                                                     |
+| sets       | anon          | SELECT                            | `share_token IS NOT NULL`                                                                                                                                  |
+| flashcards | authenticated | SELECT / INSERT / UPDATE / DELETE | `set_id IN (SELECT id FROM sets WHERE user_id = auth.uid())`                                                                                               |
+| flashcards | anon          | SELECT                            | `set_id IN (SELECT id FROM sets WHERE share_token IS NOT NULL)`                                                                                            |
+| reviews    | authenticated | SELECT                            | `user_id = auth.uid()`                                                                                                                                     |
+| reviews    | authenticated | INSERT                            | `user_id = auth.uid() AND EXISTS (SELECT 1 FROM flashcards f JOIN sets s ON s.id = f.set_id WHERE f.id = reviews.flashcard_id AND s.user_id = auth.uid())` |
 
 ### Success Criteria
 
@@ -180,52 +184,52 @@ Install ts-fsrs v5 and create `src/types.ts` with TypeScript entity interfaces t
 **Contract**: The file exports the following named types and re-exports:
 
 ```typescript
-export type { State, Rating } from 'ts-fsrs'
+export type { State, Rating } from "ts-fsrs";
 
 export interface Set {
-  id: string
-  user_id: string
-  name: string
-  share_token: string | null
-  last_opened_at: string | null
-  created_at: string
-  updated_at: string
+  id: string;
+  user_id: string;
+  name: string;
+  share_token: string | null;
+  last_opened_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Flashcard {
-  id: string
-  set_id: string
-  front: string
-  back: string
-  due: string
-  stability: number
-  difficulty: number
-  elapsed_days: number
-  scheduled_days: number
-  learning_steps: number
-  reps: number
-  lapses: number
-  state: number   // State enum value
-  last_review: string | null
-  created_at: string
-  updated_at: string
+  id: string;
+  set_id: string;
+  front: string;
+  back: string;
+  due: string;
+  stability: number;
+  difficulty: number;
+  elapsed_days: number;
+  scheduled_days: number;
+  learning_steps: number;
+  reps: number;
+  lapses: number;
+  state: number; // State enum value
+  last_review: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Review {
-  id: string
-  flashcard_id: string
-  user_id: string
-  grade: number          // Rating enum value
-  state: number
-  due: string
-  stability: number
-  difficulty: number
-  elapsed_days: number
-  last_elapsed_days: number
-  scheduled_days: number
-  learning_steps: number
-  review: string
-  created_at: string
+  id: string;
+  flashcard_id: string;
+  user_id: string;
+  grade: number; // Rating enum value
+  state: number;
+  due: string;
+  stability: number;
+  difficulty: number;
+  elapsed_days: number;
+  last_elapsed_days: number;
+  scheduled_days: number;
+  learning_steps: number;
+  review: string;
+  created_at: string;
 }
 ```
 
@@ -263,6 +267,7 @@ Create `supabase/seed.sql` so that `npx supabase db reset` leaves the local dev 
 **Intent**: Insert one named set and three flashcards for the first authenticated user found in `auth.users`. The insert is wrapped in a `DO $$ ... $$` block to avoid hardcoding a user UUID that would differ across dev machines.
 
 **Contract**: The block:
+
 1. Selects `id` from `auth.users LIMIT 1` into a variable; if no user exists, exits silently
 2. Inserts one row into `sets` with `name = 'Sample: Polish Basics'`
 3. Inserts three rows into `flashcards` for that set with `front`/`back` pairs; all ts-fsrs columns use their `DEFAULT` values (State.New, due = NOW(), all numeric = 0)
@@ -340,9 +345,10 @@ This is the initial migration — no existing data to handle. For future schema 
 
 ## Review Addendum (2026-06-12, impl-review F1/F2)
 
-The "Accepted risk" in *Critical Implementation Details* understated the anon-policy exposure: RLS filters rows, not columns, so the anon role can enumerate **all** non-null `share_token` values (and `user_id`s) via PostgREST (`?share_token=not.is.null`), defeating token unguessability. Additionally, the shared-select policies are `TO anon` only, so authenticated users cannot read sets via a share link at all.
+The "Accepted risk" in _Critical Implementation Details_ understated the anon-policy exposure: RLS filters rows, not columns, so the anon role can enumerate **all** non-null `share_token` values (and `user_id`s) via PostgREST (`?share_token=not.is.null`), defeating token unguessability. Additionally, the shared-select policies are `TO anon` only, so authenticated users cannot read sets via a share link at all.
 
 **Hard constraint for S-07 (sharing slice):**
+
 - Shared reads MUST go through a `SECURITY DEFINER` RPC (e.g. `get_shared_set(token uuid)`) or a column-restricted view that never returns `share_token` / `user_id`.
 - The S-07 migration MUST drop `sets_select_shared_anon` and `flashcards_select_shared_anon`.
 - Shared reads MUST work for both anon and authenticated callers.

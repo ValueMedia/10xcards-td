@@ -16,13 +16,13 @@ Na każdej chronionej stronie (dashboard, `/sets/[id]`) widoczna sticky belka: l
 
 ## Key Decisions Made
 
-| Decision | Choice | Why | Source |
-|---|---|---|---|
-| Dane użytkownika | Email + Wyloguj | Wystarczy do identyfikacji, bez nadmiarowego UI | Plan |
-| Zasięg | Wszystkie strony przez Layout | Jedno miejsce zmiany, brak duplikacji | Plan |
-| Strona lewa | Logo + linki nawigacji | Pełna nawigacja od razu | Plan |
-| Pozycja | Sticky top | Dostępna zawsze podczas scrollowania | Plan |
-| Sign-out | Natywny `<form method="POST">` | Zero JS, reużywa istniejący endpoint | Plan |
+| Decision         | Choice                         | Why                                             | Source |
+| ---------------- | ------------------------------ | ----------------------------------------------- | ------ |
+| Dane użytkownika | Email + Wyloguj                | Wystarczy do identyfikacji, bez nadmiarowego UI | Plan   |
+| Zasięg           | Wszystkie strony przez Layout  | Jedno miejsce zmiany, brak duplikacji           | Plan   |
+| Strona lewa      | Logo + linki nawigacji         | Pełna nawigacja od razu                         | Plan   |
+| Pozycja          | Sticky top                     | Dostępna zawsze podczas scrollowania            | Plan   |
+| Sign-out         | Natywny `<form method="POST">` | Zero JS, reużywa istniejący endpoint            | Plan   |
 
 ## Scope
 
@@ -36,8 +36,8 @@ Nowy `src/components/NavBar.astro` czyta `Astro.locals.user` bezpośrednio (Astr
 
 ## Phases at a Glance
 
-| Phase | What it delivers | Key risk |
-|---|---|---|
+| Phase              | What it delivers                                    | Key risk                                    |
+| ------------------ | --------------------------------------------------- | ------------------------------------------- |
 | 1. NavBar + Layout | Działająca belka na wszystkich chronionych stronach | Sticky nav może nakładać się na treść stron |
 
 **Prerequisites:** Działający dev server (`npm run dev`) do weryfikacji wizualnej  

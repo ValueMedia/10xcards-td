@@ -33,17 +33,18 @@ Wrangler auth: OAuth token for `domino30.td+10x@gmail.com` (run `npx wrangler wh
 ## Rollback
 
 Cloudflare Workers keeps previous deployments. Roll back via:
+
 - Cloudflare dashboard → Workers → `10xcards-td` → Deployments → select a previous version → "Set as production"
 - Or redeploy an older commit: `git push origin <older-sha>:master --force`
 
 ## Environment variables
 
-| Variable | Where set | Used by |
-|---|---|---|
+| Variable       | Where set                                  | Used by                    |
+| -------------- | ------------------------------------------ | -------------------------- |
 | `SUPABASE_URL` | Cloudflare secrets + GitHub Actions secret | production build + runtime |
 | `SUPABASE_KEY` | Cloudflare secrets + GitHub Actions secret | production build + runtime |
-| `SUPABASE_URL` | `.dev.vars` | local dev (`npm run dev`) |
-| `SUPABASE_KEY` | `.dev.vars` | local dev (`npm run dev`) |
+| `SUPABASE_URL` | `.dev.vars`                                | local dev (`npm run dev`)  |
+| `SUPABASE_KEY` | `.dev.vars`                                | local dev (`npm run dev`)  |
 
 Do **not** use `NEXT_PUBLIC_*` aliases — only the names above.
 

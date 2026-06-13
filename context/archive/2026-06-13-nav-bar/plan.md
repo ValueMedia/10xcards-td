@@ -15,6 +15,7 @@ Add a sticky top navigation bar to all authenticated pages. Left side: logo ("10
 ## Desired End State
 
 Every authenticated page shows a sticky bar at the top:
+
 - **Left**: "10xCards" logo (gradient text, links to `/`) + "Dashboard" link
 - **Right**: user email (muted text) + "Sign out" button (form POST)
 
@@ -49,6 +50,7 @@ Create the NavBar Astro component and wire it into the Layout. Auth pages automa
 **Intent**: Render the sticky top navigation bar. Reads the authenticated user from `Astro.locals` — no prop needed. Conditionally returns nothing when `user` is null (safe to include in Layout unconditionally).
 
 **Contract**: No props. Reads `const { user } = Astro.locals`. Returns an empty fragment when `user` is null. When user is present, renders a `<nav>` with:
+
 - `sticky top-0 z-50` + glassmorphism classes (`border-b border-white/10 bg-black/20 backdrop-blur-xl`)
 - Left: `<a href="/">` with gradient "10xCards" logo text + `<a href="/dashboard">` Dashboard link
 - Right: `<span>` with `user.email` (muted color) + `<form method="POST" action="/api/auth/signout">` containing a submit button labeled "Sign out"

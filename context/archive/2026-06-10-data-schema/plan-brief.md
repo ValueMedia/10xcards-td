@@ -16,26 +16,28 @@ Three tables exist in local and production Supabase. Any authenticated user can 
 
 ## Key Decisions Made
 
-| Decision | Choice | Why |
-|---|---|---|
-| `share_token` in F-01 | Include as nullable UUID | Avoids a later ALTER TABLE migration; zero-cost nullable column addition now |
-| `last_opened_at` | Column on `sets` | O(1) stats read vs expensive MAX aggregation per set |
-| Deletions | Hard delete + CASCADE | Simplest; no undo requirement in MVP; clean orphan prevention |
-| Date format for ts-fsrs fields | `TIMESTAMPTZ` | Idiomatic Supabase/Postgres; readable in Studio; one `new Date()` call to adapt |
-| ts-fsrs version | v5.x (FSRS v6 algorithm) | Best algorithm quality; `learning_steps` included from the start |
-| Anon RLS | Stub in F-01 | Column and its policy co-locate; S-07 only adds UI + token generation |
-| TypeScript scope | SQL + `src/types.ts` + ts-fsrs install | Unblocks all downstream slices immediately without a dependency gap |
-| Seed data | Minimal `seed.sql` | Dev DX: local environment has real data after `db reset` |
+| Decision                       | Choice                                 | Why                                                                             |
+| ------------------------------ | -------------------------------------- | ------------------------------------------------------------------------------- |
+| `share_token` in F-01          | Include as nullable UUID               | Avoids a later ALTER TABLE migration; zero-cost nullable column addition now    |
+| `last_opened_at`               | Column on `sets`                       | O(1) stats read vs expensive MAX aggregation per set                            |
+| Deletions                      | Hard delete + CASCADE                  | Simplest; no undo requirement in MVP; clean orphan prevention                   |
+| Date format for ts-fsrs fields | `TIMESTAMPTZ`                          | Idiomatic Supabase/Postgres; readable in Studio; one `new Date()` call to adapt |
+| ts-fsrs version                | v5.x (FSRS v6 algorithm)               | Best algorithm quality; `learning_steps` included from the start                |
+| Anon RLS                       | Stub in F-01                           | Column and its policy co-locate; S-07 only adds UI + token generation           |
+| TypeScript scope               | SQL + `src/types.ts` + ts-fsrs install | Unblocks all downstream slices immediately without a dependency gap             |
+| Seed data                      | Minimal `seed.sql`                     | Dev DX: local environment has real data after `db reset`                        |
 
 ## Scope
 
 **In scope:**
+
 - `supabase/migrations/20260610000000_initial_schema.sql` — full schema, triggers, indexes, RLS
 - `src/types.ts` — `Set`, `Flashcard`, `Review` interfaces + `State`/`Rating` re-exports
 - `npm install ts-fsrs` (v5.x)
 - `supabase/seed.sql` — 1 set + 3 flashcards for first dev user
 
 **Out of scope:**
+
 - API endpoints (S-01/S-02)
 - Admin/service-role Supabase client for share-link reads (S-07)
 - Any UI components
@@ -48,11 +50,11 @@ Single migration file, no incremental patches. `flashcards` carries ts-fsrs `Car
 
 ## Phases at a Glance
 
-| Phase | What it delivers | Key risk |
-|---|---|---|
-| 1. SQL Migration | 3 tables + RLS + indexes in Supabase | ts-fsrs columns wrong → breaking migration on S-05 |
-| 2. TypeScript Layer | `src/types.ts` + ts-fsrs installed | Type drift from schema if columns change later |
-| 3. Seed Data | Sample data on `db reset` | Seed breaks if no auth user exists (handled by DO block) |
+| Phase               | What it delivers                     | Key risk                                                 |
+| ------------------- | ------------------------------------ | -------------------------------------------------------- |
+| 1. SQL Migration    | 3 tables + RLS + indexes in Supabase | ts-fsrs columns wrong → breaking migration on S-05       |
+| 2. TypeScript Layer | `src/types.ts` + ts-fsrs installed   | Type drift from schema if columns change later           |
+| 3. Seed Data        | Sample data on `db reset`            | Seed breaks if no auth user exists (handled by DO block) |
 
 **Prerequisites:** `npx supabase start` working (Docker required for local Supabase).
 **Estimated effort:** ~1 session across 3 phases.

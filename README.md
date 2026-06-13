@@ -117,9 +117,9 @@ No database tables or migrations are required — this project uses Supabase Aut
 
 If you prefer to use a hosted Supabase project, add these variables to your `.env` and `.dev.vars` files:
 
-| Variable       | Description                                                |
-| -------------- | ---------------------------------------------------------- |
-| `SUPABASE_URL` | Project URL from Supabase dashboard → Settings → API       |
+| Variable       | Description                                                       |
+| -------------- | ----------------------------------------------------------------- |
+| `SUPABASE_URL` | Project URL from Supabase dashboard → Settings → API              |
 | `SUPABASE_KEY` | `publishable` public key from Supabase dashboard → Settings → API |
 
 ```

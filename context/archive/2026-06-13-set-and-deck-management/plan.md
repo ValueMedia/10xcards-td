@@ -266,6 +266,7 @@ Rewrite `src/pages/dashboard.astro` to fetch the user's sets server-side and ren
 **Intent**: Replace the placeholder content with a server-side data fetch (Supabase query for user's sets) and a React island (`SetDashboard`) that receives the initial data as a prop. The page is fully server-rendered with the initial set list; the React island handles mutations (create/rename/delete) client-side.
 
 **Contract**: The frontmatter block:
+
 1. Reads `Astro.locals.user` (guaranteed non-null by middleware).
 2. Creates a Supabase client via `createClient(Astro.request.headers, Astro.cookies)`.
 3. Calls `listSets(client, user.id)` from the service layer.
@@ -280,6 +281,7 @@ The template renders `<Layout title="Dashboard">` wrapping the `SetDashboard` is
 **Intent**: Top-level React component for the dashboard. Receives the initial set list and user ID as props. Manages client-side state for the set list (add/remove/update on mutations). Renders the card grid, the "New Set" button, and orchestrates dialog open/close state.
 
 **Contract**: Props: `{ initialSets: FlashcardSet[]; userId: string }`. State: `sets` array (initialized from `initialSets`), dialog state (`createOpen`, `renameTarget`, `deleteTarget`). Renders:
+
 - Header with "My Sets" title and a "New Set" button (opens `CreateSetDialog`).
 - `SetGrid` component with the current `sets` array.
 - `CreateSetDialog` (controlled by `createOpen` state).
@@ -366,6 +368,7 @@ Create `src/pages/sets/[id].astro` — a page that fetches a single set with its
 **Intent**: Server-render a set detail page showing the set name and a list of its flashcards (front/back pairs). Read-only — no edit/delete controls (those belong to S-03). Includes a back link to the dashboard.
 
 **Contract**: The frontmatter block:
+
 1. Reads `Astro.params.id` for the set UUID.
 2. Reads `Astro.locals.user` (guaranteed non-null by middleware).
 3. Creates a Supabase client.
@@ -374,6 +377,7 @@ Create `src/pages/sets/[id].astro` — a page that fetches a single set with its
 6. Passes `set` and `flashcards` to the template.
 
 The template renders `<Layout title={set.name}>` with:
+
 - Back link to `/dashboard` (styled as a text link with arrow icon).
 - Set name as a heading.
 - Flashcard count summary.

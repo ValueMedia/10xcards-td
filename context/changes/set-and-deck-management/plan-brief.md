@@ -16,21 +16,22 @@ Zalogowany użytkownik widzi dashboard z responsywną siatką kart zestawów (na
 
 ## Key Decisions Made
 
-| Decision | Choice | Why (1 sentence) | Source |
-|---|---|---|---|
-| API structure | RESTful `/api/sets/` + `/api/sets/[id]` | Przewidywalny, pasuje do Astro file-based routingu. | Plan |
-| Dashboard UX | Siatka kart (grid) | Wizualnie atrakcyjne, pasuje do cosmic/glassmorphism theme. | Plan |
-| Input validation | Zod (server + client) | Spójna walidacja po obu stronach, standard w ekosystemie. | Plan |
-| Notifications | Sonner toast | Nowoczesny, nieinwazyjny UX, React 19-kompatybilny. | Plan |
-| Data access layer | Service (`src/lib/services/sets.ts`) | Testowalność, reuse, czystsze API routes. | Plan |
-| Flashcard browsing | Osobna strona `/sets/[id]` | Czysta separacja, gotowa pod S-03 (flashcard-crud). | Plan |
-| Set deletion UX | Dialog potwierdzenia | Chroni przed przypadkowym usunięciem + kaskadą fiszek. | Plan |
-| shadcn components | Dialog + Input + Card + DropdownMenu | Pełny zestaw pod S-02 i przyszłe slice'y. | Plan |
-| Middleware fix | Boundary-aware `startsWith` | `startsWith("/sets")` łapie też `/settings` — latent bug. | Plan |
+| Decision           | Choice                                  | Why (1 sentence)                                            | Source |
+| ------------------ | --------------------------------------- | ----------------------------------------------------------- | ------ |
+| API structure      | RESTful `/api/sets/` + `/api/sets/[id]` | Przewidywalny, pasuje do Astro file-based routingu.         | Plan   |
+| Dashboard UX       | Siatka kart (grid)                      | Wizualnie atrakcyjne, pasuje do cosmic/glassmorphism theme. | Plan   |
+| Input validation   | Zod (server + client)                   | Spójna walidacja po obu stronach, standard w ekosystemie.   | Plan   |
+| Notifications      | Sonner toast                            | Nowoczesny, nieinwazyjny UX, React 19-kompatybilny.         | Plan   |
+| Data access layer  | Service (`src/lib/services/sets.ts`)    | Testowalność, reuse, czystsze API routes.                   | Plan   |
+| Flashcard browsing | Osobna strona `/sets/[id]`              | Czysta separacja, gotowa pod S-03 (flashcard-crud).         | Plan   |
+| Set deletion UX    | Dialog potwierdzenia                    | Chroni przed przypadkowym usunięciem + kaskadą fiszek.      | Plan   |
+| shadcn components  | Dialog + Input + Card + DropdownMenu    | Pełny zestaw pod S-02 i przyszłe slice'y.                   | Plan   |
+| Middleware fix     | Boundary-aware `startsWith`             | `startsWith("/sets")` łapie też `/settings` — latent bug.   | Plan   |
 
 ## Scope
 
 **In scope:**
+
 - Dashboard z siatką kart zestawów
 - Tworzenie zestawu przez dialog
 - Zmiana nazwy zestawu przez dialog
@@ -42,6 +43,7 @@ Zalogowany użytkownik widzi dashboard z responsywną siatką kart zestawów (na
 - Middleware ochrona `/sets` i `/api/sets`
 
 **Out of scope:**
+
 - CRUD fiszek (S-03)
 - Generowanie AI (S-01)
 - Import CSV (S-04)
@@ -70,13 +72,13 @@ Astro SSR (sets/[id].astro)
 
 ## Phases at a Glance
 
-| Phase | What it delivers | Key risk |
-|---|---|---|
-| 1. Dependencies & shadcn | zod, sonner, Dialog, Input, Card, DropdownMenu | Nic — same install commands. |
-| 2. Middleware | Protected `/sets` + `/api/sets`, fixed `startsWith` bug | Regresja na `/dashboard` — testować. |
-| 3. Service & API | `sets.ts` service + 3 endpointy REST + Zod walidacja | Pierwsze `supabase.from()` — obsługa null clienta. |
-| 4. Dashboard UI | Siatka kart, dialogi create/rename/delete, sonner toasty | Najwięcej komponentów — integracja fetch + state. |
-| 5. Set detail page | `/sets/[id]` z listą fiszek (read-only) | Pierwszy dynamic route — testować 404/403. |
+| Phase                    | What it delivers                                         | Key risk                                           |
+| ------------------------ | -------------------------------------------------------- | -------------------------------------------------- |
+| 1. Dependencies & shadcn | zod, sonner, Dialog, Input, Card, DropdownMenu           | Nic — same install commands.                       |
+| 2. Middleware            | Protected `/sets` + `/api/sets`, fixed `startsWith` bug  | Regresja na `/dashboard` — testować.               |
+| 3. Service & API         | `sets.ts` service + 3 endpointy REST + Zod walidacja     | Pierwsze `supabase.from()` — obsługa null clienta. |
+| 4. Dashboard UI          | Siatka kart, dialogi create/rename/delete, sonner toasty | Najwięcej komponentów — integracja fetch + state.  |
+| 5. Set detail page       | `/sets/[id]` z listą fiszek (read-only)                  | Pierwszy dynamic route — testować 404/403.         |
 
 **Prerequisites:** F-01 (schema + RLS) — done. Local Supabase running.
 **Estimated effort:** ~3-4 sesje implementacyjne (5 faz, każda ~30-60 min).

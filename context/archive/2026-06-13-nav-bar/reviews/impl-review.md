@@ -1,4 +1,5 @@
 <!-- IMPL-REVIEW-REPORT -->
+
 # Implementation Review: Nav Bar
 
 - **Plan**: `context/changes/nav-bar/plan.md`
@@ -9,14 +10,14 @@
 
 ## Verdicts
 
-| Dimension            | Verdict |
-|----------------------|---------|
-| Plan Adherence       | PASS    |
-| Scope Discipline     | PASS    |
-| Safety & Quality     | WARNING |
-| Architecture         | WARNING |
-| Pattern Consistency  | PASS    |
-| Success Criteria     | PASS    |
+| Dimension           | Verdict |
+| ------------------- | ------- |
+| Plan Adherence      | PASS    |
+| Scope Discipline    | PASS    |
+| Safety & Quality    | WARNING |
+| Architecture        | WARNING |
+| Pattern Consistency | PASS    |
+| Success Criteria    | PASS    |
 
 ## Findings
 

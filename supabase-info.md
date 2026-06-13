@@ -44,6 +44,7 @@ Kazdy projekt to dedykowana instancja PostgreSQL - pelna moc relacyjnej bazy z 4
 ### 2. Automatyczne API (REST + GraphQL + Realtime)
 
 Z kazdej tabeli Supabase auto-generuje:
+
 - **REST API** (via PostgREST) - natychmiastowy CRUD bez pisania endpointow
 - **GraphQL API** (via pg_graphql) - auto-detekcja relacji i schematu
 - **Realtime API** (WebSocket) - subskrypcja zmian w bazie w czasie rzeczywistym
@@ -75,6 +76,7 @@ Z kazdej tabeli Supabase auto-generuje:
 ### 6. Realtime
 
 Trzy mechanizmy real-time:
+
 - **Database Changes** - nasluchiwanie INSERT/UPDATE/DELETE na tabelach
 - **Presence** - stan online uzytkownikow (kto jest aktywny)
 - **Broadcast** - dowolne wiadomosci miedzy klientami (chat, multiplayer)
@@ -89,6 +91,7 @@ Trzy mechanizmy real-time:
 ### 8. Supabase Studio
 
 Graficzny interfejs do zarzadzania projektem:
+
 - Table Editor (jak arkusz kalkulacyjny)
 - SQL Editor z podpowiedziami
 - Wizualizacja schematow i relacji
@@ -112,16 +115,16 @@ Graficzny interfejs do zarzadzania projektem:
 
 ## Glowni konkurenci
 
-| Platforma | Roznice wzgledem Supabase |
-|-----------|--------------------------|
-| **Firebase** | Wlasnosciowy (Google), NoSQL (Firestore), zamkniety. Supabase: open source, SQL, portowalny |
-| **PlanetScale** | Tylko baza (MySQL). Brak auth, storage, realtime, functions w jednym pakiecie |
-| **Neon** | Serverless PostgreSQL, ale bez auth/storage/realtime. Supabase to kompletna platforma |
-| **Appwrite** | Open source BaaS, ale oparty na MariaDB. Supabase ma silniejszy PostgreSQL i wieksza spolecznosc |
-| **AWS Amplify** | Kompletny stos AWS, ale zlozony, vendor lock-in, krzywa uczenia |
-| **Convex** | Reaktywna baza real-time, ale zamknieta i wlasnosciowy model danych |
-| **MongoDB Atlas** | Document DB (NoSQL), silny ekosystem, ale brak natywnego SQL i RLS |
-| **Hasura** | Auto-generowany GraphQL z Postgres, ale wezszy zakres (brak auth/storage/functions) |
+| Platforma         | Roznice wzgledem Supabase                                                                        |
+| ----------------- | ------------------------------------------------------------------------------------------------ |
+| **Firebase**      | Wlasnosciowy (Google), NoSQL (Firestore), zamkniety. Supabase: open source, SQL, portowalny      |
+| **PlanetScale**   | Tylko baza (MySQL). Brak auth, storage, realtime, functions w jednym pakiecie                    |
+| **Neon**          | Serverless PostgreSQL, ale bez auth/storage/realtime. Supabase to kompletna platforma            |
+| **Appwrite**      | Open source BaaS, ale oparty na MariaDB. Supabase ma silniejszy PostgreSQL i wieksza spolecznosc |
+| **AWS Amplify**   | Kompletny stos AWS, ale zlozony, vendor lock-in, krzywa uczenia                                  |
+| **Convex**        | Reaktywna baza real-time, ale zamknieta i wlasnosciowy model danych                              |
+| **MongoDB Atlas** | Document DB (NoSQL), silny ekosystem, ale brak natywnego SQL i RLS                               |
+| **Hasura**        | Auto-generowany GraphQL z Postgres, ale wezszy zakres (brak auth/storage/functions)              |
 
 ## Opinie
 
@@ -155,19 +158,16 @@ Graficzny interfejs do zarzadzania projektem:
 ### 1. Polaczenie z baza danych (JavaScript)
 
 ```javascript
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  'https://your-project.supabase.co',
-  'your-anon-key'
-);
+const supabase = createClient("https://your-project.supabase.co", "your-anon-key");
 
 // Pobranie danych
 const { data, error } = await supabase
-  .from('products')
-  .select('id, name, price, category(name)')
-  .eq('active', true)
-  .order('created_at', { ascending: false })
+  .from("products")
+  .select("id, name, price, category(name)")
+  .eq("active", true)
+  .order("created_at", { ascending: false })
   .limit(10);
 ```
 
@@ -176,18 +176,20 @@ const { data, error } = await supabase
 ```javascript
 // Rejestracja
 const { data, error } = await supabase.auth.signUp({
-  email: 'user@example.com',
-  password: 'secure-password',
+  email: "user@example.com",
+  password: "secure-password",
 });
 
 // Logowanie social
 const { data, error } = await supabase.auth.signInWithOAuth({
-  provider: 'google',
-  options: { redirectTo: 'https://myapp.com/callback' }
+  provider: "google",
+  options: { redirectTo: "https://myapp.com/callback" },
 });
 
 // Pobranie sesji
-const { data: { session } } = await supabase.auth.getSession();
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 ```
 
 ### 3. Row Level Security (RLS)
@@ -210,25 +212,22 @@ CREATE POLICY "Users edit own posts" ON posts
 ```javascript
 // Subskrypcja zmian w tabeli
 const channel = supabase
-  .channel('posts-changes')
-  .on('postgres_changes',
-    { event: 'INSERT', schema: 'public', table: 'posts' },
-    (payload) => {
-      console.log('Nowy post:', payload.new);
-    }
-  )
+  .channel("posts-changes")
+  .on("postgres_changes", { event: "INSERT", schema: "public", table: "posts" }, (payload) => {
+    console.log("Nowy post:", payload.new);
+  })
   .subscribe();
 
 // Presence (kto jest online)
-const presenceChannel = supabase.channel('room-1');
+const presenceChannel = supabase.channel("room-1");
 presenceChannel
-  .on('presence', { event: 'sync' }, () => {
+  .on("presence", { event: "sync" }, () => {
     const state = presenceChannel.presenceState();
-    console.log('Online:', Object.keys(state));
+    console.log("Online:", Object.keys(state));
   })
   .subscribe(async (status) => {
-    if (status === 'SUBSCRIBED') {
-      await presenceChannel.track({ user: 'user-123', online_at: new Date() });
+    if (status === "SUBSCRIBED") {
+      await presenceChannel.track({ user: "user-123", online_at: new Date() });
     }
   });
 ```
@@ -237,27 +236,20 @@ presenceChannel
 
 ```typescript
 // supabase/functions/process-order/index.ts
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 serve(async (req) => {
-  const supabase = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-  );
+  const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   const { orderId } = await req.json();
 
-  const { data: order } = await supabase
-    .from('orders')
-    .select('*, items(*)')
-    .eq('id', orderId)
-    .single();
+  const { data: order } = await supabase.from("orders").select("*, items(*)").eq("id", orderId).single();
 
   // Przetwarzanie zamowienia...
 
   return new Response(JSON.stringify({ success: true }), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 });
 ```
@@ -266,29 +258,23 @@ serve(async (req) => {
 
 ```typescript
 // src/lib/supabase.ts
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-export const supabase = createClient(
-  import.meta.env.SUPABASE_URL,
-  import.meta.env.SUPABASE_KEY
-);
+export const supabase = createClient(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY);
 
 // src/pages/api/cards.ts (Astro API route)
-import type { APIRoute } from 'astro';
-import { supabase } from '../../lib/supabase';
+import type { APIRoute } from "astro";
+import { supabase } from "../../lib/supabase";
 
 export const GET: APIRoute = async ({ request }) => {
-  const { data, error } = await supabase
-    .from('flashcards')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const { data, error } = await supabase.from("flashcards").select("*").order("created_at", { ascending: false });
 
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 
   return new Response(JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 };
 ```
@@ -319,4 +305,4 @@ $$;
 
 ---
 
-*Artykul zaktualizowany: Czerwiec 2025*
+_Artykul zaktualizowany: Czerwiec 2025_

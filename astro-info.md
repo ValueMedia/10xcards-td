@@ -79,16 +79,16 @@ Oficjalny szablon do dokumentacji technicznej - wielojezycznosc, wyszukiwanie, n
 
 ## Glowni konkurenci
 
-| Framework | Roznice wzgledem Astro |
-|-----------|----------------------|
-| **Next.js** | Pelny framework React, ciezszy, lepszy dla SPA/aplikacji. Astro jest szybsze dla stron content-driven |
-| **Nuxt** | Odpowiednik Next.js dla Vue. Wieksze zuzycie JS, ale lepszy ekosystem Vue |
-| **Gatsby** | Kiedys lider stron statycznych, teraz mniej aktywny. Astro jest szybsze i prostsze |
-| **Hugo** | Ekstremalnie szybki build (Go), ale brak komponentow JS i ograniczona dynamika |
-| **Eleventy (11ty)** | Podobna filozofia (HTML-first), ale brak natywnej obslugi komponentow React/Vue |
-| **SvelteKit** | Lepszy dla pelnych aplikacji Svelte, ale Astro jest bardziej elastyczne (multi-framework) |
-| **Remix** | Skupiony na SSR i formularzach, ciezszy. Astro wygrywa na statycznych stronach |
-| **Qwik** | Innowacyjne resumability, ale mniejszy ekosystem i bardziej eksperymentalny |
+| Framework           | Roznice wzgledem Astro                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Next.js**         | Pelny framework React, ciezszy, lepszy dla SPA/aplikacji. Astro jest szybsze dla stron content-driven |
+| **Nuxt**            | Odpowiednik Next.js dla Vue. Wieksze zuzycie JS, ale lepszy ekosystem Vue                             |
+| **Gatsby**          | Kiedys lider stron statycznych, teraz mniej aktywny. Astro jest szybsze i prostsze                    |
+| **Hugo**            | Ekstremalnie szybki build (Go), ale brak komponentow JS i ograniczona dynamika                        |
+| **Eleventy (11ty)** | Podobna filozofia (HTML-first), ale brak natywnej obslugi komponentow React/Vue                       |
+| **SvelteKit**       | Lepszy dla pelnych aplikacji Svelte, ale Astro jest bardziej elastyczne (multi-framework)             |
+| **Remix**           | Skupiony na SSR i formularzach, ciezszy. Astro wygrywa na statycznych stronach                        |
+| **Qwik**            | Innowacyjne resumability, ale mniejszy ekosystem i bardziej eksperymentalny                           |
 
 ## Opinie
 
@@ -121,12 +121,12 @@ Oficjalny szablon do dokumentacji technicznej - wielojezycznosc, wyszukiwanie, n
 ```astro
 ---
 // src/pages/blog/[slug].astro
-import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map(post => ({
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
   }));
@@ -135,6 +135,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await post.render();
 ---
+
 <Layout title={post.data.title}>
   <article>
     <h1>{post.data.title}</h1>
@@ -149,10 +150,11 @@ const { Content } = await post.render();
 ```astro
 ---
 // src/pages/product/[id].astro
-import Product from '../../components/Product.astro';
-import Cart from '../../components/Cart.astro';
-import Reviews from '../../components/Reviews.astro';
+import Product from "../../components/Product.astro";
+import Cart from "../../components/Cart.astro";
+import Reviews from "../../components/Reviews.astro";
 ---
+
 <Layout>
   <!-- Statyczne, cachowane -->
   <Product id={Astro.params.id} />
@@ -172,19 +174,19 @@ import Reviews from '../../components/Reviews.astro';
 
 ```javascript
 // astro.config.mjs
-import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
+import { defineConfig } from "astro/config";
+import starlight from "@astrojs/starlight";
 
 export default defineConfig({
   integrations: [
     starlight({
-      title: 'Moja Dokumentacja',
-      social: { github: 'https://github.com/my-project' },
+      title: "Moja Dokumentacja",
+      social: { github: "https://github.com/my-project" },
       sidebar: [
-        { label: 'Wprowadzenie', items: ['guides/getting-started'] },
-        { label: 'API', autogenerate: { directory: 'api' } },
+        { label: "Wprowadzenie", items: ["guides/getting-started"] },
+        { label: "API", autogenerate: { directory: "api" } },
       ],
-      locales: { root: { label: 'Polski', lang: 'pl' } },
+      locales: { root: { label: "Polski", lang: "pl" } },
     }),
   ],
 });
@@ -195,10 +197,11 @@ export default defineConfig({
 ```astro
 ---
 // src/pages/index.astro
-import ReactHero from '../components/Hero.tsx';
-import SvelteTestimonials from '../components/Testimonials.svelte';
-import VueContactForm from '../components/ContactForm.vue';
+import ReactHero from "../components/Hero.tsx";
+import SvelteTestimonials from "../components/Testimonials.svelte";
+import VueContactForm from "../components/ContactForm.vue";
 ---
+
 <Layout>
   <!-- React - hydruje sie od razu -->
   <ReactHero client:load />
@@ -214,6 +217,7 @@ import VueContactForm from '../components/ContactForm.vue';
 ### 5. Projekt 10xcards (ten projekt)
 
 Ten projekt wykorzystuje Astro 6.x z:
+
 - **React** jako framework UI komponentow
 - **Supabase** jako backend (baza danych, autoryzacja)
 - **Tailwind CSS 4** do stylowania
@@ -222,4 +226,4 @@ Ten projekt wykorzystuje Astro 6.x z:
 
 ---
 
-*Artykul zaktualizowany: Czerwiec 2025*
+_Artykul zaktualizowany: Czerwiec 2025_
