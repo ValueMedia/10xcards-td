@@ -520,9 +520,9 @@ No database migration is required. The existing `flashcards` and `sets` tables a
 
 #### Automated
 
-- [ ] 2.1 `createFlashcardsBulk` added to `src/lib/services/flashcards.ts`
-- [ ] 2.2 `src/pages/api/sets/[id]/flashcards/batch.ts` created and protected
-- [ ] 2.3 `npm run lint` and `npm run build` pass
+- [x] 2.1 `createFlashcardsBulk` added to `src/lib/services/flashcards.ts`
+- [x] 2.2 `src/pages/api/sets/[id]/flashcards/batch.ts` created and protected
+- [x] 2.3 `npm run lint` and `npm run build` pass
 
 #### Manual
 

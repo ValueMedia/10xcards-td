@@ -44,6 +44,31 @@ export async function createFlashcard(
   return { data: result.data as Flashcard, error: null };
 }
 
+export async function createFlashcardsBulk(
+  client: SupabaseClient | null,
+  userId: string,
+  setId: string,
+  contents: FlashcardContent[],
+): Promise<{ data: Flashcard[] | null; error: ServiceError | null }> {
+  if (!client) return { data: null, error: { kind: "clientUnavailable", message: "Supabase client not available" } };
+
+  const setResult = await client.from("sets").select("id").eq("id", setId).eq("user_id", userId).maybeSingle();
+  if (setResult.error) return { data: null, error: { kind: "dbError", message: setResult.error.message } };
+  if (!setResult.data) return { data: null, error: { kind: "notFound", message: "Set not found" } };
+
+  if (contents.length === 0) {
+    return { data: [], error: null };
+  }
+
+  const result = await client
+    .from("flashcards")
+    .insert(contents.map((content) => ({ set_id: setId, front: content.front, back: content.back })))
+    .select();
+
+  if (result.error) return { data: null, error: { kind: "dbError", message: result.error.message } };
+  return { data: result.data as Flashcard[], error: null };
+}
+
 export async function updateFlashcard(
   client: SupabaseClient | null,
   userId: string,
