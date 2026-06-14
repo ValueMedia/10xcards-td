@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-const HOURLY_LIMIT = 10;
+const HOURLY_LIMIT = process.env.AI_RATE_LIMIT_HOURLY ? parseInt(process.env.AI_RATE_LIMIT_HOURLY, 10) : 10;
 
 export function rateLimitKey(userId: string, now = new Date()): string {
   const hour = now.toISOString().slice(0, 13); // YYYY-MM-DDTHH
@@ -13,12 +13,13 @@ export async function checkRateLimit(
   now = new Date(),
 ): Promise<{ allowed: boolean; limit: number; remaining: number }> {
   if (!kv) {
-    return { allowed: true, limit: HOURLY_LIMIT, remaining: HOURLY_LIMIT };
+    return { allowed: false, limit: HOURLY_LIMIT, remaining: 0 };
   }
 
   const key = rateLimitKey(userId, now);
   const current = await kv.get(key);
-  const count = current ? parseInt(current, 10) : 0;
+  const parsed = current ? Number.parseInt(current, 10) : 0;
+  const count = Number.isNaN(parsed) ? 0 : parsed;
 
   if (count >= HOURLY_LIMIT) {
     return { allowed: false, limit: HOURLY_LIMIT, remaining: 0 };

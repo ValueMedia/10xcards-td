@@ -51,9 +51,7 @@
   - Tradeoff: Minor refactor of the handler flow; need to make sure validation errors are returned before rate-limit so users don't lose quota on typos.
   - Confidence: HIGH — straightforward reordering, tests already cover the existing success/error paths.
   - Blind spot: Need to verify that the `Retry-After` header behavior remains unchanged.
-- **Decision**: PENDING
-
-### F3 — Rate-limit helper allows missing KV and has non-atomic increment
+- **Decision**: FIXED — reordered handler: authz → parse/validate body → rate-limit → AI call.
 
 - **Severity**: ❌ CRITICAL
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
@@ -70,9 +68,7 @@
   - Tradeoff: Still leaves production misconfig path open; atomic counters in KV are not a native primitive (needs atomic get-put or Durable Objects).
   - Confidence: MEDIUM — more complex, doesn't fully fix the silent-fail risk.
   - Blind spot: KV atomic semantics across edge locations.
-- **Decision**: PENDING
-
-### F4 — Batch endpoint accepts unbounded array size
+- **Decision**: FIXED — missing KV now returns `allowed: false`; added NaN-safe parse and configurable hourly limit via `AI_RATE_LIMIT_HOURLY`.
 
 - **Severity**: ❌ CRITICAL
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
@@ -84,9 +80,7 @@
   - Tradeoff: Need to choose a max; 50 covers current AI max (20) plus manual reuse margin.
   - Confidence: HIGH — one-line schema change plus service guard.
   - Blind spot: UI currently passes at most ~20, so no user impact.
-- **Decision**: PENDING
-
-### F5 — `generate.ts` imports `cloudflare:workers` env at module scope
+- **Decision**: FIXED — added `.max(50)` to batch schema and `validationError` guard in `createFlashcardsBulk`.
 
 - **Severity**: ⚠️ WARNING
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
@@ -98,9 +92,7 @@
   - Tradeoff: Slightly more code in the handler.
   - Confidence: HIGH — this is the documented pattern in `astro.config.mjs` and `src/env.d.ts` `App.Runtime`.
   - Blind spot: Need to verify `context.locals.runtime` is populated in both dev and production.
-- **Decision**: PENDING
-
-### F6 — AI service reads API key from `process.env`
+- **Decision**: FIXED — `ai.ts` now receives `apiKey`/`model`/`appUrl` as parameters; route uses `getSecret` from `astro:env/server` and `context.locals.runtime.env.AI_RATE_LIMIT`. Tests updated.
 
 - **Severity**: ⚠️ WARNING
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
@@ -117,9 +109,7 @@
   - Tradeoff: Hacky; mixes runtime bindings with Node globals.
   - Confidence: LOW — not a clean pattern.
   - Blind spot: None.
-- **Decision**: PENDING
-
-### F7 — `/generate` page route not protected by middleware
+- **Decision**: FIXED — see combined fix with F5 above.
 
 - **Severity**: ⚠️ WARNING
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
@@ -131,9 +121,7 @@
   - Tradeoff: Slightly changes redirect target for unauthenticated users (now signin, not dashboard).
   - Confidence: HIGH — follows existing middleware pattern.
   - Blind spot: None.
-- **Decision**: PENDING
-
-### F8 — `SetDetailPage.tsx` swallows JSON parse errors with unsafe cast
+- **Decision**: FIXED — added `/generate` to `PROTECTED_PAGE_ROUTES`.
 
 - **Severity**: ⚠️ WARNING
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
@@ -145,9 +133,7 @@
   - Tradeoff: Adds a small error branch in the component.
   - Confidence: HIGH — the parent Astro page already passes serialized data, so this is a defense-in-depth fix.
   - Blind spot: Need to ensure the fallback matches existing styling.
-- **Decision**: PENDING
-
-### F9 — `FlashcardProposalCard` textarea maxLength exceeds server limit
+- **Decision**: FIXED — added parse validation and early fallback UI; removed unsafe cast.
 
 - **Severity**: ⚠️ WARNING
 - **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
@@ -159,9 +145,7 @@
   - Tradeoff: None.
   - Confidence: HIGH.
   - Blind spot: None.
-- **Decision**: PENDING
-
-### F10 — `generate.ts` response schema loses default count
+- **Decision**: FIXED — set maxLength to MAX_SIDE_LENGTH on all proposal textareas.
 
 - **Severity**: 📝 OBSERVATION
 - **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
@@ -173,9 +157,45 @@
   - Tradeoff: None.
   - Confidence: HIGH.
   - Blind spot: None.
-- **Decision**: PENDING
+### F10 — `generate.ts` response schema loses default count
+
+- **Severity**: 📝 OBSERVATION
+- **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
+- **Dimension**: Pattern Consistency
+- **Location**: src/pages/api/sets/[id]/generate.ts:9-11
+- **Detail**: The route re-declares `count` as optional without preserving the `.default(5)` from `generateInputSchema`. The service still applies its own default, so behavior is correct but duplicated/confusing.
+- **Fix**: Reuse `generateInputSchema` directly for body validation, or add `.default(5)` to the route schema.
+- **Decision**: SKIPPED
 
 ### F11 — `GenerateFlashcardsPage` key is unstable when front text changes
+
+- **Severity**: 📝 OBSERVATION
+- **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
+- **Dimension**: Pattern Consistency / Reliability
+- **Location**: src/components/ai/GenerateFlashcardsPage.tsx:261
+- **Detail**: `key={`${proposal.front}-${index}`}` changes when the user edits the front, causing React to remount the card and reset local state (e.g., mobile flip state).
+- **Fix**: Use `key={`proposal-${index}`}` or assign a client-side UUID on generation. The `no-array-index-key` warning should then be suppressed with an inline eslint-disable and a short comment.
+- **Decision**: FIXED — changed key to `proposal-${index}` with `@eslint-react/no-array-index-key` disable comment and justification.
+
+### F12 — Tests mutate global `process.env` by reassignment
+
+- **Severity**: 📝 OBSERVATION
+- **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
+- **Dimension**: Pattern Consistency
+- **Location**: src/lib/services/ai.test.ts:45-56
+- **Detail**: The test file saves/restores `process.env` by reassignment, which can leak across test files in Node. Vitest provides `vi.stubEnv` / `vi.unstubAllEnvs` for safer isolation.
+- **Fix**: Replace `process.env = originalEnv` with `vi.stubEnv` and `vi.unstubAllEnvs`.
+- **Decision**: SKIPPED
+
+### F13 — `batch.ts` error mapping uses inline kind check
+
+- **Severity**: 📝 OBSERVATION
+- **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
+- **Dimension**: Pattern Consistency
+- **Location**: src/pages/api/sets/[id]/flashcards/batch.ts:52-58
+- **Detail**: Error status mapping uses `error.kind === "notFound" ? 404 : 500` instead of the existing helper `isNotFound(error)` from `src/lib/services/flashcards.ts`.
+- **Fix**: Use `isNotFound(error)` and `errorMessage(error)` for consistency with other routes.
+- **Decision**: SKIPPED
 
 - **Severity**: 📝 OBSERVATION
 - **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped

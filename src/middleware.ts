@@ -1,7 +1,7 @@
 import { defineMiddleware } from "astro:middleware";
 import { createClient } from "@/lib/supabase";
 
-const PROTECTED_PAGE_ROUTES = ["/dashboard", "/sets"];
+const PROTECTED_PAGE_ROUTES = ["/dashboard", "/sets", "/generate"];
 const PROTECTED_API_ROUTES = ["/api/sets", "/api/flashcards"];
 
 function isProtected(pathname: string, routes: string[]): boolean {

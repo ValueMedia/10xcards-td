@@ -79,7 +79,7 @@ export default function FlashcardProposalCard({ proposal, index, onChange, onDel
             }}
             rows={3}
             className="bg-white/5 text-white"
-            maxLength={MAX_SIDE_LENGTH + 50}
+            maxLength={MAX_SIDE_LENGTH}
           />
           <p className={cn("mt-1 text-right text-xs", frontTooLong ? "text-red-400" : "text-blue-100/40")}>
             {proposal.front.length}/{MAX_SIDE_LENGTH}
@@ -94,7 +94,7 @@ export default function FlashcardProposalCard({ proposal, index, onChange, onDel
             }}
             rows={3}
             className="bg-white/5 text-white"
-            maxLength={MAX_SIDE_LENGTH + 50}
+            maxLength={MAX_SIDE_LENGTH}
           />
           <p className={cn("mt-1 text-right text-xs", backTooLong ? "text-red-400" : "text-blue-100/40")}>
             {proposal.back.length}/{MAX_SIDE_LENGTH}
@@ -112,7 +112,7 @@ export default function FlashcardProposalCard({ proposal, index, onChange, onDel
             }}
             rows={3}
             className="bg-white/5 text-white"
-            maxLength={MAX_SIDE_LENGTH + 50}
+            maxLength={MAX_SIDE_LENGTH}
           />
           <p className={cn("mt-1 text-right text-xs", frontTooLong ? "text-red-400" : "text-blue-100/40")}>
             {proposal.front.length}/{MAX_SIDE_LENGTH}
@@ -127,7 +127,7 @@ export default function FlashcardProposalCard({ proposal, index, onChange, onDel
             }}
             rows={3}
             className="bg-white/5 text-white"
-            maxLength={MAX_SIDE_LENGTH + 50}
+            maxLength={MAX_SIDE_LENGTH}
           />
           <p className={cn("mt-1 text-right text-xs", backTooLong ? "text-red-400" : "text-blue-100/40")}>
             {proposal.back.length}/{MAX_SIDE_LENGTH}

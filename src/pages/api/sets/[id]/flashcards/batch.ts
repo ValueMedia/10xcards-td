@@ -5,7 +5,7 @@ import { createFlashcardsBulk, flashcardContentSchema } from "@/lib/services/fla
 export const prerender = false;
 
 const batchBodySchema = z.object({
-  flashcards: z.array(flashcardContentSchema).min(1, "At least one flashcard is required"),
+  flashcards: z.array(flashcardContentSchema).min(1, "At least one flashcard is required").max(50, "No more than 50 flashcards per batch"),
 });
 
 export const POST: APIRoute = async (context) => {
@@ -50,7 +50,7 @@ export const POST: APIRoute = async (context) => {
   const { data, error } = await createFlashcardsBulk(supabase, user.id, id, parsed.data.flashcards);
 
   if (error) {
-    const status = error.kind === "notFound" ? 404 : 500;
+    const status = error.kind === "notFound" ? 404 : error.kind === "validationError" ? 400 : 500;
     return new Response(JSON.stringify({ error: error.message }), {
       status,
       headers: { "Content-Type": "application/json" },

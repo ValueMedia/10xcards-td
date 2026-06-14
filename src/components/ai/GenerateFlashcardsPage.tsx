@@ -258,7 +258,8 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
             <div className="space-y-4">
               {proposals.map((proposal, index) => (
                 <FlashcardProposalCard
-                  key={`${proposal.front}-${index}`}
+                  // eslint-disable-next-line @eslint-react/no-array-index-key -- proposals have no stable id; index is stable enough for this controlled list
+                  key={`proposal-${index}`}
                   index={index}
                   proposal={proposal}
                   onChange={handleProposalChange}

@@ -2,11 +2,11 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { generateFlashcardProposals, generateInputSchema, getAiErrorHttpStatus, errorMessage } from "@/lib/services/ai";
 import { checkRateLimit } from "@/lib/services/ai-rate-limit";
-import { env } from "cloudflare:workers";
+import { getSecret } from "astro:env/server";
 
 export const prerender = false;
 
-const paramsSchema = generateInputSchema.omit({ count: true }).extend({
+const paramsSchema = generateInputSchema.omit({ count: true, apiKey: true, model: true, appUrl: true }).extend({
   count: z.number().int().min(1).max(20).optional(),
 });
 
@@ -42,15 +42,6 @@ export const POST: APIRoute = async (context) => {
     });
   }
 
-  const kv = (env.AI_RATE_LIMIT as KVNamespace | undefined) ?? null;
-  const rateLimit = await checkRateLimit(kv, user.id);
-  if (!rateLimit.allowed) {
-    return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again later." }), {
-      status: 429,
-      headers: { "Content-Type": "application/json", "Retry-After": "3600" },
-    });
-  }
-
   let body: unknown;
   try {
     body = await context.request.json();
@@ -72,9 +63,32 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
+  const kv = context.locals.runtime?.env?.AI_RATE_LIMIT ?? null;
+  const rateLimit = await checkRateLimit(kv, user.id);
+  if (!rateLimit.allowed) {
+    return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again later." }), {
+      status: 429,
+      headers: { "Content-Type": "application/json", "Retry-After": "3600" },
+    });
+  }
+
+  const apiKey = getSecret("OPENROUTER_API_KEY");
+  if (!apiKey) {
+    return new Response(JSON.stringify({ error: "AI generation is not configured" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const model = getSecret("OPENROUTER_MODEL") ?? undefined;
+  const appUrl = new URL(context.request.url).origin;
+
   const { data, error } = await generateFlashcardProposals({
     text: parsed.data.text,
     count: parsed.data.count,
+    apiKey,
+    model,
+    appUrl,
   });
 
   if (error) {

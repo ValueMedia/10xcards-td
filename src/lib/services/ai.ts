@@ -23,11 +23,17 @@ export interface FlashcardProposal {
 export interface GenerateInput {
   text: string;
   count?: number;
+  apiKey?: string;
+  model?: string;
+  appUrl?: string;
 }
 
 export const generateInputSchema = z.object({
   text: z.string().min(10, "Text must be at least 10 characters").max(MAX_INPUT_LENGTH, "Text is too long"),
   count: z.number().int().min(1).max(MAX_COUNT).default(DEFAULT_COUNT),
+  apiKey: z.string().optional(),
+  model: z.string().optional(),
+  appUrl: z.string().url().optional(),
 });
 
 const openRouterResponseSchema = z.object({
@@ -140,14 +146,11 @@ export async function generateFlashcardProposals(input: GenerateInput): Promise<
     return { data: [], error: { kind: "parseError", message } };
   }
 
-  const { text, count } = parsedInput.data;
+  const { text, count, apiKey, model, appUrl } = parsedInput.data;
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return { data: [], error: { kind: "unconfigured", message: "OpenRouter API key is not configured" } };
   }
-
-  const model = process.env.OPENROUTER_MODEL ?? DEFAULT_MODEL;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
@@ -160,11 +163,11 @@ export async function generateFlashcardProposals(input: GenerateInput): Promise<
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": process.env.APP_URL ?? "https://10xcards.app",
+        "HTTP-Referer": appUrl ?? "https://10xcards.app",
         "X-Title": "10xCards",
       },
       body: JSON.stringify({
-        model,
+        model: model ?? DEFAULT_MODEL,
         messages: [{ role: "user", content: buildPrompt(text, count) }],
         temperature: 0.3,
       }),

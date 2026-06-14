@@ -12,19 +12,40 @@ interface Props {
 }
 
 interface ParsedData {
-  set: FlashcardSet;
+  set: FlashcardSet | null;
   flashcards: Flashcard[];
 }
 
 export default function SetDetailPage({ initialData }: Props) {
   const [state, setState] = useState<ParsedData>(() => {
     try {
-      return JSON.parse(initialData) as ParsedData;
+      const parsed = JSON.parse(initialData) as ParsedData;
+      if (!parsed.set || typeof parsed.set.id !== "string") {
+        throw new Error("Invalid set data");
+      }
+      return parsed;
     } catch {
-      return { set: null as unknown as FlashcardSet, flashcards: [] };
+      return { set: null, flashcards: [] };
     }
   });
   const { set, flashcards } = state;
+
+  if (!set) {
+    return (
+      <div className="bg-cosmic min-h-screen p-4 text-white">
+        <div className="mx-auto max-w-3xl">
+          <h1 className="text-xl font-semibold text-red-300">Failed to load set</h1>
+          <p className="mt-2 text-sm text-blue-100/60">The set data is missing or invalid.</p>
+          <a
+            href="/dashboard"
+            className="mt-4 inline-flex items-center gap-1 text-sm text-blue-100/50 hover:text-blue-100/80"
+          >
+            <BackIcon /> Back to dashboard
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const [createOpen, setCreateOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Flashcard | null>(null);

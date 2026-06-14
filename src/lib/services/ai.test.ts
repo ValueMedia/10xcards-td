@@ -40,17 +40,11 @@ describe("parseProposals", () => {
 });
 
 describe("generateFlashcardProposals", () => {
-  let originalEnv: NodeJS.ProcessEnv;
-
   beforeEach(() => {
-    originalEnv = { ...process.env };
-    process.env.OPENROUTER_API_KEY = "test-key";
-    process.env.OPENROUTER_MODEL = "test/model";
     vi.stubGlobal("fetch", vi.fn());
   });
 
   afterEach(() => {
-    process.env = originalEnv;
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
@@ -76,6 +70,8 @@ describe("generateFlashcardProposals", () => {
     const { data, error } = await generateFlashcardProposals({
       text: "This is a sample text long enough to pass the minimum length validation rule in the service.",
       count: 2,
+      apiKey: "test-key",
+      model: "test/model",
     });
     expect(error).toBeNull();
     expect(data).toHaveLength(2);
@@ -89,6 +85,8 @@ describe("generateFlashcardProposals", () => {
     const { data, error } = await generateFlashcardProposals({
       text: "This is a sample text long enough to pass the minimum length validation rule in the service.",
       count: 2,
+      apiKey: "test-key",
+      model: "test/model",
     });
     expect(data).toHaveLength(0);
     expect(error?.kind).toBe("apiError");
@@ -103,16 +101,18 @@ describe("generateFlashcardProposals", () => {
     const { data, error } = await generateFlashcardProposals({
       text: "This is a sample text long enough to pass the minimum length validation rule in the service.",
       count: 2,
+      apiKey: "test-key",
+      model: "test/model",
     });
     expect(data).toHaveLength(0);
     expect(error?.kind).toBe("timeout");
   });
 
   it("returns unconfigured when API key is missing", async () => {
-    delete process.env.OPENROUTER_API_KEY;
     const { data, error } = await generateFlashcardProposals({
       text: "This is a sample text long enough to pass the minimum length validation rule in the service.",
       count: 2,
+      apiKey: "",
     });
     expect(data).toHaveLength(0);
     expect(error?.kind).toBe("unconfigured");

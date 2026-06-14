@@ -12,7 +12,8 @@ export type FlashcardContent = z.infer<typeof flashcardContentSchema>;
 export type ServiceError =
   | { kind: "notFound"; message: string }
   | { kind: "clientUnavailable"; message: string }
-  | { kind: "dbError"; message: string };
+  | { kind: "dbError"; message: string }
+  | { kind: "validationError"; message: string };
 
 export function errorMessage(error: ServiceError): string {
   return error.message;
@@ -58,6 +59,10 @@ export async function createFlashcardsBulk(
 
   if (contents.length === 0) {
     return { data: [], error: null };
+  }
+
+  if (contents.length > 50) {
+    return { data: null, error: { kind: "validationError", message: "Cannot save more than 50 flashcards at once" } };
   }
 
   const result = await client
