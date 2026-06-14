@@ -21,7 +21,7 @@ const GRADE_LABELS: { rating: Rating; label: string; key: keyof SessionSummary["
 ];
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("pl-PL", { dateStyle: "long" });
+  return new Date(iso).toLocaleString("pl-PL", { dateStyle: "long", timeStyle: "short" });
 }
 
 export default function ReviewSession({ setId, setName }: Props) {

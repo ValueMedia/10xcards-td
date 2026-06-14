@@ -1,4 +1,5 @@
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { CheckCircle2, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { State } from "@/types";
 import type { Flashcard } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,28 +26,31 @@ export function FlashcardCard({ flashcard, onEdit, onDelete }: Props) {
           <p className="text-sm font-medium text-blue-100/50">Back</p>
           <p className="mt-1 whitespace-pre-wrap text-white">{flashcard.back}</p>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 shrink-0 text-blue-100/50 hover:text-white"
-              aria-label="Flashcard actions"
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem onClick={onEdit}>
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" onClick={onDelete}>
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex shrink-0 items-center gap-1">
+          {flashcard.state === State.Review && <CheckCircle2 className="h-4 w-4 text-green-400" aria-label="Learned" />}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 shrink-0 text-blue-100/50 hover:text-white"
+                aria-label="Flashcard actions"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem onClick={onEdit}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem variant="destructive" onClick={onDelete}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </div>
   );

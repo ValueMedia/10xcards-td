@@ -40,6 +40,24 @@ export interface SessionSummary {
   byGrade: { again: number; hard: number; good: number; easy: number };
 }
 
+export interface DailyStats {
+  day: string;
+  minutes: number;
+}
+
+export interface RecentSetStats {
+  id: string;
+  name: string;
+  last_opened_at: string;
+  total_flashcards: number;
+  learned_count: number;
+}
+
+export interface LearningStats {
+  dailyMinutes: DailyStats[];
+  recentSets: RecentSetStats[];
+}
+
 export interface Review {
   id: string;
   flashcard_id: string;

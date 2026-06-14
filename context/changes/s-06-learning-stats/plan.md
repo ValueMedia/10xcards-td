@@ -280,27 +280,27 @@ Phase 1 adds `session_log`. No second migration is needed — Phase 3 uses TypeS
 
 #### Automated
 
-- [x] 2.1 Lint passes: `npm run lint`
-- [x] 2.2 Build passes: `npm run build`
+- [x] 2.1 Lint passes: `npm run lint` — 9d475b0
+- [x] 2.2 Build passes: `npm run build` — 9d475b0
 
 #### Manual
 
-- [x] 2.3 Complete a review session — row appears in session_log with correct started_at, ended_at, set_id
-- [x] 2.4 Navigating away mid-session does NOT create a row
-- [x] 2.5 POST /api/sessions with endedAt before startedAt returns 400
+- [x] 2.3 Complete a review session — row appears in session_log with correct started_at, ended_at, set_id — 9d475b0
+- [x] 2.4 Navigating away mid-session does NOT create a row — 9d475b0
+- [x] 2.5 POST /api/sessions with endedAt before startedAt returns 400 — 9d475b0
 
 ### Phase 3: Stats Service, Types, and Dashboard UI
 
 #### Automated
 
-- [ ] 3.1 Lint passes: `npm run lint`
-- [ ] 3.2 Build passes: `npm run build`
+- [x] 3.1 Lint passes: `npm run lint`
+- [x] 3.2 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 3.3 Dashboard renders StatsBlock above sets grid, no layout regressions
-- [ ] 3.4 Bar chart today column populated after completing a review session
-- [ ] 3.5 Empty-state placeholder shown when no sessions in 14 days
-- [ ] 3.6 Recent sets tiles show correct names, learned counts, last-opened dates
-- [ ] 3.7 Clicking a tile navigates to /sets/{id}
-- [ ] 3.8 No regressions on set create/rename/delete dialogs
+- [x] 3.3 Dashboard renders StatsBlock above sets grid, no layout regressions
+- [x] 3.4 Bar chart today column populated after completing a review session
+- [x] 3.5 Empty-state placeholder shown when no sessions in 14 days
+- [x] 3.6 Recent sets tiles show correct names, learned counts, last-opened dates
+- [x] 3.7 Clicking a tile navigates to /sets/{id}
+- [x] 3.8 No regressions on set create/rename/delete dialogs

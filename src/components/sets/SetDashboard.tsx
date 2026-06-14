@@ -1,23 +1,33 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
-import type { FlashcardSet } from "@/types";
+import type { FlashcardSet, LearningStats } from "@/types";
 import { SetGrid } from "@/components/sets/SetGrid";
 import { CreateSetDialog } from "@/components/sets/CreateSetDialog";
 import { RenameSetDialog } from "@/components/sets/RenameSetDialog";
 import { DeleteSetDialog } from "@/components/sets/DeleteSetDialog";
+import { StatsBlock } from "@/components/dashboard/StatsBlock";
 
 type SetWithCount = FlashcardSet & { flashcard_count: number };
 
 interface Props {
   initialSets: string;
+  initialStats: string;
 }
 
-export default function SetDashboard({ initialSets }: Props) {
+export default function SetDashboard({ initialSets, initialStats }: Props) {
   const [sets, setSets] = useState<SetWithCount[]>(() => {
     try {
       return JSON.parse(initialSets) as SetWithCount[];
     } catch {
       return [];
+    }
+  });
+
+  const [stats] = useState<LearningStats>(() => {
+    try {
+      return JSON.parse(initialStats) as LearningStats;
+    } catch {
+      return { dailyMinutes: [], recentSets: [] };
     }
   });
 
@@ -50,7 +60,9 @@ export default function SetDashboard({ initialSets }: Props) {
   return (
     <div className="bg-cosmic min-h-screen p-4 text-white">
       <div className="mx-auto max-w-5xl">
-        <div className="mb-8 flex items-center justify-between">
+        <StatsBlock stats={stats} />
+
+        <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-4">
           <h1 className="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
             My Sets
           </h1>

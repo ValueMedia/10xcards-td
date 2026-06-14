@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
+import { State } from "@/types";
 import type { Flashcard, FlashcardSet } from "@/types";
 import { FlashcardList } from "@/components/sets/FlashcardList";
 import { CreateFlashcardDialog } from "@/components/sets/CreateFlashcardDialog";
@@ -105,6 +106,7 @@ export default function SetDetailPage({ initialData }: Props) {
             </h1>
             <p className="mt-2 text-sm text-blue-100/50">
               {flashcards.length}&nbsp;{flashcards.length === 1 ? "card" : "cards"}
+              &nbsp;·&nbsp;{flashcards.filter((f) => f.state === State.Review).length}&nbsp;learned
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-2">
