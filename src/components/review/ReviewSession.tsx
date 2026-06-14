@@ -89,6 +89,7 @@ export default function ReviewSession({ setId, setName }: Props) {
 
         const nextIdx = currentIndex + 1;
         if (nextIdx >= cards.length) {
+          // best-effort: session loss on network error is acceptable
           void fetch("/api/sessions", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

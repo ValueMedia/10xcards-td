@@ -83,8 +83,8 @@ export async function getLearningStats(
   }
 
   const [totalResult, learnedResult] = await Promise.all([
-    client.from("flashcards").select("set_id").in("set_id", recentSetIds),
-    client.from("flashcards").select("set_id").in("set_id", recentSetIds).eq("state", 2),
+    client.from("flashcards").select("set_id").in("set_id", recentSetIds).limit(2000),
+    client.from("flashcards").select("set_id").in("set_id", recentSetIds).eq("state", 2).limit(2000),
   ]);
 
   if (totalResult.error) return { data: null, error: totalResult.error.message };
