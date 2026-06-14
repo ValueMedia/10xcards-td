@@ -13,6 +13,7 @@ Implement S-01: a logged-in user can paste source text into `/generate?setId=...
 - Secrets are declared in `astro.config.mjs` as `server`/`secret`/`optional` and read via `astro:env/server`. Cloudflare secrets are managed with `wrangler secret put` / `.dev.vars` for local dev.
 - KV is not yet configured in `wrangler.jsonc`; rate limiting will require a new KV namespace binding.
 - There is no OpenRouter integration, no AI service, no bulk-save endpoint, and no UI for AI generation yet.
+- The system prompt is currently inline in `ai.ts`; no externalized prompt template or override mechanism exists.
 
 ### Key Discoveries
 
@@ -24,7 +25,7 @@ Implement S-01: a logged-in user can paste source text into `/generate?setId=...
 
 ## Desired End State
 
-A logged-in user viewing one of their sets sees a "Generate with AI" button. Clicking it navigates to `/generate?setId=<id>` with a large textarea. The user pastes text (up to ~1000 words), clicks "Generate", and within ~10 seconds sees a list of flashcard proposals. Each proposal shows `front` and `back` in editable fields and can be deleted. The user clicks "Save N flashcards" and the accepted proposals are inserted as `flashcards` rows in the selected set. On timeout, parse error, empty result, or rate-limit hit, the UI shows a clear error message via `sonner` without exposing the API key.
+A logged-in user viewing one of their sets sees a "Generate with AI" button. Clicking it navigates to `/generate?setId=<id>` with a large textarea. The user pastes text (up to ~1000 words), clicks "Generate", and within ~10 seconds sees a list of flashcard proposals. Each proposal shows `front` and `back` in editable fields and can be deleted. The user clicks "Save N flashcards" and the accepted proposals are inserted as `flashcards` rows in the selected set. On timeout, parse error, empty result, or rate-limit hit, the UI shows a clear error message via `sonner` without exposing the API key. The default prompt template lives in `src/lib/services/ai-prompt.ts` and can be overridden via the `OPENROUTER_SYSTEM_PROMPT` Cloudflare secret without redeploy.
 
 ## What We're NOT Doing
 
@@ -43,14 +44,15 @@ Build in four phases:
 1. **Backend AI service + OpenRouter endpoint** — add env vars, implement `src/lib/services/ai.ts`, create `POST /api/sets/[id]/generate.ts`, wire Cloudflare KV for per-user rate limiting, and write unit tests with mocked `fetch`.
 2. **Bulk save endpoint** — add `POST /api/sets/[id]/flashcards/batch.ts` and a corresponding service function to insert multiple accepted flashcards in one Supabase call.
 3. **UI flow** — add entry point on the set detail page, create `/generate.astro`, and build the React component for input, loading, proposal review, inline editing, deletion, and save.
-4. **Polish + observability** — add error handling, toast feedback, timeout handling, and manual quality testing on sample texts.
+4. **Polish + observability** — add error handling, toast feedback, timeout handling, externalize the prompt template, and manual quality testing on sample texts.
 
 ## Critical Implementation Details
 
 - **Timeout & CPU**: OpenRouter calls must use an `AbortController` with a server-side timeout (e.g., 25 s). Cloudflare Workers count only active CPU time toward the limit; waiting on `fetch()` does not count. Still, wall-clock must stay under the PRD 10-second UX target, so the timeout plus model choice must keep typical calls under ~8 s.
-- **Rate limiting**: Use a Cloudflare KV binding (e.g., `AI_RATE_LIMIT`) keyed by `user_id` with an hourly counter. KV writes are eventually consistent, so the limit is best-effort. Document that this is an MVP guardrail.
+- **Rate limiting**: Use a Cloudflare KV binding (e.g., `AI_RATE_LIMIT`) keyed by `user_id` with an hourly counter. KV writes are eventually consistent, so the limit is best-effort. Document that this is an MVP guardrail. The hourly limit is configurable via the `AI_RATE_LIMIT_HOURLY` secret; if KV is unavailable, requests are rejected (fail-closed).
 - **Output cleaning**: The prompt must request raw JSON (`{"flashcards":[{"front":"...","back":"..."}]}`). The parser should strip markdown fences if present and then run through zod.
 - **Auth**: The new endpoint must be added to `PROTECTED_API_ROUTES` so unauthenticated callers receive 401 automatically.
+- **Prompt template**: Keep the default system prompt in `src/lib/services/ai-prompt.ts` as a versioned template. Wrap the user source text in delimiter tags. Allow full override via the `OPENROUTER_SYSTEM_PROMPT` secret without code redeploy.
 
 ## Phase 0: Test Infrastructure
 
@@ -448,6 +450,7 @@ Harden error handling, verify quality, and document operational runbook.
 ### Unit Tests
 
 - `src/lib/services/ai.ts`: response cleaning, zod validation, error mapping, timeout behavior (mocked fetch).
+- `src/lib/services/ai-prompt.ts`: prompt template rendering, delimiter wrapping, override handling.
 - `src/lib/services/ai-rate-limit.ts`: key formatting, limit enforcement, null-KV fallback.
 
 ### Integration / API Tests

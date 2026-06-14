@@ -4,8 +4,19 @@
 - **Plan**: context/changes/ai-flashcard-generation/plan.md
 - **Scope**: Full plan review (Phase 0–4)
 - **Date**: 2026-06-14
-- **Verdict**: NEEDS ATTENTION
-- **Findings**: 3 critical, 6 warnings, 4 observations
+- **Verdict**: APPROVED
+- **Findings**: 0 critical, 0 warnings, 4 observations (all triaged: 9 fixed, 4 skipped)
+
+## Triage Summary
+
+- **Fixed**: F1, F2, F3, F4, F5, F6, F7, F8, F9, F11
+- **Skipped**: F10, F12, F13 (low-impact observations)
+
+## Post-Review Additions
+
+- Added `src/lib/services/ai-prompt.ts` with default system prompt template, delimiter-based user text wrapping, and optional override via `OPENROUTER_SYSTEM_PROMPT` secret.
+- Registered `OPENROUTER_SYSTEM_PROMPT` and `AI_RATE_LIMIT_HOURLY` as Cloudflare secrets and Astro env schema entries.
+- Updated `runbook.md` with prompt override instructions.
 
 ## Verdicts
 
@@ -13,9 +24,9 @@
 |-----------|---------|
 | Plan Adherence | PASS |
 | Scope Discipline | PASS |
-| Safety & Quality | FAIL |
-| Architecture | WARNING |
-| Pattern Consistency | WARNING |
+| Safety & Quality | PASS |
+| Architecture | PASS |
+| Pattern Consistency | PASS |
 | Success Criteria | PASS |
 
 ## Findings
