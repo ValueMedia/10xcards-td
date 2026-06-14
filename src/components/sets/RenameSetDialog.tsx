@@ -53,11 +53,11 @@ export function RenameSetDialog({ set, open, onOpenChange, onRename }: Props) {
       });
 
       if (res.status === 200) {
-        const data = (await res.json()) as FlashcardSet;
+        const data = await res.json();
         onRename(data);
         setError(null);
       } else {
-        const body = (await res.json()) as { error?: string };
+        const body: { error?: string } = await res.json();
         const msg = body.error ?? "Failed to rename set";
         setError(msg);
         toast.error(msg);

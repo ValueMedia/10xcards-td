@@ -35,7 +35,7 @@ export function DeleteSetDialog({ set, open, onOpenChange, onDelete }: Props) {
       if (res.status === 200) {
         onDelete(set.id);
       } else {
-        const body = (await res.json()) as { error?: string };
+        const body: { error?: string } = await res.json();
         toast.error(body.error ?? "Failed to delete set");
       }
     } catch {

@@ -59,13 +59,13 @@ export function CreateFlashcardDialog({ open, onOpenChange, setId, onCreate }: P
       });
 
       if (res.status === 201) {
-        const data = (await res.json()) as Flashcard;
+        const data = await res.json();
         onCreate(data);
         setFront("");
         setBack("");
         setError(null);
       } else {
-        const body = (await res.json()) as { error?: string };
+        const body: { error?: string } = await res.json();
         const msg = body.error ?? "Failed to create flashcard";
         setError(msg);
         toast.error(msg);

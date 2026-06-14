@@ -52,12 +52,12 @@ export function CreateSetDialog({ open, onOpenChange, onCreate }: Props) {
       });
 
       if (res.status === 201) {
-        const data = (await res.json()) as FlashcardSet;
+        const data = await res.json();
         onCreate(data);
         setName("");
         setError(null);
       } else {
-        const body = (await res.json()) as { error?: string };
+        const body: { error?: string } = await res.json();
         const msg = body.error ?? "Failed to create set";
         setError(msg);
         toast.error(msg);

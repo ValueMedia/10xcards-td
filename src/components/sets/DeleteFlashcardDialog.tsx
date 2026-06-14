@@ -35,7 +35,7 @@ export function DeleteFlashcardDialog({ flashcard, open, onOpenChange, onDelete 
       if (res.status === 200) {
         onDelete(flashcard.id);
       } else {
-        const body = (await res.json()) as { error?: string };
+        const body: { error?: string } = await res.json();
         toast.error(body.error ?? "Failed to delete flashcard");
       }
     } catch {

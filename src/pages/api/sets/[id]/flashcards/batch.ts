@@ -5,7 +5,10 @@ import { createFlashcardsBulk, flashcardContentSchema } from "@/lib/services/fla
 export const prerender = false;
 
 const batchBodySchema = z.object({
-  flashcards: z.array(flashcardContentSchema).min(1, "At least one flashcard is required").max(50, "No more than 50 flashcards per batch"),
+  flashcards: z
+    .array(flashcardContentSchema)
+    .min(1, "At least one flashcard is required")
+    .max(50, "No more than 50 flashcards per batch"),
 });
 
 export const POST: APIRoute = async (context) => {

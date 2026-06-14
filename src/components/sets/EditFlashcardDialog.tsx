@@ -57,11 +57,11 @@ export function EditFlashcardDialog({ flashcard, open, onOpenChange, onUpdate }:
       });
 
       if (res.status === 200) {
-        const data = (await res.json()) as Flashcard;
+        const data = await res.json();
         onUpdate(data);
         setError(null);
       } else {
-        const body = (await res.json()) as { error?: string };
+        const body: { error?: string } = await res.json();
         const msg = body.error ?? "Failed to update flashcard";
         setError(msg);
         toast.error(msg);
