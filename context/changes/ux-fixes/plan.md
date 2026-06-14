@@ -142,25 +142,25 @@ The `proposals.length` dependency fires when the list goes from 0 to N (new gene
 
 #### Automated
 
-- [x] 1.1 Lint passes: `npm run lint`
-- [x] 1.2 Build passes: `npm run build`
+- [x] 1.1 Lint passes: `npm run lint` — 0745fc3
+- [x] 1.2 Build passes: `npm run build` — 0745fc3
 
 #### Manual
 
-- [x] 1.3 Set name on own line, no truncation
-- [x] 1.4 Buttons right-aligned below title
-- [x] 1.5 No visual regressions in flashcard list
+- [x] 1.3 Set name on own line, no truncation — 0745fc3
+- [x] 1.4 Buttons right-aligned below title — 0745fc3
+- [x] 1.5 No visual regressions in flashcard list — 0745fc3
 
 ### Phase 2: Generate Page — Auto-Focus and Scroll to Proposals
 
 #### Automated
 
-- [ ] 2.1 Lint passes: `npm run lint`
-- [ ] 2.2 Build passes: `npm run build`
+- [x] 2.1 Lint passes: `npm run lint`
+- [x] 2.2 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Textarea focused on page load
-- [ ] 2.4 Smooth scroll to proposals after generation
-- [ ] 2.5 No scroll on proposal edit/delete
-- [ ] 2.6 Scroll fires again on re-generation
+- [x] 2.3 Textarea focused on page load
+- [x] 2.4 Smooth scroll to proposals after generation
+- [x] 2.5 No scroll on proposal edit/delete
+- [x] 2.6 Scroll fires again on re-generation

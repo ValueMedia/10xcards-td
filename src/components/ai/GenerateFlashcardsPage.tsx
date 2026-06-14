@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,6 +49,13 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
   const [proposals, setProposals] = useState<FlashcardProposal[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const proposalsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (proposals.length > 0 && proposalsRef.current) {
+      proposalsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [proposals.length]);
 
   const inputTooShort = text.trim().length < MIN_INPUT_LENGTH;
   const inputTooLong = text.length > MAX_INPUT_LENGTH;
@@ -165,6 +172,7 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
             </label>
             <Textarea
               id="source-text"
+              autoFocus
               value={text}
               onChange={(e) => {
                 setText(e.target.value);
@@ -245,7 +253,7 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
         )}
 
         {proposals.length > 0 && !isGenerating && (
-          <div className="mt-6 space-y-4">
+          <div ref={proposalsRef} className="mt-6 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-lg font-semibold text-white">
                 {proposals.length} proposal{proposals.length === 1 ? "" : "s"}
