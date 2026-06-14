@@ -3,6 +3,7 @@ import { z } from "zod";
 import { generateFlashcardProposals, generateInputSchema, getAiErrorHttpStatus, errorMessage } from "@/lib/services/ai";
 import { checkRateLimit } from "@/lib/services/ai-rate-limit";
 import { getSecret } from "astro:env/server";
+import { env } from "cloudflare:workers";
 
 export const prerender = false;
 
@@ -65,9 +66,8 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
-  const kv =
-    (context.locals as { runtime?: { env?: { AI_RATE_LIMIT?: KVNamespace } } }).runtime?.env?.AI_RATE_LIMIT ?? null;
-  const rateLimit = await checkRateLimit(kv, user.id);
+  const kv = env.AI_RATE_LIMIT as KVNamespace | undefined;
+  const rateLimit = await checkRateLimit(kv ?? null, user.id);
   if (!rateLimit.allowed) {
     return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again later." }), {
       status: 429,

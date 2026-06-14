@@ -101,7 +101,7 @@
   - Tradeoff: Slightly more code in the handler.
   - Confidence: HIGH — this is the documented pattern in `astro.config.mjs` and `src/env.d.ts` `App.Runtime`.
   - Blind spot: Need to verify `context.locals.runtime` is populated in both dev and production.
-- **Decision**: FIXED — `ai.ts` now receives `apiKey`/`model`/`appUrl` as parameters; route uses `getSecret` from `astro:env/server` and `context.locals.runtime.env.AI_RATE_LIMIT`. Tests updated.
+- **Decision**: FIXED — `ai.ts` now receives `apiKey`/`model`/`appUrl` as parameters; route uses `getSecret` from `astro:env/server` and `import { env } from "cloudflare:workers"` per Astro v6 adapter requirements. Tests updated.
 
 - **Severity**: ⚠️ WARNING
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
