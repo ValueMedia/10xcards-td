@@ -36,7 +36,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 | S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | done     |
 | S-07 | public-share-link       | wygenerować link read-only do zestawu dostępny bez logowania     | F-01, S-02       | FR-008, US-008                 | proposed |
 | S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition    | F-01, S-01, S-02 | FR-010, US-019                 | done     |
-| S-06 | learning-stats          | przeglądać statystyki i historię nauki                           | F-01, S-05       | FR-011, US-011                 | proposed |
+| S-06 | learning-stats          | przeglądać statystyki i historię nauki                           | F-01, S-05       | FR-011, US-011                 | done     |
 
 ## Streams
 
