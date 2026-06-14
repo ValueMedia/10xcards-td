@@ -98,7 +98,7 @@ export default function SetDetailPage({ initialData }: Props) {
           Back to dashboard
         </a>
 
-        <div className="mb-8 flex items-start justify-between gap-4">
+        <div className="mb-8 flex flex-col gap-3">
           <div>
             <h1 className="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
               {set.name}
@@ -107,7 +107,7 @@ export default function SetDetailPage({ initialData }: Props) {
               {flashcards.length}&nbsp;{flashcards.length === 1 ? "card" : "cards"}
             </p>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <a
               href={`/sets/${set.id}/review`}
               className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-purple-700 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-purple-600"
