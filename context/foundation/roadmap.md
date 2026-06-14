@@ -34,7 +34,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 | S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać             | F-01             | FR-007                         | done     |
 | S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie             | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | done     |
 | S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | done     |
-| S-07 | public-share-link       | wygenerować link read-only do zestawu dostępny bez logowania     | F-01, S-02       | FR-008, US-008                 | proposed |
+| S-07 | give-set-to-study       | sklonowanie istniejącego zestawu innemy użytkownikowi do nauki   | F-01, S-02       | FR-008, US-008                 | proposed |
 | S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition    | F-01, S-01, S-02 | FR-010, US-019                 | done     |
 | S-06 | learning-stats          | przeglądać statystyki i historię nauki                           | F-01, S-05       | FR-011, US-011                 | done     |
 
@@ -125,10 +125,10 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Parser musi obsłużyć warianty separatorów (`;`, `\t`, `-`) zgodnie ze specyfikacją US-009; błędna walidacja może prowadzić do milczącego pominięcia prawidłowych wierszy lub złej struktury fiszek.
 - **Status:** done
 
-### S-07: Link read-only do zestawu
+### S-07: Sklonowanie zestawu fiszek i przekazanie kopii innemu użytkownikowi 
 
-- **Outcome:** user can generate a shareable read-only link (random GUID-based URL) to a set, and any visitor — authenticated or not — can open the link and browse flashcards in view-only mode without the ability to edit, delete, or start a review session.
-- **Change ID:** `public-share-link`
+- **Outcome:** Możliwość utworzenia kopii zestawu, wskazując innego użytkownika jako właściciela kopii. Scenariusz, kiedy nauczyciel przekazuje zestaw do nauki studentowi, który może się go uczyć, mając swoje własne statystyki dotyczące postępów nauki. Nauczyciel (użytkownik, który utworzył kopię) dostaje na dashboard nową sekcję "Donated sets", gdzie jest lista kafelków z informacjami: nazwa zestawu, email właściciela, całkowity czas sesji uczących oraz liczba wszystkich/nauczonych fiszek. Kafelki posortowane są malejąco wg daty utworzenia zestawu (kopii). Nauczyciel ma możliwość usunięcia takiego kafelka z listy (permanentnie).
+- **Change ID:** `give-set-to-study`
 - **PRD refs:** FR-008, US-008
 - **Prerequisites:** F-01, S-02
 - **Parallel with:** S-03, S-04
@@ -173,7 +173,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-02       | set-and-deck-management | [Feature] Sets dashboard — browse, create, manage | no                    | Awaits F-01; parallel with S-01                |
 | S-03       | flashcard-crud          | [Feature] Manual flashcard create/edit/delete     | no                    | Awaits F-01 + S-02                             |
 | S-04       | csv-import              | [Feature] CSV/TXT import (Anki format)            | no                    | Awaits F-01 + S-02                             |
-| S-07       | public-share-link       | [Feature] Read-only shareable link per set        | no                    | Awaits F-01 + S-02; nice-to-have — plan last   |
+| S-07       | give-set-to-study       | [Feature] Donate set to other user to study       | no                    | Awaits F-01 + S-02; nice-to-have — plan last   |
 | S-05       | sr-review-session       | [Feature] Spaced repetition review session        | no                    | Awaits F-01 + S-01 + S-02; pick SR lib first   |
 | S-06       | learning-stats          | [Feature] Learning stats dashboard                | no                    | Awaits S-05                                    |
 
@@ -183,7 +183,6 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Parked
 
-- **FR-008 / US-008: Link read-only** — Why parked from must-have path: PRD klasyfikuje jako nice-to-have; uwzględniony jako S-07 w roadmapie, ale przy presji `capacity` realizowany jako ostatni.
 - **Własny algorytm powtórek** — Why parked: PRD §Non-Goals. MVP integruje gotową bibliotekę SR (ts-fsrs); budowanie własnego algorytmu poza scope.
 - **Import formatów PDF, DOCX i innych** — Why parked: PRD §Non-Goals. Jedynym obsługiwanym formatem importu jest CSV/TXT w formacie Anki.
 - **Współdzielenie zestawów (edycja wspólna, komentarze, team workspaces)** — Why parked: PRD §Non-Goals. S-07 (link read-only) to eksponowanie, nie współpraca.
