@@ -255,27 +255,27 @@ Wire the new dialog into `SetDetailPage`: add state, a handler, and an "Import C
 
 #### Automated
 
-- [x] 2.1 `npm run lint` passes
-- [x] 2.2 `npm run build` passes
+- [x] 2.1 `npm run lint` passes — 52bbfc5
+- [x] 2.2 `npm run build` passes — 52bbfc5
 
 #### Manual
 
-- [ ] 2.3 Upload a valid `.csv` file: preview step shows correct cards
-- [ ] 2.4 Upload a file with some invalid lines: skip count matches expected
-- [ ] 2.5 Delete a card from preview: entry disappears from the list
-- [ ] 2.6 Import: cards appear in the set's flashcard list without page reload
-- [ ] 2.7 Upload file > 1 MB: error message shown, step stays at upload
-- [ ] 2.8 Upload file with 0 valid lines: error message shown, step stays at upload
+- [x] 2.3 Upload a valid `.csv` file: preview step shows correct cards
+- [x] 2.4 Upload a file with some invalid lines: skip count matches expected
+- [x] 2.5 Delete a card from preview: entry disappears from the list
+- [x] 2.6 Import: cards appear in the set's flashcard list without page reload
+- [x] 2.7 Upload file > 1 MB: error message shown, step stays at upload
+- [x] 2.8 Upload file with 0 valid lines: error message shown, step stays at upload
 
 ### Phase 3: SetDetailPage integration
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes
-- [ ] 3.2 `npm run build` passes
+- [x] 3.1 `npm run lint` passes
+- [x] 3.2 `npm run build` passes
 
 #### Manual
 
-- [ ] 3.3 "Import CSV" button is visible in the set detail page action row
-- [ ] 3.4 Full flow works end-to-end: open → select → preview → import → list updates + toast
-- [ ] 3.5 Toast shows correct imported count and skipped line count
+- [x] 3.3 "Import CSV" button is visible in the set detail page action row
+- [x] 3.4 Full flow works end-to-end: open → select → preview → import → list updates + toast
+- [x] 3.5 Toast shows correct imported count and skipped line count

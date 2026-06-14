@@ -5,6 +5,7 @@ import { FlashcardList } from "@/components/sets/FlashcardList";
 import { CreateFlashcardDialog } from "@/components/sets/CreateFlashcardDialog";
 import { EditFlashcardDialog } from "@/components/sets/EditFlashcardDialog";
 import { DeleteFlashcardDialog } from "@/components/sets/DeleteFlashcardDialog";
+import { ImportCsvDialog } from "@/components/sets/ImportCsvDialog";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -31,6 +32,7 @@ export default function SetDetailPage({ initialData }: Props) {
   const { set, flashcards } = state;
 
   const [createOpen, setCreateOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Flashcard | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Flashcard | null>(null);
 
@@ -59,6 +61,13 @@ export default function SetDetailPage({ initialData }: Props) {
     }));
     setDeleteTarget(null);
     toast.success("Flashcard deleted");
+  }, []);
+
+  const handleImport = useCallback((flashcards: Flashcard[], skippedCount: number) => {
+    setState((prev) => ({ ...prev, flashcards: [...flashcards, ...prev.flashcards] }));
+    setImportOpen(false);
+    const skippedNote = skippedCount > 0 ? ` · ${skippedCount} lines skipped` : "";
+    toast.success(`Imported ${flashcards.length} flashcard${flashcards.length !== 1 ? "s" : ""}${skippedNote}`);
   }, []);
 
   if (!set) {
@@ -109,6 +118,17 @@ export default function SetDetailPage({ initialData }: Props) {
             <Button
               type="button"
               onClick={() => {
+                setImportOpen(true);
+              }}
+              variant="outline"
+              className="border-white/10 bg-white/5 text-white hover:bg-white/10"
+            >
+              <UploadIcon />
+              Import CSV
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
                 setCreateOpen(true);
               }}
               className="bg-purple-600 hover:bg-purple-500"
@@ -123,6 +143,8 @@ export default function SetDetailPage({ initialData }: Props) {
       </div>
 
       <CreateFlashcardDialog open={createOpen} onOpenChange={setCreateOpen} setId={set.id} onCreate={handleCreate} />
+
+      <ImportCsvDialog open={importOpen} onOpenChange={setImportOpen} setId={set.id} onImport={handleImport} />
 
       <EditFlashcardDialog
         key={editTarget?.id ?? "empty"}
@@ -202,6 +224,26 @@ function SparklesIcon() {
       <path d="M19 17v4" />
       <path d="M3 5h4" />
       <path d="M17 19h4" />
+    </svg>
+  );
+}
+
+function UploadIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
     </svg>
   );
 }
