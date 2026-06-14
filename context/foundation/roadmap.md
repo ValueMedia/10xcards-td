@@ -33,7 +33,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 | S-01 | ai-flashcard-generation | wkleić tekst, otrzymać propozycje AI i zapisać fiszki do zestawu | F-01             | FR-002, FR-003, US-01          | done     |
 | S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać             | F-01             | FR-007                         | done     |
 | S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie             | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | done     |
-| S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | proposed |
+| S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | done     |
 | S-07 | public-share-link       | wygenerować link read-only do zestawu dostępny bez logowania     | F-01, S-02       | FR-008, US-008                 | proposed |
 | S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition    | F-01, S-01, S-02 | FR-010, US-019                 | proposed |
 | S-06 | learning-stats          | przeglądać statystyki i historię nauki                           | F-01, S-05       | FR-011, US-011                 | proposed |
@@ -123,7 +123,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Parser musi obsłużyć warianty separatorów (`;`, `\t`, `-`) zgodnie ze specyfikacją US-009; błędna walidacja może prowadzić do milczącego pominięcia prawidłowych wierszy lub złej struktury fiszek.
-- **Status:** proposed
+- **Status:** done
 
 ### S-07: Link read-only do zestawu
 
@@ -198,3 +198,5 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-01: user can paste text into an input field, trigger AI flashcard generation, see a bulk preview of generated flashcard proposals (question/answer pairs), edit or delete individual proposals inline, and save the accepted flashcards to a new or existing set.** — Archived 2026-06-14 → `context/archive/2026-06-13-ai-flashcard-generation/`. Lesson: —.
 
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches a roadmap item is archived.)
+
+- **S-04: user can upload a CSV or TXT file in Anki format, have its contents validated (lines split by `;`, `\t`, or `-` into exactly two parts), and have valid lines imported as flashcards into a selected set (invalid lines silently skipped per US-009 spec).** — Archived 2026-06-14 → `context/archive/2026-06-14-csv-import/`. Lesson: —.

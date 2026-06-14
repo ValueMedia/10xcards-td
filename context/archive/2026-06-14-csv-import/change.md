@@ -1,10 +1,10 @@
 ---
 change_id: csv-import
 title: CSV/TXT import (Anki format)
-status: impl_reviewed
+status: archived
 created: 2026-06-14
 updated: 2026-06-14
-archived_at: null
+archived_at: 2026-06-14T09:20:18Z
 ---
 
 ## Notes
