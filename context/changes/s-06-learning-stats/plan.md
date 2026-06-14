@@ -293,14 +293,14 @@ Phase 1 adds `session_log`. No second migration is needed — Phase 3 uses TypeS
 
 #### Automated
 
-- [x] 3.1 Lint passes: `npm run lint`
-- [x] 3.2 Build passes: `npm run build`
+- [x] 3.1 Lint passes: `npm run lint` — 12e754d
+- [x] 3.2 Build passes: `npm run build` — 12e754d
 
 #### Manual
 
-- [x] 3.3 Dashboard renders StatsBlock above sets grid, no layout regressions
-- [x] 3.4 Bar chart today column populated after completing a review session
-- [x] 3.5 Empty-state placeholder shown when no sessions in 14 days
-- [x] 3.6 Recent sets tiles show correct names, learned counts, last-opened dates
-- [x] 3.7 Clicking a tile navigates to /sets/{id}
-- [x] 3.8 No regressions on set create/rename/delete dialogs
+- [x] 3.3 Dashboard renders StatsBlock above sets grid, no layout regressions — 12e754d
+- [x] 3.4 Bar chart today column populated after completing a review session — 12e754d
+- [x] 3.5 Empty-state placeholder shown when no sessions in 14 days — 12e754d
+- [x] 3.6 Recent sets tiles show correct names, learned counts, last-opened dates — 12e754d
+- [x] 3.7 Clicking a tile navigates to /sets/{id} — 12e754d
+- [x] 3.8 No regressions on set create/rename/delete dialogs — 12e754d
