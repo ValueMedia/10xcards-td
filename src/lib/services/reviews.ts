@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fsrs } from "ts-fsrs";
-import type { Rating } from "ts-fsrs";
+import type { Grade } from "ts-fsrs";
 import type { Flashcard } from "@/types";
 import type { ServiceError } from "./flashcards";
 
@@ -17,7 +17,8 @@ export async function getDueCardsForSession(
     .select("*")
     .eq("set_id", setId)
     .lte("due", now)
-    .order("due", { ascending: true });
+    .order("due", { ascending: true })
+    .limit(500);
 
   if (result.error) return { data: null, error: { kind: "dbError", message: result.error.message } };
 
@@ -45,7 +46,7 @@ export async function submitCardReview(
   client: SupabaseClient | null,
   userId: string,
   flashcardId: string,
-  grade: Rating,
+  grade: Grade,
 ): Promise<{ error: ServiceError | null }> {
   if (!client) return { error: { kind: "clientUnavailable", message: "Supabase client not available" } };
 
@@ -73,24 +74,6 @@ export async function submitCardReview(
   const now = new Date();
   const result = f.next(card, now, grade);
 
-  const updateResult = await client
-    .from("flashcards")
-    .update({
-      due: result.card.due.toISOString(),
-      stability: result.card.stability,
-      difficulty: result.card.difficulty,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      elapsed_days: result.card.elapsed_days,
-      scheduled_days: result.card.scheduled_days,
-      reps: result.card.reps,
-      lapses: result.card.lapses,
-      state: result.card.state,
-      last_review: result.card.last_review ? result.card.last_review.toISOString() : now.toISOString(),
-    })
-    .eq("id", flashcardId);
-
-  if (updateResult.error) return { error: { kind: "dbError", message: updateResult.error.message } };
-
   const insertResult = await client.from("reviews").insert({
     flashcard_id: flashcardId,
     user_id: userId,
@@ -109,6 +92,25 @@ export async function submitCardReview(
   });
 
   if (insertResult.error) return { error: { kind: "dbError", message: insertResult.error.message } };
+
+  const updateResult = await client
+    .from("flashcards")
+    .update({
+      due: result.card.due.toISOString(),
+      stability: result.card.stability,
+      difficulty: result.card.difficulty,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      elapsed_days: result.card.elapsed_days,
+      scheduled_days: result.card.scheduled_days,
+      reps: result.card.reps,
+      lapses: result.card.lapses,
+      state: result.card.state,
+      learning_steps: result.card.learning_steps,
+      last_review: result.log.review.toISOString(),
+    })
+    .eq("id", flashcardId);
+
+  if (updateResult.error) return { error: { kind: "dbError", message: updateResult.error.message } };
 
   return { error: null };
 }

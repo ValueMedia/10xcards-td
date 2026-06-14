@@ -23,6 +23,18 @@
 - **Rule**: Before running any destructive database operation (`supabase db reset`, `supabase stop --no-backup`, dropping tables, truncating auth.users, etc.), ask the user for explicit approval. Prefer non-destructive recovery first: restart the dev server, recreate a single isolated test record via API/SQL, or use a dedicated test fixture instead of resetting the whole database.
 - **Applies to**: all local database operations, especially Supabase CLI commands
 
+## Weryfikacja serwisów TypeScript przez npx tsx + JWT użytkownika (local Supabase)
+
+- **Context**: sr-review-session Phase 1 — weryfikacja `getDueCardsForSession` i `submitCardReview` bez serwera HTTP.
+- **Problem**: service_role key nie ma GRANT SELECT/UPDATE na tabelach aplikacji (migracje nie dodają tych grantów). `psql` nie jest w PATH na Windows. Nie można testować endpointów API bez sesji HTTP.
+- **Rule**: Aby wywołać serwisy TypeScript bezpośrednio przeciwko lokalnemu Supabase:
+  1. `npx supabase status` → pobierz ANON_KEY, SERVICE_ROLE_KEY
+  2. Uzyskaj JWT użytkownika przez Admin API: `PUT /auth/v1/admin/users/:id` z `{"password":"..."}`, potem `POST /auth/v1/token?grant_type=password`
+  3. Stwórz klienta Supabase z `global: { headers: { Authorization: \`Bearer ${JWT}\` } }`
+  4. Napisz skrypt `.mts` w katalogu projektu i uruchom: `USER_JWT="..." npx tsx skrypt.mts`
+  Alternatywa dla surowego SQL: `docker exec supabase_db_<project> psql -U postgres -d postgres -c "..."` (psql w kontenerze Docker, pełny dostęp superusera).
+- **Applies to**: all local Supabase service-layer verification
+
 ## Astro: `[id].astro` and `[id]/` directory cannot coexist — rename to `[id]/index.astro` first
 
 - **Context**: `src/pages/sets/[id].astro` (sr-review-session, Phase 2) — adding a nested route `src/pages/sets/[id]/review.astro` required the rename.

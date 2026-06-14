@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { getDueCardsForSession } from "@/lib/services/reviews";
-import { errorMessage } from "@/lib/services/flashcards";
+import { errorMessage, isNotFound } from "@/lib/services/flashcards";
 
 export const prerender = false;
 
@@ -25,8 +25,9 @@ export const GET: APIRoute = async (context) => {
   const { data, error } = await getDueCardsForSession(supabase, id);
 
   if (error) {
+    const status = isNotFound(error) ? 404 : 500;
     return new Response(JSON.stringify({ error: errorMessage(error) }), {
-      status: 500,
+      status,
       headers: { "Content-Type": "application/json" },
     });
   }
