@@ -243,20 +243,20 @@ Wire the new dialog into `SetDetailPage`: add state, a handler, and an "Import C
 
 #### Automated
 
-- [x] 1.1 `npm run lint` passes
-- [x] 1.2 `npm run build` passes
-- [x] 1.3 `npm test -- csv-parser` passes
+- [x] 1.1 `npm run lint` passes — 58584cc
+- [x] 1.2 `npm run build` passes — 58584cc
+- [x] 1.3 `npm test -- csv-parser` passes — 58584cc
 
 #### Manual
 
-- [x] 1.4 Parser handles all three separator types correctly when tested against real Anki exports
+- [x] 1.4 Parser handles all three separator types correctly when tested against real Anki exports — 58584cc
 
 ### Phase 2: ImportCsvDialog component
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes
-- [ ] 2.2 `npm run build` passes
+- [x] 2.1 `npm run lint` passes
+- [x] 2.2 `npm run build` passes
 
 #### Manual
 
