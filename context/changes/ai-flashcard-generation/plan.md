@@ -560,4 +560,4 @@ No database migration is required. The existing `flashcards` and `sets` tables a
 #### Manual
 
 - [x] 4.5 Timeout/rate-limit errors show graceful UI messages
-- [ ] 4.6 Quality run on 3-5 texts records acceptance rate (target ≥ 60% raw, iterate toward 75%)
+- [x] 4.6 Quality run on 3-5 texts records acceptance rate (target ≥ 60% raw, iterate toward 75%) — quality run passed by user on 2026-06-14
