@@ -35,7 +35,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 | S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie             | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | done     |
 | S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | done     |
 | S-07 | public-share-link       | wygenerować link read-only do zestawu dostępny bez logowania     | F-01, S-02       | FR-008, US-008                 | proposed |
-| S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition    | F-01, S-01, S-02 | FR-010, US-019                 | proposed |
+| S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition    | F-01, S-01, S-02 | FR-010, US-019                 | done     |
 | S-06 | learning-stats          | przeglądać statystyki i historię nauki                           | F-01, S-05       | FR-011, US-011                 | proposed |
 
 ## Streams
@@ -148,7 +148,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Wybór konkretnej biblioteki SR — ts-fsrs jest domyślnym kandydatem (wskazana w shape-notes.md); weryfikacja API biblioteki i wymagań dotyczących schematu `reviews` przed implementacją. — Owner: author. Block: no.
 - **Risk:** Integracja zewnętrznej biblioteki SR jest jedynym technicznym ryzykiem wskazanym wprost w PRD (FR-010 Socrates note); F-01 musi uwzględnić kolumny wymagane przez ts-fsrs w tabeli `reviews`, by uniknąć łamiącej migracji.
-- **Status:** proposed
+- **Status:** done
 
 ### S-06: Statystyki i historia nauki
 
@@ -200,3 +200,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches a roadmap item is archived.)
 
 - **S-04: user can upload a CSV or TXT file in Anki format, have its contents validated (lines split by `;`, `\t`, or `-` into exactly two parts), and have valid lines imported as flashcards into a selected set (invalid lines silently skipped per US-009 spec).** — Archived 2026-06-14 → `context/archive/2026-06-14-csv-import/`. Lesson: —.
+- **S-05: user can start a spaced repetition review session for a set, see flashcards due for review (scheduled by the SR algorithm based on their answer history), flip a card to reveal the answer, rate their response (e.g. Again / Good / Easy), and have the algorithm update the card's next scheduled review date.** — Archived 2026-06-14 → `context/archive/2026-06-14-sr-review-session/`. Lesson: —.
