@@ -3,7 +3,7 @@ project: 10xCards
 version: 1
 status: draft
 created: 2026-06-10
-updated: 2026-06-13
+updated: 2026-06-14
 prd_version: 1
 main_goal: market-feedback
 top_blocker: capacity
@@ -30,7 +30,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 | ID   | Change ID               | Outcome (user can …)                                             | Prerequisites    | PRD refs                       | Status   |
 | ---- | ----------------------- | ---------------------------------------------------------------- | ---------------- | ------------------------------ | -------- |
 | F-01 | data-schema             | (foundation) tabele sets, flashcards, reviews z RLS              | —                | FR-001, §Access Control        | done     |
-| S-01 | ai-flashcard-generation | wkleić tekst, otrzymać propozycje AI i zapisać fiszki do zestawu | F-01             | FR-002, FR-003, US-01          | proposed |
+| S-01 | ai-flashcard-generation | wkleić tekst, otrzymać propozycje AI i zapisać fiszki do zestawu | F-01             | FR-002, FR-003, US-01          | done     |
 | S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać             | F-01             | FR-007                         | done     |
 | S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie             | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | done     |
 | S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | proposed |
@@ -87,7 +87,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Wybór dostawcy AI (Anthropic Claude, OpenRouter, OpenAI) i model — wpływa na SDK, format promptu i konfigurację klucza API w Cloudflare Worker. — Owner: author. Block: no.
 - **Risk:** Jakość generowania AI jest bezpośrednio mierzona przez kryterium sukcesu (75% akceptacji); jeśli pierwsza wersja promptu daje niską jakość, potrzebna iteracja. Sekwencjonowany jako pierwszy user-facing slice, by jak najszybciej uzyskać sygnał o jakości.
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: Zarządzanie zestawami
 
@@ -194,5 +194,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-01: (foundation) tabele sets, flashcards, reviews z RLS** — Archived 2026-06-13 → `context/archive/2026-06-10-data-scheme/`. Lesson: —.
 - **S-02: user can view a dashboard listing all their sets, create a new set, rename an existing set, delete a set, and browse flashcards within a set.** — Archived 2026-06-13 → `context/archive/2026-06-13-set-and-deck-management/`. Lesson: —.
 - **S-03: user can manually create a new flashcard (front + back text), edit the content of an existing flashcard inline, and delete a flashcard from a set.** — Archived 2026-06-13 → `context/archive/2026-06-13-flashcard-crud/`. Lesson: —.
+
+- **S-01: user can paste text into an input field, trigger AI flashcard generation, see a bulk preview of generated flashcard proposals (question/answer pairs), edit or delete individual proposals inline, and save the accepted flashcards to a new or existing set.** — Archived 2026-06-14 → `context/archive/2026-06-13-ai-flashcard-generation/`. Lesson: —.
 
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches a roadmap item is archived.)
