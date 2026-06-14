@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
+import { Rating } from "@/types";
 import { submitCardReview } from "@/lib/services/reviews";
 import { errorMessage, isNotFound } from "@/lib/services/flashcards";
 
@@ -7,7 +8,7 @@ export const prerender = false;
 
 const reviewBodySchema = z.object({
   flashcardId: z.uuid(),
-  grade: z.number().int().min(1).max(4),
+  grade: z.union([z.literal(Rating.Again), z.literal(Rating.Hard), z.literal(Rating.Good), z.literal(Rating.Easy)]),
 });
 
 export const POST: APIRoute = async (context) => {

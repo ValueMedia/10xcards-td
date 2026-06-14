@@ -22,7 +22,7 @@ export const GET: APIRoute = async (context) => {
     });
   }
 
-  const { data, error } = await getDueCardsForSession(supabase, id);
+  const { data, error } = await getDueCardsForSession(supabase, user.id, id);
 
   if (error) {
     const status = isNotFound(error) ? 404 : 500;

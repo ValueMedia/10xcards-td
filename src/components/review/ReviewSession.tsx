@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-type Phase = "loading" | "empty" | "reviewing" | "summary";
+type Phase = "loading" | "empty" | "error" | "reviewing" | "summary";
 
 interface Props {
   setId: string;
@@ -31,6 +31,7 @@ export default function ReviewSession({ setId, setName }: Props) {
   const [flipped, setFlipped] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [nextDue, setNextDue] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [summary, setSummary] = useState<SessionSummary>({
     total: 0,
     byGrade: { again: 0, hard: 0, good: 0, easy: 0 },
@@ -55,15 +56,14 @@ export default function ReviewSession({ setId, setName }: Props) {
         }
       } catch {
         if (cancelled) return;
-        toast.error("Nie udało się załadować kart. Spróbuj ponownie.");
-        setPhase("empty");
+        setPhase("error");
       }
     }
     void load();
     return () => {
       cancelled = true;
     };
-  }, [setId]);
+  }, [setId, retryCount]);
 
   const handleRate = useCallback(
     async (rating: Rating, gradeKey: keyof SessionSummary["byGrade"]) => {
@@ -103,6 +103,28 @@ export default function ReviewSession({ setId, setName }: Props) {
     return (
       <div className="bg-cosmic flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-white" />
+      </div>
+    );
+  }
+
+  if (phase === "error") {
+    return (
+      <div className="bg-cosmic flex min-h-screen flex-col items-center justify-center gap-6 p-4 text-white">
+        <h1 className="text-2xl font-bold">{setName}</h1>
+        <p className="text-lg text-red-400">Nie udało się załadować kart</p>
+        <Button
+          onClick={() => {
+            setPhase("loading");
+            setRetryCount((n) => n + 1);
+          }}
+          className="bg-white/10 text-white hover:bg-white/20"
+          variant="outline"
+        >
+          Spróbuj ponownie
+        </Button>
+        <a href={`/sets/${setId}`} className="text-sm text-blue-100/50 transition-colors hover:text-blue-100/80">
+          Wróć do zestawu
+        </a>
       </div>
     );
   }
