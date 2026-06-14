@@ -37,9 +37,7 @@
   - Tradeoff: Mixes runbook commands with planning context; harder to find during incident response.
   - Confidence: MEDIUM — workable but less discoverable.
   - Blind spot: Plan.md may be archived and no longer the first place an operator checks.
-- **Decision**: PENDING
-
-### F2 — Rate-limit counter consumed before validation / AI call
+- **Decision**: FIXED — created `context/changes/ai-flashcard-generation/runbook.md` with KV setup, secret rotation, model override, rate-limit reset, and troubleshooting steps.
 
 - **Severity**: ❌ CRITICAL
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
