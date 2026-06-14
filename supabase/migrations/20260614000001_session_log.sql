@@ -23,3 +23,5 @@ on public.session_log
 for select
 to authenticated
 using ((select auth.uid()) = user_id);
+
+grant select, insert on public.session_log to authenticated;

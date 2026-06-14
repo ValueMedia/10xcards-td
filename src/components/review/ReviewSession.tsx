@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { Rating } from "@/types";
 import type { Flashcard, SessionSummary } from "@/types";
@@ -36,6 +36,10 @@ export default function ReviewSession({ setId, setName }: Props) {
     total: 0,
     byGrade: { again: 0, hard: 0, good: 0, easy: 0 },
   });
+  const sessionStartedAtRef = useRef<Date | null>(null);
+  useEffect(() => {
+    sessionStartedAtRef.current = new Date();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -85,6 +89,15 @@ export default function ReviewSession({ setId, setName }: Props) {
 
         const nextIdx = currentIndex + 1;
         if (nextIdx >= cards.length) {
+          void fetch("/api/sessions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              setId,
+              startedAt: (sessionStartedAtRef.current ?? new Date()).toISOString(),
+              endedAt: new Date().toISOString(),
+            }),
+          });
           setPhase("summary");
         } else {
           setCurrentIndex(nextIdx);
@@ -96,7 +109,7 @@ export default function ReviewSession({ setId, setName }: Props) {
         setSubmitting(false);
       }
     },
-    [cards, currentIndex, submitting],
+    [cards, currentIndex, submitting, setId],
   );
 
   if (phase === "loading") {

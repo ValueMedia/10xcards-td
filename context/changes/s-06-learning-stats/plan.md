@@ -267,27 +267,27 @@ Phase 1 adds `session_log`. No second migration is needed — Phase 3 uses TypeS
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly: `npx supabase migration up`
-- [x] 1.2 Lint passes: `npm run lint`
-- [x] 1.3 Build passes: `npm run build`
+- [x] 1.1 Migration applies cleanly: `npx supabase migration up` — da25534
+- [x] 1.2 Lint passes: `npm run lint` — da25534
+- [x] 1.3 Build passes: `npm run build` — da25534
 
 #### Manual
 
-- [x] 1.4 session_log table visible in Supabase Studio with correct columns and RLS enabled
-- [x] 1.5 Authenticated user can INSERT a row; another user cannot SELECT it
+- [x] 1.4 session_log table visible in Supabase Studio with correct columns and RLS enabled — da25534
+- [x] 1.5 Authenticated user can INSERT a row; another user cannot SELECT it — da25534
 
 ### Phase 2: Session Tracking — API Endpoint + ReviewSession Instrumentation
 
 #### Automated
 
-- [ ] 2.1 Lint passes: `npm run lint`
-- [ ] 2.2 Build passes: `npm run build`
+- [x] 2.1 Lint passes: `npm run lint`
+- [x] 2.2 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Complete a review session — row appears in session_log with correct started_at, ended_at, set_id
-- [ ] 2.4 Navigating away mid-session does NOT create a row
-- [ ] 2.5 POST /api/sessions with endedAt before startedAt returns 400
+- [x] 2.3 Complete a review session — row appears in session_log with correct started_at, ended_at, set_id
+- [x] 2.4 Navigating away mid-session does NOT create a row
+- [x] 2.5 POST /api/sessions with endedAt before startedAt returns 400
 
 ### Phase 3: Stats Service, Types, and Dashboard UI
 
