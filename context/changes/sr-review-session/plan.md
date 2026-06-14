@@ -225,14 +225,14 @@ All due cards are fetched at session start in a single query — acceptable beca
 
 #### Automated
 
-- [x] 2.1 `npm run build` succeeds after Astro page rename
-- [x] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run build` succeeds after Astro page rename — af34e0a
+- [x] 2.2 `npm run lint` passes — af34e0a
 
 #### Manual
 
-- [x] 2.3 /sets/[id] loads correctly after Astro page rename (no regression)
-- [x] 2.4 "Rozpocznij sesję" button appears and navigates to /sets/[id]/review
-- [x] 2.5 Review page loads, shows first due card with flip interaction
-- [x] 2.6 Rating a card advances session; last card shows summary with correct counts
-- [x] 2.7 Empty state shows next due date when no cards are due
-- [x] 2.8 No regressions in set detail, flashcard list, CSV import
+- [x] 2.3 /sets/[id] loads correctly after Astro page rename (no regression) — af34e0a
+- [x] 2.4 "Rozpocznij sesję" button appears and navigates to /sets/[id]/review — af34e0a
+- [x] 2.5 Review page loads, shows first due card with flip interaction — af34e0a
+- [x] 2.6 Rating a card advances session; last card shows summary with correct counts — af34e0a
+- [x] 2.7 Empty state shows next due date when no cards are due — af34e0a
+- [x] 2.8 No regressions in set detail, flashcard list, CSV import — af34e0a
