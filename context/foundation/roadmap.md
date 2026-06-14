@@ -201,3 +201,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 - **S-04: user can upload a CSV or TXT file in Anki format, have its contents validated (lines split by `;`, `\t`, or `-` into exactly two parts), and have valid lines imported as flashcards into a selected set (invalid lines silently skipped per US-009 spec).** — Archived 2026-06-14 → `context/archive/2026-06-14-csv-import/`. Lesson: —.
 - **S-05: user can start a spaced repetition review session for a set, see flashcards due for review (scheduled by the SR algorithm based on their answer history), flip a card to reveal the answer, rate their response (e.g. Again / Good / Easy), and have the algorithm update the card's next scheduled review date.** — Archived 2026-06-14 → `context/archive/2026-06-14-sr-review-session/`. Lesson: —.
+- **S-06: przeglądać statystyki i historię nauki** — Archived 2026-06-14 → `context/archive/2026-06-14-s-06-learning-stats/`. Lesson: —.
