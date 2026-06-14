@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { Flashcard } from "@/types";
 import { parseCSV } from "@/lib/services/csv-parser";
@@ -27,10 +27,6 @@ interface Proposal {
 
 type Step = "upload" | "preview" | "importing";
 
-function INITIAL_STATE() {
-  return { step: "upload" as Step, proposals: [] as Proposal[], parseSkippedCount: 0, error: null as string | null };
-}
-
 export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) {
   const [step, setStep] = useState<Step>("upload");
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -38,13 +34,19 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
   const [error, setError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const mountedRef = useRef(true);
+  useEffect(
+    () => () => {
+      mountedRef.current = false;
+    },
+    [],
+  );
 
   function resetState() {
-    const s = INITIAL_STATE();
-    setStep(s.step);
-    setProposals(s.proposals);
-    setParseSkippedCount(s.parseSkippedCount);
-    setError(s.error);
+    setStep("upload");
+    setProposals([]);
+    setParseSkippedCount(0);
+    setError(null);
   }
 
   function handleOpenChange(next: boolean) {
@@ -68,23 +70,26 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
       return;
     }
 
-    const reader = new FileReader();
-    reader.onerror = () => {
-      setError("Failed to read file");
-    };
-    reader.onload = () => {
-      const text = typeof reader.result === "string" ? reader.result : "";
-      const { valid, skippedCount } = parseCSV(text);
-      if (valid.length === 0) {
-        setError("No valid flashcards found in this file");
-        return;
-      }
-      setProposals(valid.map((c) => ({ _key: crypto.randomUUID(), ...c })));
-      setParseSkippedCount(skippedCount);
-      setError(null);
-      setStep("preview");
-    };
-    reader.readAsText(file);
+    file
+      .arrayBuffer()
+      .then((buffer) => {
+        const bytes = new Uint8Array(buffer);
+        const utf8 = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+        // If UTF-8 produces replacement characters, assume Windows-1250 (common Anki export on Windows)
+        const text = utf8.includes("�") ? new TextDecoder("windows-1250").decode(bytes) : utf8;
+        const { valid, skippedCount } = parseCSV(text);
+        if (valid.length === 0) {
+          setError("No valid flashcards found in this file");
+          return;
+        }
+        setProposals(valid.map((c) => ({ _key: crypto.randomUUID(), ...c })));
+        setParseSkippedCount(skippedCount);
+        setError(null);
+        setStep("preview");
+      })
+      .catch(() => {
+        setError("Failed to read file");
+      });
   }
 
   function handleDeleteProposal(key: string) {
@@ -117,6 +122,7 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
           body: JSON.stringify({ flashcards: chunk.map(({ front, back }) => ({ front, back })) }),
         });
       } catch {
+        if (!mountedRef.current) return;
         const committedCount = chunkIndex * CHUNK_SIZE;
         setProposals((prev) => prev.slice(committedCount));
         setError("Network error — retry will import remaining cards");
@@ -127,6 +133,7 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
 
       if (!res.ok) {
         const body: { error?: string } = await res.json().catch(() => ({}));
+        if (!mountedRef.current) return;
         const committedCount = chunkIndex * CHUNK_SIZE;
         setProposals((prev) => prev.slice(committedCount));
         setError(body.error ?? `Import failed (HTTP ${res.status}) — retry will import remaining cards`);
@@ -135,11 +142,23 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
         return;
       }
 
-      const data: { data: Flashcard[] } = await res.json();
+      let data: { data: Flashcard[] };
+      try {
+        data = await res.json();
+      } catch {
+        if (!mountedRef.current) return;
+        const committedCount = chunkIndex * CHUNK_SIZE;
+        setProposals((prev) => prev.slice(committedCount));
+        setError("Invalid server response — retry will import remaining cards");
+        setStep("preview");
+        toast.error("Import interrupted — retry to continue");
+        return;
+      }
       allCreated.push(...data.data);
       chunkIndex++;
     }
 
+    if (!mountedRef.current) return;
     onImport(allCreated, parseSkippedCount);
   }
 

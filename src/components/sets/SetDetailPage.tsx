@@ -63,11 +63,11 @@ export default function SetDetailPage({ initialData }: Props) {
     toast.success("Flashcard deleted");
   }, []);
 
-  const handleImport = useCallback((flashcards: Flashcard[], skippedCount: number) => {
-    setState((prev) => ({ ...prev, flashcards: [...flashcards, ...prev.flashcards] }));
+  const handleImport = useCallback((imported: Flashcard[], skippedCount: number) => {
+    setState((prev) => ({ ...prev, flashcards: [...imported, ...prev.flashcards] }));
     setImportOpen(false);
     const skippedNote = skippedCount > 0 ? ` · ${skippedCount} lines skipped` : "";
-    toast.success(`Imported ${flashcards.length} flashcard${flashcards.length !== 1 ? "s" : ""}${skippedNote}`);
+    toast.success(`Imported ${imported.length} flashcard${imported.length !== 1 ? "s" : ""}${skippedNote}`);
   }, []);
 
   if (!set) {
