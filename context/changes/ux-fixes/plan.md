@@ -155,12 +155,12 @@ The `proposals.length` dependency fires when the list goes from 0 to N (new gene
 
 #### Automated
 
-- [x] 2.1 Lint passes: `npm run lint`
-- [x] 2.2 Build passes: `npm run build`
+- [x] 2.1 Lint passes: `npm run lint` — 5ba6153
+- [x] 2.2 Build passes: `npm run build` — 5ba6153
 
 #### Manual
 
-- [x] 2.3 Textarea focused on page load
-- [x] 2.4 Smooth scroll to proposals after generation
-- [x] 2.5 No scroll on proposal edit/delete
-- [x] 2.6 Scroll fires again on re-generation
+- [x] 2.3 Textarea focused on page load — 5ba6153
+- [x] 2.4 Smooth scroll to proposals after generation — 5ba6153
+- [x] 2.5 No scroll on proposal edit/delete — 5ba6153
+- [x] 2.6 Scroll fires again on re-generation — 5ba6153
