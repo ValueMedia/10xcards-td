@@ -212,27 +212,27 @@ All due cards are fetched at session start in a single query — acceptable beca
 
 #### Automated
 
-- [x] 1.1 `npm run build` succeeds with no TypeScript errors
-- [x] 1.2 `npm run lint` passes
+- [x] 1.1 `npm run build` succeeds with no TypeScript errors — b9bbb86
+- [x] 1.2 `npm run lint` passes — b9bbb86
 
 #### Manual
 
-- [x] 1.3 GET /api/sets/[id]/due-cards returns cards and null nextDue for a set with due cards
-- [x] 1.4 GET /api/sets/[id]/due-cards returns empty cards array and nextDue date for a set with no due cards
-- [x] 1.5 POST /api/reviews updates flashcard row and inserts review log in DB
+- [x] 1.3 GET /api/sets/[id]/due-cards returns cards and null nextDue for a set with due cards — b9bbb86
+- [x] 1.4 GET /api/sets/[id]/due-cards returns empty cards array and nextDue date for a set with no due cards — b9bbb86
+- [x] 1.5 POST /api/reviews updates flashcard row and inserts review log in DB — b9bbb86
 
 ### Phase 2: UI — Review Session Component, Page, Navigation
 
 #### Automated
 
-- [ ] 2.1 `npm run build` succeeds after Astro page rename
-- [ ] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run build` succeeds after Astro page rename
+- [x] 2.2 `npm run lint` passes
 
 #### Manual
 
-- [ ] 2.3 /sets/[id] loads correctly after Astro page rename (no regression)
-- [ ] 2.4 "Rozpocznij sesję" button appears and navigates to /sets/[id]/review
-- [ ] 2.5 Review page loads, shows first due card with flip interaction
-- [ ] 2.6 Rating a card advances session; last card shows summary with correct counts
-- [ ] 2.7 Empty state shows next due date when no cards are due
-- [ ] 2.8 No regressions in set detail, flashcard list, CSV import
+- [x] 2.3 /sets/[id] loads correctly after Astro page rename (no regression)
+- [x] 2.4 "Rozpocznij sesję" button appears and navigates to /sets/[id]/review
+- [x] 2.5 Review page loads, shows first due card with flip interaction
+- [x] 2.6 Rating a card advances session; last card shows summary with correct counts
+- [x] 2.7 Empty state shows next due date when no cards are due
+- [x] 2.8 No regressions in set detail, flashcard list, CSV import

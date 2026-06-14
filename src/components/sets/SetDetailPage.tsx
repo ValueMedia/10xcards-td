@@ -109,6 +109,12 @@ export default function SetDetailPage({ initialData }: Props) {
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
             <a
+              href={`/sets/${set.id}/review`}
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-purple-700 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-purple-600"
+            >
+              Rozpocznij sesję
+            </a>
+            <a
               href={`/generate?setId=${set.id}`}
               className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-blue-500"
             >

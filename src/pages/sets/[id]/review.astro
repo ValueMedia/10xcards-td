@@ -1,0 +1,31 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import { getSetByIdForUser } from "@/lib/services/sets";
+import ReviewSession from "@/components/review/ReviewSession";
+
+const { id } = Astro.params;
+const { user, supabase } = Astro.locals;
+
+let setName = "";
+let found = false;
+
+if (user && supabase && id) {
+  const { data, error } = await getSetByIdForUser(supabase, user.id, id);
+  if (data && !error) {
+    setName = data.name;
+    found = true;
+  }
+}
+
+if (!found || !id) {
+  Astro.response.status = 302;
+  Astro.response.headers.set("Location", id ? `/sets/${id}` : "/dashboard");
+  return;
+}
+---
+
+<Layout title={`Review — ${setName}`}>
+  <ReviewSession client:load setId={id} setName={setName} />
+</Layout>

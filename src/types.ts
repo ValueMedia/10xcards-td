@@ -35,6 +35,11 @@ export interface Flashcard {
   updated_at: string;
 }
 
+export interface SessionSummary {
+  total: number;
+  byGrade: { again: number; hard: number; good: number; easy: number };
+}
+
 export interface Review {
   id: string;
   flashcard_id: string;

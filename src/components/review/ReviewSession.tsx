@@ -1,0 +1,217 @@
+import { useState, useEffect, useCallback } from "react";
+import { toast } from "sonner";
+import { Rating } from "@/types";
+import type { Flashcard, SessionSummary } from "@/types";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+type Phase = "loading" | "empty" | "reviewing" | "summary";
+
+interface Props {
+  setId: string;
+  setName: string;
+}
+
+const GRADE_LABELS: { rating: Rating; label: string; key: keyof SessionSummary["byGrade"] }[] = [
+  { rating: Rating.Again, label: "Nie wiem", key: "again" },
+  { rating: Rating.Hard, label: "Trudne", key: "hard" },
+  { rating: Rating.Good, label: "Wiem", key: "good" },
+  { rating: Rating.Easy, label: "Łatwe", key: "easy" },
+];
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("pl-PL", { dateStyle: "long" });
+}
+
+export default function ReviewSession({ setId, setName }: Props) {
+  const [phase, setPhase] = useState<Phase>("loading");
+  const [cards, setCards] = useState<Flashcard[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [nextDue, setNextDue] = useState<string | null>(null);
+  const [summary, setSummary] = useState<SessionSummary>({
+    total: 0,
+    byGrade: { again: 0, hard: 0, good: 0, easy: 0 },
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch(`/api/sets/${setId}/due-cards`);
+        if (!res.ok) throw new Error("Failed to load cards");
+        const bodyRaw: unknown = await res.json();
+        const body = bodyRaw as { cards: Flashcard[]; nextDue: string | null };
+        if (cancelled) return;
+        if (body.cards.length === 0) {
+          setNextDue(body.nextDue);
+          setPhase("empty");
+        } else {
+          setCards(body.cards);
+          setSummary({ total: body.cards.length, byGrade: { again: 0, hard: 0, good: 0, easy: 0 } });
+          setPhase("reviewing");
+        }
+      } catch {
+        if (cancelled) return;
+        toast.error("Nie udało się załadować kart. Spróbuj ponownie.");
+        setPhase("empty");
+      }
+    }
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [setId]);
+
+  const handleRate = useCallback(
+    async (rating: Rating, gradeKey: keyof SessionSummary["byGrade"]) => {
+      if (submitting) return;
+      setSubmitting(true);
+      const card = cards[currentIndex];
+      try {
+        const res = await fetch("/api/reviews", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ flashcardId: card.id, grade: rating }),
+        });
+        if (!res.ok) throw new Error("Submit failed");
+
+        setSummary((prev) => ({
+          ...prev,
+          byGrade: { ...prev.byGrade, [gradeKey]: prev.byGrade[gradeKey] + 1 },
+        }));
+
+        const nextIdx = currentIndex + 1;
+        if (nextIdx >= cards.length) {
+          setPhase("summary");
+        } else {
+          setCurrentIndex(nextIdx);
+          setFlipped(false);
+        }
+      } catch {
+        toast.error("Nie udało się zapisać oceny. Spróbuj jeszcze raz.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [cards, currentIndex, submitting],
+  );
+
+  if (phase === "loading") {
+    return (
+      <div className="bg-cosmic flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-white" />
+      </div>
+    );
+  }
+
+  if (phase === "empty") {
+    return (
+      <div className="bg-cosmic flex min-h-screen flex-col items-center justify-center gap-6 p-4 text-white">
+        <h1 className="text-2xl font-bold">{setName}</h1>
+        <p className="text-lg text-blue-100/60">Brak kart do powtórki</p>
+        {nextDue && (
+          <p className="text-sm text-blue-100/40">
+            Następna powtórka: <span className="text-blue-100/70">{formatDate(nextDue)}</span>
+          </p>
+        )}
+        <a
+          href={`/sets/${setId}`}
+          className="mt-4 inline-flex items-center gap-2 rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
+        >
+          Wróć do zestawu
+        </a>
+      </div>
+    );
+  }
+
+  if (phase === "summary") {
+    return (
+      <div className="bg-cosmic flex min-h-screen flex-col items-center justify-center gap-6 p-4 text-white">
+        <h1 className="text-2xl font-bold">Sesja zakończona!</h1>
+        <p className="text-blue-100/60">
+          Przejrzano <span className="font-semibold text-white">{summary.total}</span> kart
+        </p>
+        <div className="flex gap-4">
+          {GRADE_LABELS.map(({ label, key }) => (
+            <div key={key} className="flex flex-col items-center gap-1">
+              <span className="text-xl font-bold">{summary.byGrade[key]}</span>
+              <span className="text-xs text-blue-100/50">{label}</span>
+            </div>
+          ))}
+        </div>
+        <a
+          href={`/sets/${setId}`}
+          className="mt-4 inline-flex items-center gap-2 rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
+        >
+          Wróć do zestawu
+        </a>
+      </div>
+    );
+  }
+
+  const card = cards[currentIndex];
+
+  return (
+    <div className="bg-cosmic flex min-h-screen flex-col items-center justify-center gap-6 p-4 text-white">
+      <div className="w-full max-w-xl">
+        <div className="mb-4 flex items-center justify-between">
+          <a href={`/sets/${setId}`} className="text-sm text-blue-100/50 transition-colors hover:text-blue-100/80">
+            ← {setName}
+          </a>
+          <span className="text-sm text-blue-100/50">
+            {currentIndex + 1} / {cards.length}
+          </span>
+        </div>
+
+        <Card className="border-white/10 bg-white/5 text-white">
+          <CardContent className="pt-6">
+            <p className="min-h-[6rem] text-center text-xl leading-relaxed font-medium">{card.front}</p>
+
+            {flipped && (
+              <>
+                <hr className="my-4 border-white/10" />
+                <p className="min-h-[6rem] text-center text-lg leading-relaxed text-blue-100/80">{card.back}</p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+
+        <div className="mt-6 flex justify-center">
+          {!flipped ? (
+            <Button
+              onClick={() => {
+                setFlipped(true);
+              }}
+              className="bg-white/10 text-white hover:bg-white/20"
+              variant="outline"
+            >
+              Pokaż odpowiedź
+            </Button>
+          ) : (
+            <div className="flex w-full gap-2">
+              {GRADE_LABELS.map(({ rating, label, key }) => (
+                <Button
+                  key={key}
+                  onClick={() => handleRate(rating, key)}
+                  disabled={submitting}
+                  className={cn(
+                    "flex-1 text-sm",
+                    key === "again" && "bg-red-700/80 hover:bg-red-600",
+                    key === "hard" && "bg-orange-700/80 hover:bg-orange-600",
+                    key === "good" && "bg-green-700/80 hover:bg-green-600",
+                    key === "easy" && "bg-blue-700/80 hover:bg-blue-600",
+                  )}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
