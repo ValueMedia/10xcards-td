@@ -1,10 +1,10 @@
 ---
 change_id: ux-fixes
 title: UX fixes: set view title layout, generate page auto-focus and scroll to results
-status: implemented
+status: archived
 created: 2026-06-14
 updated: 2026-06-14
-archived_at: null
+archived_at: 2026-06-14T16:10:00Z
 ---
 
 ## Notes
