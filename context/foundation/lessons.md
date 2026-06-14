@@ -22,3 +22,10 @@
 - **Problem**: `supabase db reset --local` wipes the entire local database, including `auth.users` and all application tables (`sets`, `flashcards`, `reviews`). This destroys test accounts and any data the user may have created locally, and it was done without asking.
 - **Rule**: Before running any destructive database operation (`supabase db reset`, `supabase stop --no-backup`, dropping tables, truncating auth.users, etc.), ask the user for explicit approval. Prefer non-destructive recovery first: restart the dev server, recreate a single isolated test record via API/SQL, or use a dedicated test fixture instead of resetting the whole database.
 - **Applies to**: all local database operations, especially Supabase CLI commands
+
+## Astro: `[id].astro` and `[id]/` directory cannot coexist — rename to `[id]/index.astro` first
+
+- **Context**: `src/pages/sets/[id].astro` (sr-review-session, Phase 2) — adding a nested route `src/pages/sets/[id]/review.astro` required the rename.
+- **Problem**: Astro's file-based router cannot have both a flat file `pages/foo/[id].astro` and a directory `pages/foo/[id]/` with the same dynamic segment name. Adding `[id]/review.astro` alongside the existing `[id].astro` creates a routing conflict — one of the routes silently wins and the other breaks.
+- **Rule**: Before adding any nested route under a dynamic segment (e.g., `/sets/[id]/review`), check whether `[id].astro` already exists as a flat file. If it does, rename it to `[id]/index.astro` first (content unchanged) and verify the parent route still resolves before adding the nested file.
+- **Applies to**: all Astro page additions under an existing dynamic route segment
