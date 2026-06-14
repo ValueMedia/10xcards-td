@@ -6,9 +6,11 @@ import { getSecret } from "astro:env/server";
 
 export const prerender = false;
 
-const paramsSchema = generateInputSchema.omit({ count: true, apiKey: true, model: true, appUrl: true }).extend({
-  count: z.number().int().min(1).max(20).optional(),
-});
+const paramsSchema = generateInputSchema
+  .omit({ count: true, apiKey: true, model: true, appUrl: true, systemPromptOverride: true })
+  .extend({
+    count: z.number().int().min(1).max(20).optional(),
+  });
 
 export const POST: APIRoute = async (context) => {
   const user = context.locals.user;
@@ -63,7 +65,8 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
-  const kv = context.locals.runtime?.env?.AI_RATE_LIMIT ?? null;
+  const kv =
+    (context.locals as { runtime?: { env?: { AI_RATE_LIMIT?: KVNamespace } } }).runtime?.env?.AI_RATE_LIMIT ?? null;
   const rateLimit = await checkRateLimit(kv, user.id);
   if (!rateLimit.allowed) {
     return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again later." }), {
@@ -81,7 +84,12 @@ export const POST: APIRoute = async (context) => {
   }
 
   const model = getSecret("OPENROUTER_MODEL") ?? undefined;
+  const systemPromptOverride = getSecret("OPENROUTER_SYSTEM_PROMPT") ?? undefined;
   const appUrl = new URL(context.request.url).origin;
+  const hourlyLimit = getSecret("AI_RATE_LIMIT_HOURLY");
+  if (hourlyLimit !== undefined) {
+    process.env.AI_RATE_LIMIT_HOURLY = hourlyLimit;
+  }
 
   const { data, error } = await generateFlashcardProposals({
     text: parsed.data.text,
@@ -89,6 +97,7 @@ export const POST: APIRoute = async (context) => {
     apiKey,
     model,
     appUrl,
+    systemPromptOverride,
   });
 
   if (error) {

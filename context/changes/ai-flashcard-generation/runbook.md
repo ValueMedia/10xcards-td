@@ -44,6 +44,7 @@ After creation, copy the returned `id` and `preview_id` into `wrangler.jsonc`:
 ```bash
 npx wrangler secret put OPENROUTER_API_KEY
 npx wrangler secret put OPENROUTER_MODEL   # optional
+npx wrangler secret put OPENROUTER_SYSTEM_PROMPT # optional, overrides default prompt template
 npx wrangler secret put AI_RATE_LIMIT_HOURLY # optional, default 10
 ```
 
@@ -54,8 +55,11 @@ Create `.dev.vars` in the project root (gitignored):
 ```bash
 OPENROUTER_API_KEY=sk-or-v1-...
 OPENROUTER_MODEL=google/gemini-flash-1.5
+OPENROUTER_SYSTEM_PROMPT=           # leave empty to use default template in ai-prompt.ts
 AI_RATE_LIMIT_HOURLY=10
 ```
+
+A non-empty `OPENROUTER_SYSTEM_PROMPT` overrides the default template entirely. It can be a single-line value with `\n` escapes, or set via `npx wrangler secret put` for multiline input.
 
 ## Environment variables reference
 
@@ -63,6 +67,7 @@ AI_RATE_LIMIT_HOURLY=10
 |------|----------|---------|---------|
 | `OPENROUTER_API_KEY` | Yes | — | Bearer token for OpenRouter API |
 | `OPENROUTER_MODEL` | No | `google/gemini-flash-1.5` | Model ID override |
+| `OPENROUTER_SYSTEM_PROMPT` | No | template in `src/lib/services/ai-prompt.ts` | Full system prompt override |
 | `AI_RATE_LIMIT_HOURLY` | No | `10` | Max AI generations per user per hour |
 
 ## Rotate the OpenRouter key
@@ -74,6 +79,20 @@ AI_RATE_LIMIT_HOURLY=10
    ```
 3. Update `.dev.vars` for local development.
 4. Revoke the old key in the OpenRouter dashboard after confirming the new one works.
+
+## Change the prompt
+
+Set `OPENROUTER_SYSTEM_PROMPT` to override the default template from `src/lib/services/ai-prompt.ts`.
+
+For a production / preview deployment, paste the full prompt via stdin:
+
+```bash
+npx wrangler secret put OPENROUTER_SYSTEM_PROMPT
+```
+
+The prompt may contain `$COUNT`, which is replaced by the requested number of flashcards. Include the `<source_text>` delimiter instructions if you want the model to treat the user text as a bounded input.
+
+To revert to the default template, set the secret to an empty value or delete it.
 
 ## Change the model
 

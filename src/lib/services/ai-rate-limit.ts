@@ -2,6 +2,10 @@
 
 const HOURLY_LIMIT = process.env.AI_RATE_LIMIT_HOURLY ? parseInt(process.env.AI_RATE_LIMIT_HOURLY, 10) : 10;
 
+export function getHourlyLimit(): number {
+  return Number.isNaN(HOURLY_LIMIT) ? 10 : HOURLY_LIMIT;
+}
+
 export function rateLimitKey(userId: string, now = new Date()): string {
   const hour = now.toISOString().slice(0, 13); // YYYY-MM-DDTHH
   return `ai:hourly:${userId}:${hour}`;
@@ -12,8 +16,9 @@ export async function checkRateLimit(
   userId: string,
   now = new Date(),
 ): Promise<{ allowed: boolean; limit: number; remaining: number }> {
+  const limit = getHourlyLimit();
   if (!kv) {
-    return { allowed: false, limit: HOURLY_LIMIT, remaining: 0 };
+    return { allowed: false, limit, remaining: 0 };
   }
 
   const key = rateLimitKey(userId, now);
@@ -21,10 +26,10 @@ export async function checkRateLimit(
   const parsed = current ? Number.parseInt(current, 10) : 0;
   const count = Number.isNaN(parsed) ? 0 : parsed;
 
-  if (count >= HOURLY_LIMIT) {
-    return { allowed: false, limit: HOURLY_LIMIT, remaining: 0 };
+  if (count >= limit) {
+    return { allowed: false, limit, remaining: 0 };
   }
 
   await kv.put(key, String(count + 1), { expirationTtl: 3600 });
-  return { allowed: true, limit: HOURLY_LIMIT, remaining: HOURLY_LIMIT - count - 1 };
+  return { allowed: true, limit, remaining: limit - count - 1 };
 }

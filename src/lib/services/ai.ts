@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { renderFlashcardPrompt } from "./ai-prompt";
 
 const MAX_INPUT_LENGTH = 8000;
 const MAX_SIDE_LENGTH = 1000;
@@ -23,9 +24,10 @@ export interface FlashcardProposal {
 export interface GenerateInput {
   text: string;
   count?: number;
-  apiKey?: string;
+  apiKey: string;
   model?: string;
   appUrl?: string;
+  systemPromptOverride?: string | null;
 }
 
 export const generateInputSchema = z.object({
@@ -33,7 +35,8 @@ export const generateInputSchema = z.object({
   count: z.number().int().min(1).max(MAX_COUNT).default(DEFAULT_COUNT),
   apiKey: z.string().optional(),
   model: z.string().optional(),
-  appUrl: z.string().url().optional(),
+  appUrl: z.string().optional(),
+  systemPromptOverride: z.string().optional().nullable(),
 });
 
 const openRouterResponseSchema = z.object({
@@ -85,23 +88,6 @@ export function errorKind(error: AiServiceError): AiServiceError["kind"] {
   return error.kind;
 }
 
-function buildPrompt(text: string, count: number): string {
-  return `You are a helpful assistant that creates concise flashcards from a source text.
-
-Extract up to ${count} important facts or concepts from the text below and return them as a JSON object with this exact shape:
-
-{"flashcards":[{"front":"Question or concept","back":"Short answer or explanation"}]}
-
-Rules:
-- Each flashcard must have non-empty "front" and "back" fields.
-- Keep fronts and backs short (ideally under 200 characters each, but no more than 1000).
-- Use the source language.
-- Return ONLY raw JSON. Do not wrap it in markdown code fences or add any other text.
-
-Source text:
-${text}`;
-}
-
 function stripMarkdownFences(raw: string): string {
   const trimmed = raw.trim();
   if (trimmed.startsWith("```")) {
@@ -146,11 +132,13 @@ export async function generateFlashcardProposals(input: GenerateInput): Promise<
     return { data: [], error: { kind: "parseError", message } };
   }
 
-  const { text, count, apiKey, model, appUrl } = parsedInput.data;
+  const { text, count, apiKey, model, appUrl, systemPromptOverride } = parsedInput.data;
 
   if (!apiKey) {
     return { data: [], error: { kind: "unconfigured", message: "OpenRouter API key is not configured" } };
   }
+
+  const { system, user } = renderFlashcardPrompt({ text, count, systemPromptOverride });
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
@@ -168,7 +156,10 @@ export async function generateFlashcardProposals(input: GenerateInput): Promise<
       },
       body: JSON.stringify({
         model: model ?? DEFAULT_MODEL,
-        messages: [{ role: "user", content: buildPrompt(text, count) }],
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user },
+        ],
         temperature: 0.3,
       }),
       signal: controller.signal,
