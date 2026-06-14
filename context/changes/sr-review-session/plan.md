@@ -58,9 +58,9 @@ Create the reviews service and two API endpoints. The service encapsulates ts-fs
 **Intent**: New service module providing two operations — fetching cards due for a session and submitting a single card review. Centralises ts-fsrs integration and all DB access for the review session.
 
 **Contract**:
-- `getDueCardsForSession(supabase, setId): Promise<ServiceResult<{cards: Flashcard[], nextDue: string | null}>>` — queries `flashcards WHERE set_id = $setId AND due <= now()` (RLS enforces user isolation). If the result is empty, also queries `MIN(due)` from the same set to populate `nextDue`.
-- `submitCardReview(supabase, userId, flashcardId, grade: Rating): Promise<ServiceResult<void>>` — loads the flashcard by id, calls `fsrs().next(card, new Date(), grade)`, updates all 10 `Card` fields on `flashcards` (including deprecated `elapsed_days`), inserts a `reviews` row mapping `result.log.rating → grade`, `result.log.*` → corresponding columns, plus `flashcard_id` and `user_id`.
-- Follow `ServiceError` discriminated union pattern from `src/lib/services/flashcards.ts`.
+- `getDueCardsForSession(supabase, setId): Promise<{ data: { cards: Flashcard[]; nextDue: string | null } | null; error: ServiceError | null }>` — queries `flashcards WHERE set_id = $setId AND due <= now()` (RLS enforces user isolation). If the result is empty, also queries `MIN(due)` from the same set to populate `nextDue`.
+- `submitCardReview(supabase, userId, flashcardId, grade: Rating): Promise<{ error: ServiceError | null }>` — loads the flashcard by id, calls `fsrs().next(card, new Date(), grade)`, updates 9 `Card` fields on `flashcards`: `due`, `stability`, `difficulty`, `elapsed_days`, `scheduled_days`, `reps`, `lapses`, `state`, `last_review`. Omit `last_elapsed_days` — it is not a column in the `flashcards` table (absent from `Flashcard` type in `src/types.ts`); intentionally skipped until a ts-fsrs v6 migration removes both deprecated fields. Inserts a `reviews` row mapping `result.log.rating → grade`, `result.log.*` → corresponding columns, plus `flashcard_id` and `user_id`.
+- Use `ServiceError` discriminated union (imported from `src/lib/services/flashcards.ts`); return shape matches existing inline pattern from that file.
 
 #### 2. Due-cards API endpoint
 
@@ -140,7 +140,7 @@ Views:
 - `loading` — spinner while `GET /api/sets/[setId]/due-cards` is in flight
 - `empty` — "Brak kart do powtórki" + formatted `nextDue` date + "Wróć do zestawu" link
 - `reviewing` (not flipped) — card front text + progress indicator (`X / Y`) + "Pokaż odpowiedź" button
-- `reviewing` (flipped) — card front + divider + card back + 4 rating buttons (Nie wiem / Trudne / Wiem / Łatwe); clicking a button calls `POST /api/reviews`, increments summary counters, advances to next card or transitions to `summary`
+- `reviewing` (flipped) — card front + divider + card back + 4 rating buttons (Nie wiem / Trudne / Wiem / Łatwe); clicking a button calls `POST /api/reviews`, then on success: increments summary counters, advances to next card or transitions to `summary`; on failure: reset `submitting=false`, keep `currentIndex` unchanged, show `toast.error` — allowing the user to retry the same rating (SR correctness requires the review to be persisted before advancing)
 - `summary` — "Sesja zakończona!" + total count + grade breakdown + "Wróć do zestawu" link
 
 Use `cn()` + shadcn/ui `Button` and `Card` components. Follow `SetDetailPage.tsx` patterns for toast error handling (`toast.error` from Sonner) if the API call fails.
@@ -212,14 +212,14 @@ All due cards are fetched at session start in a single query — acceptable beca
 
 #### Automated
 
-- [ ] 1.1 `npm run build` succeeds with no TypeScript errors
-- [ ] 1.2 `npm run lint` passes
+- [x] 1.1 `npm run build` succeeds with no TypeScript errors
+- [x] 1.2 `npm run lint` passes
 
 #### Manual
 
-- [ ] 1.3 GET /api/sets/[id]/due-cards returns cards and null nextDue for a set with due cards
-- [ ] 1.4 GET /api/sets/[id]/due-cards returns empty cards array and nextDue date for a set with no due cards
-- [ ] 1.5 POST /api/reviews updates flashcard row and inserts review log in DB
+- [x] 1.3 GET /api/sets/[id]/due-cards returns cards and null nextDue for a set with due cards
+- [x] 1.4 GET /api/sets/[id]/due-cards returns empty cards array and nextDue date for a set with no due cards
+- [x] 1.5 POST /api/reviews updates flashcard row and inserts review log in DB
 
 ### Phase 2: UI — Review Session Component, Page, Navigation
 
