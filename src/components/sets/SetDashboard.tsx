@@ -1,20 +1,22 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
-import type { FlashcardSet, LearningStats } from "@/types";
+import type { FlashcardSet, LearningStats, DonatedSetTile } from "@/types";
 import { SetGrid } from "@/components/sets/SetGrid";
 import { CreateSetDialog } from "@/components/sets/CreateSetDialog";
 import { RenameSetDialog } from "@/components/sets/RenameSetDialog";
 import { DeleteSetDialog } from "@/components/sets/DeleteSetDialog";
 import { StatsBlock } from "@/components/dashboard/StatsBlock";
+import { DonatedSetsSection } from "@/components/dashboard/DonatedSetsSection";
 
 type SetWithCount = FlashcardSet & { flashcard_count: number };
 
 interface Props {
   initialSets: string;
   initialStats: string;
+  initialDonatedSets: string;
 }
 
-export default function SetDashboard({ initialSets, initialStats }: Props) {
+export default function SetDashboard({ initialSets, initialStats, initialDonatedSets }: Props) {
   const [sets, setSets] = useState<SetWithCount[]>(() => {
     try {
       return JSON.parse(initialSets) as SetWithCount[];
@@ -28,6 +30,14 @@ export default function SetDashboard({ initialSets, initialStats }: Props) {
       return JSON.parse(initialStats) as LearningStats;
     } catch {
       return { dailyMinutes: [], recentSets: [] };
+    }
+  });
+
+  const [donatedSets] = useState<DonatedSetTile[]>(() => {
+    try {
+      return JSON.parse(initialDonatedSets) as DonatedSetTile[];
+    } catch {
+      return [];
     }
   });
 
@@ -79,6 +89,8 @@ export default function SetDashboard({ initialSets, initialStats }: Props) {
         </div>
 
         <SetGrid sets={sets} onRename={setRenameTarget} onDelete={setDeleteTarget} />
+
+        {donatedSets.length > 0 && <DonatedSetsSection tiles={donatedSets} />}
       </div>
 
       <CreateSetDialog open={createOpen} onOpenChange={setCreateOpen} onCreate={handleCreate} />

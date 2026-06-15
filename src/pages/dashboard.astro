@@ -1,23 +1,26 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { listSetsWithFlashcardCounts } from "@/lib/services/sets";
+import { listSetsWithFlashcardCounts, getDonatedSets } from "@/lib/services/sets";
 import { getLearningStats } from "@/lib/services/stats";
-import type { LearningStats } from "@/types";
+import type { LearningStats, DonatedSetTile } from "@/types";
 import SetDashboard from "@/components/sets/SetDashboard";
 
 const { user, supabase } = Astro.locals;
 let sets: (import("@/types").FlashcardSet & { flashcard_count: number })[] = [];
 let dbError: string | null = null;
 let stats: LearningStats = { dailyMinutes: [], recentSets: [] };
+let donatedSets: DonatedSetTile[] = [];
 
 if (user && supabase) {
-  const [setsResult, statsResult] = await Promise.all([
+  const [setsResult, statsResult, donatedResult] = await Promise.all([
     listSetsWithFlashcardCounts(supabase, user.id),
     getLearningStats(supabase, user.id),
+    getDonatedSets(supabase, user.id),
   ]);
   sets = setsResult.data ?? [];
   dbError = setsResult.error;
   stats = statsResult.data ?? { dailyMinutes: [], recentSets: [] };
+  donatedSets = donatedResult.data ?? [];
 }
 ---
 
@@ -28,7 +31,12 @@ if (user && supabase) {
         <p class="text-red-400">Failed to load sets. Please try again later.</p>
       </div>
     ) : (
-      <SetDashboard initialSets={JSON.stringify(sets)} initialStats={JSON.stringify(stats)} client:load />
+      <SetDashboard
+        initialSets={JSON.stringify(sets)}
+        initialStats={JSON.stringify(stats)}
+        initialDonatedSets={JSON.stringify(donatedSets)}
+        client:load
+      />
     )
   }
 </Layout>

@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import type { FlashcardSet, Flashcard } from "@/types";
+import type { FlashcardSet, Flashcard, DonatedSetTile } from "@/types";
 
 export const setNameSchema = z
   .string()
@@ -145,6 +145,17 @@ export async function activateShareToken(
 
   if (result.error) return { data: null, error: result.error.message };
   return { data: result.data.share_token as string, error: null };
+}
+
+export async function getDonatedSets(
+  client: SupabaseClient | null,
+  _userId: string,
+): Promise<{ data: DonatedSetTile[] | null; error: string | null }> {
+  if (!client) return { data: null, error: "Supabase client not available" };
+
+  const result = await client.rpc("get_donated_sets_for_teacher");
+  if (result.error) return { data: null, error: result.error.message };
+  return { data: result.data as DonatedSetTile[], error: null };
 }
 
 export async function getSetByIdForUser(

@@ -405,29 +405,29 @@ Teacher-facing: fetches donated set tiles via RPC and renders them as a new sect
 
 #### Automated
 
-- [x] 3.1 npm run build passes
-- [x] 3.2 npm run lint passes
+- [x] 3.1 npm run build passes — f2e2cb5
+- [x] 3.2 npm run lint passes — f2e2cb5
 
 #### Manual
 
-- [x] 3.3 Invalid token → 404 state rendered
-- [x] 3.4 Unauthenticated visitor → set info + "Log in to claim" shown
-- [x] 3.5 Authenticated user → "Clone to my sets" → redirect to new set
-- [x] 3.6 Second claim attempt → "You already have this set" shown
-- [x] 3.7 Two different users can claim the same link independently
-- [x] 3.8 set_shares has one row per (original_set_id, recipient_user_id)
-- [x] 3.9 Self-claim by teacher → error toast shown
+- [x] 3.3 Invalid token → 404 state rendered — f2e2cb5
+- [x] 3.4 Unauthenticated visitor → set info + "Log in to claim" shown — f2e2cb5
+- [x] 3.5 Authenticated user → "Clone to my sets" → redirect to new set — f2e2cb5
+- [x] 3.6 Second claim attempt → "You already have this set" shown — f2e2cb5
+- [x] 3.7 Two different users can claim the same link independently — f2e2cb5
+- [x] 3.8 set_shares has one row per (original_set_id, recipient_user_id) — f2e2cb5
+- [x] 3.9 Self-claim by teacher → error toast shown — f2e2cb5
 
 ### Phase 4: Donated Sets dashboard
 
 #### Automated
 
-- [ ] 4.1 npm run build passes
-- [ ] 4.2 npm run lint passes
+- [x] 4.1 npm run build passes
+- [x] 4.2 npm run lint passes
 
 #### Manual
 
-- [ ] 4.3 Donated Sets section visible on teacher dashboard after claim
-- [ ] 4.4 Tile shows: original set name, student email, claim date, flashcard counts
-- [ ] 4.5 Teacher with no donations → section hidden
-- [ ] 4.6 Last activity updates after student completes review
+- [x] 4.3 Donated Sets section visible on teacher dashboard after claim
+- [x] 4.4 Tile shows: original set name, student email, claim date, flashcard counts
+- [x] 4.5 Teacher with no donations → section hidden
+- [x] 4.6 Last activity updates after student completes review
