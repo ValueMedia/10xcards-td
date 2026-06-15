@@ -1,9 +1,9 @@
 ---
 change_id: give-set-to-study
 title: Give set to study
-status: planned
+status: implementing
 created: 2026-06-14
-updated: 2026-06-14
+updated: 2026-06-15
 archived_at: null
 ---
 

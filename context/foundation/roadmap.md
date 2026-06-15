@@ -34,7 +34,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 | S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać             | F-01             | FR-007                         | done     |
 | S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie             | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | done     |
 | S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | done     |
-| S-07 | give-set-to-study       | sklonowanie istniejącego zestawu innemy użytkownikowi do nauki   | F-01, S-02       | FR-008, US-008                 | proposed |
+| S-07 | give-set-to-study       | wygenerować link do zestawu, który zalogowany użytkownik może sklonować do swojego konta i uczyć się z własną historią SR; przeglądać sklonowane zestawy w Donated Sets | F-01, S-02       | FR-008, US-008                 | proposed |
 | S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition    | F-01, S-01, S-02 | FR-010, US-019                 | done     |
 | S-06 | learning-stats          | przeglądać statystyki i historię nauki                           | F-01, S-05       | FR-011, US-011                 | done     |
 
@@ -125,9 +125,9 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Parser musi obsłużyć warianty separatorów (`;`, `\t`, `-`) zgodnie ze specyfikacją US-009; błędna walidacja może prowadzić do milczącego pominięcia prawidłowych wierszy lub złej struktury fiszek.
 - **Status:** done
 
-### S-07: Sklonowanie zestawu fiszek i przekazanie kopii innemu użytkownikowi 
+### S-07: Udostępnienie zestawu do nauki przez link
 
-- **Outcome:** Możliwość utworzenia kopii zestawu, wskazując innego użytkownika jako właściciela kopii. Scenariusz, kiedy nauczyciel przekazuje zestaw do nauki studentowi, który może się go uczyć, mając swoje własne statystyki dotyczące postępów nauki. Nauczyciel (użytkownik, który utworzył kopię) dostaje na dashboard nową sekcję "Donated sets", gdzie jest lista kafelków z informacjami: nazwa zestawu, email właściciela, całkowity czas sesji uczących oraz liczba wszystkich/nauczonych fiszek. Kafelki posortowane są malejąco wg daty utworzenia zestawu (kopii). Nauczyciel ma możliwość usunięcia takiego kafelka z listy (permanentnie).
+- **Outcome:** Nauczyciel aktywuje link udostępniający dla swojego zestawu; dowolny zalogowany użytkownik, który go otworzy, może sklonować zestaw do własnego konta i uczyć się z własną historią spaced repetition. Nauczyciel widzi na dashboardzie sekcję "Donated Sets" z kafelkami per klon: email studenta, data odebrania zestawu, łączna liczba fiszek, liczba nauczonych fiszek, data ostatniej aktywności.
 - **Change ID:** `give-set-to-study`
 - **PRD refs:** FR-008, US-008
 - **Prerequisites:** F-01, S-02

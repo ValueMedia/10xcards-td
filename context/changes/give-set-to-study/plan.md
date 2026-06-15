@@ -375,17 +375,17 @@ Teacher-facing: fetches donated set tiles via RPC and renders them as a new sect
 
 #### Automated
 
-- [ ] 1.1 Migration applies cleanly (npx supabase db reset — coordinate with user first)
-- [ ] 1.2 No drift: npx supabase db diff
-- [ ] 1.3 npm run build passes
+- [x] 1.1 Migration applies cleanly (npx supabase db reset — coordinate with user first)
+- [x] 1.2 No drift: npx supabase db diff
+- [x] 1.3 npm run build passes
 
 #### Manual
 
-- [ ] 1.4 set_shares table exists with correct schema and unique constraint
-- [ ] 1.5 get_shared_set_info returns 0 rows for unknown token
-- [ ] 1.6 claim_shared_set raises exception for unknown token
-- [ ] 1.7 get_donated_sets_for_teacher returns 0 rows for fresh user
-- [ ] 1.8 Roadmap S-07 updated
+- [x] 1.4 set_shares table exists with correct schema and unique constraint
+- [x] 1.5 get_shared_set_info returns 0 rows for unknown token
+- [x] 1.6 claim_shared_set raises exception for unknown token
+- [x] 1.7 get_donated_sets_for_teacher returns 0 rows for fresh user
+- [x] 1.8 Roadmap S-07 updated
 
 ### Phase 2: Share activation flow
 
