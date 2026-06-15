@@ -422,12 +422,12 @@ Teacher-facing: fetches donated set tiles via RPC and renders them as a new sect
 
 #### Automated
 
-- [x] 4.1 npm run build passes
-- [x] 4.2 npm run lint passes
+- [x] 4.1 npm run build passes — a26ce59
+- [x] 4.2 npm run lint passes — a26ce59
 
 #### Manual
 
-- [x] 4.3 Donated Sets section visible on teacher dashboard after claim
-- [x] 4.4 Tile shows: original set name, student email, claim date, flashcard counts
-- [x] 4.5 Teacher with no donations → section hidden
-- [x] 4.6 Last activity updates after student completes review
+- [x] 4.3 Donated Sets section visible on teacher dashboard after claim — a26ce59
+- [x] 4.4 Tile shows: original set name, student email, claim date, flashcard counts — a26ce59
+- [x] 4.5 Teacher with no donations → section hidden — a26ce59
+- [x] 4.6 Last activity updates after student completes review — a26ce59
