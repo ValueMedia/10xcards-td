@@ -20,18 +20,24 @@ export default function FlashcardBrowseView({ setId, setName, flashcards }: Prop
   const isLast = position === order.length - 1;
 
   const goNext = useCallback(() => {
-    if (position < order.length - 1) {
-      setPosition((p) => p + 1);
-      setFlipped(false);
-    }
-  }, [position, order.length]);
+    setPosition((p) => {
+      if (p < order.length - 1) {
+        setFlipped(false);
+        return p + 1;
+      }
+      return p;
+    });
+  }, [order.length]);
 
   const goPrev = useCallback(() => {
-    if (position > 0) {
-      setPosition((p) => p - 1);
-      setFlipped(false);
-    }
-  }, [position]);
+    setPosition((p) => {
+      if (p > 0) {
+        setFlipped(false);
+        return p - 1;
+      }
+      return p;
+    });
+  }, []);
 
   const flip = useCallback(() => {
     setFlipped((f) => !f);
@@ -62,6 +68,9 @@ export default function FlashcardBrowseView({ setId, setName, flashcards }: Prop
       window.removeEventListener("keydown", handler);
     };
   }, [goNext, goPrev, flip]);
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!currentCard) return null;
 
   return (
     <div className="bg-cosmic min-h-screen p-4 text-white">

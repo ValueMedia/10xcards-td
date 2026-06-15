@@ -4,7 +4,7 @@ import { Rating } from "@/types";
 import type { Flashcard, SessionSummary } from "@/types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { FlashcardBrowseCard } from "@/components/sets/FlashcardBrowseCard";
 
 type Phase = "loading" | "empty" | "error" | "reviewing" | "summary";
 
@@ -19,6 +19,25 @@ const GRADE_LABELS: { rating: Rating; label: string; key: keyof SessionSummary["
   { rating: Rating.Good, label: "Wiem", key: "good" },
   { rating: Rating.Easy, label: "Łatwe", key: "easy" },
 ];
+
+function BackIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="size-4"
+    >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleString("pl-PL", { dateStyle: "long", timeStyle: "short" });
@@ -113,6 +132,26 @@ export default function ReviewSession({ setId, setName }: Props) {
     [cards, currentIndex, submitting, setId],
   );
 
+  useEffect(() => {
+    if (phase !== "reviewing") return;
+    const handler = (e: KeyboardEvent) => {
+      if ((e.target as Element).closest("button, input")) return;
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        if (!flipped) setFlipped(true);
+      } else if (flipped && !submitting) {
+        const idx = ["1", "2", "3", "4"].indexOf(e.key);
+        if (idx !== -1) {
+          void handleRate(GRADE_LABELS[idx].rating, GRADE_LABELS[idx].key);
+        }
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+    };
+  }, [phase, flipped, submitting, handleRate]);
+
   if (phase === "loading") {
     return (
       <div className="bg-cosmic flex min-h-screen items-center justify-center">
@@ -191,50 +230,50 @@ export default function ReviewSession({ setId, setName }: Props) {
   const card = cards[currentIndex];
 
   return (
-    <div className="bg-cosmic flex min-h-screen flex-col items-center justify-center gap-6 p-4 text-white">
-      <div className="w-full max-w-xl">
-        <div className="mb-4 flex items-center justify-between">
-          <a href={`/sets/${setId}`} className="text-sm text-blue-100/50 transition-colors hover:text-blue-100/80">
-            ← {setName}
+    <div className="bg-cosmic min-h-screen p-4 text-white">
+      <div className="mx-auto max-w-2xl">
+        <div className="mb-8 flex items-center justify-between">
+          <a
+            href={`/sets/${setId}`}
+            className="inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
+          >
+            <BackIcon />
+            {setName}
           </a>
           <span className="text-sm text-blue-100/50">
             {currentIndex + 1} / {cards.length}
           </span>
         </div>
 
-        <Card className="border-white/10 bg-white/5 text-white">
-          <CardContent className="pt-6">
-            <p className="min-h-[6rem] text-center text-xl leading-relaxed font-medium">{card.front}</p>
+        <div className="flex flex-col items-center gap-6">
+          <FlashcardBrowseCard
+            front={card.front}
+            back={card.back}
+            flipped={flipped}
+            onFlip={() => {
+              if (!flipped) setFlipped(true);
+            }}
+          />
 
-            {flipped && (
-              <>
-                <hr className="my-4 border-white/10" />
-                <p className="min-h-[6rem] text-center text-lg leading-relaxed text-blue-100/80">{card.back}</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <div className="mt-6 flex justify-center">
-          {!flipped ? (
-            <Button
-              onClick={() => {
-                setFlipped(true);
-              }}
-              className="bg-white/10 text-white hover:bg-white/20"
-              variant="outline"
-            >
-              Pokaż odpowiedź
-            </Button>
-          ) : (
-            <div className="flex w-full gap-2">
-              {GRADE_LABELS.map(({ rating, label, key }) => (
+          <div className="flex w-full gap-2">
+            {!flipped ? (
+              <Button
+                onClick={() => {
+                  setFlipped(true);
+                }}
+                className="w-full bg-white/10 text-white hover:bg-white/20"
+                variant="outline"
+              >
+                Pokaż odpowiedź
+              </Button>
+            ) : (
+              GRADE_LABELS.map(({ rating, label, key }, idx) => (
                 <Button
                   key={key}
                   onClick={() => handleRate(rating, key)}
                   disabled={submitting}
                   className={cn(
-                    "flex-1 text-sm",
+                    "flex-1 flex-col gap-0.5 text-sm",
                     key === "again" && "bg-red-700/80 hover:bg-red-600",
                     key === "hard" && "bg-orange-700/80 hover:bg-orange-600",
                     key === "good" && "bg-green-700/80 hover:bg-green-600",
@@ -242,10 +281,13 @@ export default function ReviewSession({ setId, setName }: Props) {
                   )}
                 >
                   {label}
+                  <span className="text-[10px] opacity-60">{idx + 1}</span>
                 </Button>
-              ))}
-            </div>
-          )}
+              ))
+            )}
+          </div>
+          {!flipped && <p className="text-xs text-blue-100/30">Space / Enter — pokaż odpowiedź</p>}
+          {flipped && <p className="text-xs text-blue-100/30">1 – 4 — oceń kartę</p>}
         </div>
       </div>
     </div>

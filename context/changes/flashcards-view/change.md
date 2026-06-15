@@ -1,7 +1,7 @@
 ---
 change_id: flashcards-view
 title: Flashcard browse view with flip animation on set page
-status: implementing
+status: impl_reviewed
 created: 2026-06-15
 updated: 2026-06-16
 archived_at: null

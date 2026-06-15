@@ -127,7 +127,7 @@
 }
 
 @utility card-flip-inner-flipped {
-  transform: rotateY(180deg);
+  transform: rotateX(180deg);
 }
 
 @utility card-flip-face {
@@ -138,7 +138,7 @@
 }
 
 @utility card-flip-back {
-  transform: rotateY(180deg);
+  transform: rotateX(180deg);
 }
 
 @layer base {

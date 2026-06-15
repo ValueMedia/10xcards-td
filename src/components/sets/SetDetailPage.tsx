@@ -111,18 +111,25 @@ export default function SetDetailPage({ initialData }: Props) {
               &nbsp;·&nbsp;{flashcards.filter((f) => f.state === State.Review).length}&nbsp;learned
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <Button
-              type="button"
-              onClick={() => {
-                setShareOpen(true);
-              }}
-              variant="outline"
-              className="border-white/10 bg-white/5 text-white hover:bg-white/10"
-            >
-              <ShareIcon />
-              Share
-            </Button>
+          <div className="grid grid-cols-3 gap-2">
+            {flashcards.length > 0 ? (
+              <a
+                href={`/sets/${set.id}/browse`}
+                className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-teal-700 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-teal-600"
+              >
+                <EyeIcon />
+                Browse
+              </a>
+            ) : (
+              <button
+                disabled
+                title="Add flashcards first"
+                className="inline-flex h-9 cursor-not-allowed items-center justify-center gap-2 rounded-md bg-teal-700 px-4 py-2 text-sm font-medium text-white opacity-50 shadow-xs"
+              >
+                <EyeIcon />
+                Browse
+              </button>
+            )}
             <a
               href={`/sets/${set.id}/review`}
               className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-purple-700 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-purple-600"
@@ -139,10 +146,21 @@ export default function SetDetailPage({ initialData }: Props) {
             <Button
               type="button"
               onClick={() => {
+                setShareOpen(true);
+              }}
+              variant="outline"
+              className="w-full border-white/10 bg-white/5 text-white hover:bg-white/10"
+            >
+              <ShareIcon />
+              Share
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
                 setImportOpen(true);
               }}
               variant="outline"
-              className="border-white/10 bg-white/5 text-white hover:bg-white/10"
+              className="w-full border-white/10 bg-white/5 text-white hover:bg-white/10"
             >
               <UploadIcon />
               Import CSV
@@ -152,7 +170,7 @@ export default function SetDetailPage({ initialData }: Props) {
               onClick={() => {
                 setCreateOpen(true);
               }}
-              className="bg-purple-600 hover:bg-purple-500"
+              className="w-full bg-purple-600 hover:bg-purple-500"
             >
               <PlusIcon />
               New flashcard
@@ -276,6 +294,25 @@ function ShareIcon() {
       <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
       <polyline points="16 6 12 2 8 6" />
       <line x1="12" y1="2" x2="12" y2="15" />
+    </svg>
+  );
+}
+
+function EyeIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
