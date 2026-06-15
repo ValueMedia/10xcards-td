@@ -391,32 +391,32 @@ Teacher-facing: fetches donated set tiles via RPC and renders them as a new sect
 
 #### Automated
 
-- [x] 2.1 npm run build passes
-- [x] 2.2 npm run lint passes
+- [x] 2.1 npm run build passes — b706eed
+- [x] 2.2 npm run lint passes — b706eed
 
 #### Manual
 
-- [x] 2.3 Share button visible on set detail page
-- [x] 2.4 Activate sharing generates token and shows link
-- [x] 2.5 Copy link button works
-- [x] 2.6 Token persists after page reload
+- [x] 2.3 Share button visible on set detail page — b706eed
+- [x] 2.4 Activate sharing generates token and shows link — b706eed
+- [x] 2.5 Copy link button works — b706eed
+- [x] 2.6 Token persists after page reload — b706eed
 
 ### Phase 3: Share page + claim flow
 
 #### Automated
 
-- [ ] 3.1 npm run build passes
-- [ ] 3.2 npm run lint passes
+- [x] 3.1 npm run build passes
+- [x] 3.2 npm run lint passes
 
 #### Manual
 
-- [ ] 3.3 Invalid token → 404 state rendered
-- [ ] 3.4 Unauthenticated visitor → set info + "Log in to claim" shown
-- [ ] 3.5 Authenticated user → "Clone to my sets" → redirect to new set
-- [ ] 3.6 Second claim attempt → "You already have this set" shown
-- [ ] 3.7 Two different users can claim the same link independently
-- [ ] 3.8 set_shares has one row per (original_set_id, recipient_user_id)
-- [ ] 3.9 Self-claim by teacher → error toast shown
+- [x] 3.3 Invalid token → 404 state rendered
+- [x] 3.4 Unauthenticated visitor → set info + "Log in to claim" shown
+- [x] 3.5 Authenticated user → "Clone to my sets" → redirect to new set
+- [x] 3.6 Second claim attempt → "You already have this set" shown
+- [x] 3.7 Two different users can claim the same link independently
+- [x] 3.8 set_shares has one row per (original_set_id, recipient_user_id)
+- [x] 3.9 Self-claim by teacher → error toast shown
 
 ### Phase 4: Donated Sets dashboard
 
