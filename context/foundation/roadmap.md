@@ -3,7 +3,7 @@ project: 10xCards
 version: 1
 status: draft
 created: 2026-06-10
-updated: 2026-06-14
+updated: 2026-06-15
 prd_version: 1
 main_goal: market-feedback
 top_blocker: capacity
@@ -34,7 +34,7 @@ Ręczne tworzenie fiszek edukacyjnych jest barierą wejścia do spaced repetitio
 | S-02 | set-and-deck-management | przeglądać zestawy, tworzyć, zmieniać nazwę i usuwać             | F-01             | FR-007                         | done     |
 | S-03 | flashcard-crud          | ręcznie tworzyć, edytować i usuwać fiszki w zestawie             | F-01, S-02       | FR-004, FR-005, FR-006, US-004 | done     |
 | S-04 | csv-import              | importować fiszki z pliku CSV/TXT w formacie Anki                | F-01, S-02       | FR-009, US-009                 | done     |
-| S-07 | give-set-to-study       | wygenerować link do zestawu, który zalogowany użytkownik może sklonować do swojego konta i uczyć się z własną historią SR; przeglądać sklonowane zestawy w Donated Sets | F-01, S-02       | FR-008, US-008                 | proposed |
+| S-07 | give-set-to-study       | wygenerować link do zestawu, który zalogowany użytkownik może sklonować do swojego konta i uczyć się z własną historią SR; przeglądać sklonowane zestawy w Donated Sets | F-01, S-02       | FR-008, US-008                 | done     |
 | S-05 | sr-review-session       | przeprowadzić sesję powtórkową z algorytmem spaced repetition    | F-01, S-01, S-02 | FR-010, US-019                 | done     |
 | S-06 | learning-stats          | przeglądać statystyki i historię nauki                           | F-01, S-05       | FR-011, US-011                 | done     |
 
@@ -128,6 +128,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 ### S-07: Udostępnienie zestawu do nauki przez link
 
 - **Outcome:** Nauczyciel aktywuje link udostępniający dla swojego zestawu; dowolny zalogowany użytkownik, który go otworzy, może sklonować zestaw do własnego konta i uczyć się z własną historią spaced repetition. Nauczyciel widzi na dashboardzie sekcję "Donated Sets" z kafelkami per klon: email studenta, data odebrania zestawu, łączna liczba fiszek, liczba nauczonych fiszek, data ostatniej aktywności.
+- **Status:** done
 - **Change ID:** `give-set-to-study`
 - **PRD refs:** FR-008, US-008
 - **Prerequisites:** F-01, S-02
@@ -201,3 +202,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-04: user can upload a CSV or TXT file in Anki format, have its contents validated (lines split by `;`, `\t`, or `-` into exactly two parts), and have valid lines imported as flashcards into a selected set (invalid lines silently skipped per US-009 spec).** — Archived 2026-06-14 → `context/archive/2026-06-14-csv-import/`. Lesson: —.
 - **S-05: user can start a spaced repetition review session for a set, see flashcards due for review (scheduled by the SR algorithm based on their answer history), flip a card to reveal the answer, rate their response (e.g. Again / Good / Easy), and have the algorithm update the card's next scheduled review date.** — Archived 2026-06-14 → `context/archive/2026-06-14-sr-review-session/`. Lesson: —.
 - **S-06: przeglądać statystyki i historię nauki** — Archived 2026-06-14 → `context/archive/2026-06-14-s-06-learning-stats/`. Lesson: —.
+- **S-07: wygenerować link do zestawu, który zalogowany użytkownik może sklonować do swojego konta i uczyć się z własną historią SR; przeglądać sklonowane zestawy w Donated Sets** — Archived 2026-06-15 → `context/archive/2026-06-14-give-set-to-study/`. Lesson: —.
