@@ -1,7 +1,7 @@
 ---
 change_id: give-set-to-study
 title: Give set to study
-status: implemented
+status: impl_reviewed
 created: 2026-06-14
 updated: 2026-06-15
 
