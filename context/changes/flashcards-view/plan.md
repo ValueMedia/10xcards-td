@@ -299,7 +299,7 @@ Add `browse.astro` (mirrors `review.astro`) and a "Browse" link-button in `SetDe
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `npm run lint`
+- [x] 1.1 Type checking passes: `npm run lint` — 953080a
 
 #### Manual
 
@@ -312,8 +312,8 @@ Add `browse.astro` (mirrors `review.astro`) and a "Browse" link-button in `SetDe
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npm run lint`
-- [ ] 2.2 Build succeeds: `npm run build`
+- [x] 2.1 Type checking passes: `npm run lint`
+- [x] 2.2 Build succeeds: `npm run build`
 
 #### Manual
 
