@@ -2,7 +2,10 @@
 -- Also add missing index on session_log(set_id) for get_donated_sets_for_teacher JOIN.
 create index if not exists session_log_set_id_idx on public.session_log(set_id);
 
-create or replace function public.get_shared_set_info(p_token uuid)
+-- DROP required because CREATE OR REPLACE cannot change return type columns.
+drop function if exists public.get_shared_set_info(uuid);
+
+create function public.get_shared_set_info(p_token uuid)
 returns table(set_id uuid, owner_id uuid, set_name text, flashcard_count bigint)
 language sql
 security definer
@@ -19,3 +22,5 @@ as $$
   where s.share_token = p_token
   group by s.id, s.user_id, s.name;
 $$;
+
+grant execute on function public.get_shared_set_info(uuid) to authenticated, anon;
