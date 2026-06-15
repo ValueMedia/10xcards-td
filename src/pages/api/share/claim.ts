@@ -41,7 +41,8 @@ export const POST: APIRoute = async (context) => {
   const rpcResult = await supabase.rpc("claim_shared_set", { p_token: parsed.data.token });
 
   if (rpcResult.error) {
-    const status = rpcResult.error.message.includes("Share token not found") ? 404 : 400;
+    const msg = rpcResult.error.message;
+    const status = msg.includes("Share token not found") ? 404 : msg.includes("Not authenticated") ? 401 : 400;
     return new Response(JSON.stringify({ error: rpcResult.error.message }), {
       status,
       headers: { "Content-Type": "application/json" },
@@ -49,6 +50,12 @@ export const POST: APIRoute = async (context) => {
   }
 
   const rows = rpcResult.data as ClaimRow[];
+  if (rows.length === 0) {
+    return new Response(JSON.stringify({ error: "Unexpected RPC response" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   const row = rows[0];
   return new Response(JSON.stringify({ cloned_set_id: row.cloned_set_id, already_claimed: row.already_claimed }), {
     status: 200,

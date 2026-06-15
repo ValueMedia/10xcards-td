@@ -14,6 +14,7 @@ if (!token || !supabase) {
 
 interface SetInfoRow {
   set_id: string;
+  owner_id: string;
   set_name: string;
   flashcard_count: number;
 }
@@ -26,36 +27,47 @@ const setInfoError = rpcResult.error;
 const rows = rpcResult.data as SetInfoRow[] | null;
 const setInfoRow: SetInfoRow | null = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
 
-const notFound = !setInfoError && !setInfoRow;
+if (!setInfoRow && !setInfoError) {
+  Astro.response.status = 404;
+}
 
-let claimStatus: "unclaimed" | "already_claimed" | "unauthenticated" = "unauthenticated";
+let claimStatus: "unclaimed" | "already_claimed" | "already_owner" | "unauthenticated" = "unauthenticated";
 let claimedSetId: string | undefined;
 
 if (setInfoRow && user && supabase) {
-  const { data: shareRow } = await supabase
-    .from("set_shares")
-    .select("cloned_set_id")
-    .eq("original_set_id", setInfoRow.set_id)
-    .eq("recipient_user_id", user.id)
-    .maybeSingle();
-
-  if (shareRow) {
-    claimStatus = "already_claimed";
-    claimedSetId = shareRow.cloned_set_id as string;
+  if (setInfoRow.owner_id === user.id) {
+    claimStatus = "already_owner";
   } else {
-    claimStatus = "unclaimed";
+    const { data: shareRow } = await supabase
+      .from("set_shares")
+      .select("cloned_set_id")
+      .eq("original_set_id", setInfoRow.set_id)
+      .eq("recipient_user_id", user.id)
+      .maybeSingle();
+
+    if (shareRow) {
+      claimStatus = "already_claimed";
+      claimedSetId = shareRow.cloned_set_id as string;
+    } else {
+      claimStatus = "unclaimed";
+    }
   }
 }
 
 const setInfo: SharedSetInfo | null = setInfoRow
-  ? { set_id: setInfoRow.set_id, set_name: setInfoRow.set_name, flashcard_count: setInfoRow.flashcard_count }
+  ? {
+      set_id: setInfoRow.set_id,
+      owner_id: setInfoRow.owner_id,
+      set_name: setInfoRow.set_name,
+      flashcard_count: setInfoRow.flashcard_count,
+    }
   : null;
 
 const safeToken = token ?? "";
 ---
 
 {
-  (notFound || setInfoError) && (
+  (!setInfoRow || setInfoError) && (
     <Layout title="Set not found">
       <div class="bg-cosmic flex min-h-screen items-center justify-center p-4 text-white">
         <div class="text-center">

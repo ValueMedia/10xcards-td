@@ -60,6 +60,7 @@ export interface LearningStats {
 
 export interface SharedSetInfo {
   set_id: string;
+  owner_id: string;
   set_name: string;
   flashcard_count: number;
 }

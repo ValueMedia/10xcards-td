@@ -130,26 +130,30 @@ export async function activateShareToken(
 ): Promise<{ data: string | null; error: string | null }> {
   if (!client) return { data: null, error: "Supabase client not available" };
 
-  const existing = await client.from("sets").select("share_token").eq("id", setId).eq("user_id", userId).maybeSingle();
-  if (existing.error) return { data: null, error: existing.error.message };
-  if (!existing.data) return { data: null, error: "Set not found" };
-  if (existing.data.share_token) return { data: existing.data.share_token as string, error: null };
-
+  // Atomic: only update if share_token is currently null — eliminates TOCTOU race.
   const result = await client
     .from("sets")
     .update({ share_token: crypto.randomUUID() })
     .eq("id", setId)
     .eq("user_id", userId)
+    .is("share_token", null)
     .select("share_token")
-    .single();
+    .maybeSingle();
 
   if (result.error) return { data: null, error: result.error.message };
-  return { data: result.data.share_token as string, error: null };
+
+  // Row updated — return the newly generated token.
+  if (result.data) return { data: result.data.share_token as string, error: null };
+
+  // No row updated: either the set doesn't exist or the token was already set by a concurrent request.
+  const existing = await client.from("sets").select("share_token").eq("id", setId).eq("user_id", userId).maybeSingle();
+  if (existing.error) return { data: null, error: existing.error.message };
+  if (!existing.data) return { data: null, error: "Set not found" };
+  return { data: existing.data.share_token as string, error: null };
 }
 
 export async function getDonatedSets(
   client: SupabaseClient | null,
-  _userId: string,
 ): Promise<{ data: DonatedSetTile[] | null; error: string | null }> {
   if (!client) return { data: null, error: "Supabase client not available" };
 

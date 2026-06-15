@@ -15,7 +15,7 @@ if (user && supabase) {
   const [setsResult, statsResult, donatedResult] = await Promise.all([
     listSetsWithFlashcardCounts(supabase, user.id),
     getLearningStats(supabase, user.id),
-    getDonatedSets(supabase, user.id),
+    getDonatedSets(supabase),
   ]);
   sets = setsResult.data ?? [];
   dbError = setsResult.error;

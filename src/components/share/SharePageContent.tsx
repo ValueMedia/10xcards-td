@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { SharedSetInfo } from "@/types";
 
-type ClaimStatus = "unclaimed" | "already_claimed" | "unauthenticated";
+type ClaimStatus = "unclaimed" | "already_claimed" | "already_owner" | "unauthenticated";
 
 interface Props {
   setInfo: SharedSetInfo;
@@ -82,6 +82,18 @@ export function SharePageContent({ setInfo, claimStatus, claimedSetId, token }: 
               >
                 {loading ? "Cloning…" : "Clone to my sets"}
               </Button>
+            </div>
+          )}
+
+          {status === "already_owner" && (
+            <div className="space-y-3">
+              <p className="text-sm text-blue-100/60">This is your own set — you cannot clone it.</p>
+              <a
+                href={`/sets/${setInfo.set_id}`}
+                className="inline-flex h-10 w-full items-center justify-center rounded-md bg-white/10 px-4 text-sm font-medium text-white transition-colors hover:bg-white/20"
+              >
+                Open original set
+              </a>
             </div>
           )}
 
