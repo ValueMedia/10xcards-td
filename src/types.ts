@@ -58,6 +58,24 @@ export interface LearningStats {
   recentSets: RecentSetStats[];
 }
 
+export interface SharedSetInfo {
+  set_id: string;
+  set_name: string;
+  flashcard_count: number;
+}
+
+export interface DonatedSetTile {
+  share_id: string;
+  cloned_set_id: string;
+  original_set_name: string;
+  cloned_set_name: string;
+  recipient_email: string;
+  claimed_at: string;
+  total_flashcards: number;
+  learned_count: number;
+  last_activity: string | null;
+}
+
 export interface Review {
   id: string;
   flashcard_id: string;

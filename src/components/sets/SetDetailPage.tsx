@@ -7,6 +7,7 @@ import { CreateFlashcardDialog } from "@/components/sets/CreateFlashcardDialog";
 import { EditFlashcardDialog } from "@/components/sets/EditFlashcardDialog";
 import { DeleteFlashcardDialog } from "@/components/sets/DeleteFlashcardDialog";
 import { ImportCsvDialog } from "@/components/sets/ImportCsvDialog";
+import { ShareSetModal } from "@/components/sets/ShareSetModal";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -34,6 +35,7 @@ export default function SetDetailPage({ initialData }: Props) {
 
   const [createOpen, setCreateOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Flashcard | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Flashcard | null>(null);
 
@@ -110,6 +112,17 @@ export default function SetDetailPage({ initialData }: Props) {
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-2">
+            <Button
+              type="button"
+              onClick={() => {
+                setShareOpen(true);
+              }}
+              variant="outline"
+              className="border-white/10 bg-white/5 text-white hover:bg-white/10"
+            >
+              <ShareIcon />
+              Share
+            </Button>
             <a
               href={`/sets/${set.id}/review`}
               className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-purple-700 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-purple-600"
@@ -149,6 +162,16 @@ export default function SetDetailPage({ initialData }: Props) {
 
         <FlashcardList flashcards={flashcards} onEdit={setEditTarget} onDelete={setDeleteTarget} />
       </div>
+
+      <ShareSetModal
+        setId={set.id}
+        shareToken={state.set?.share_token ?? null}
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        onTokenGenerated={(token) => {
+          setState((prev) => ({ ...prev, set: prev.set ? { ...prev.set, share_token: token } : prev.set }));
+        }}
+      />
 
       <CreateFlashcardDialog open={createOpen} onOpenChange={setCreateOpen} setId={set.id} onCreate={handleCreate} />
 
@@ -232,6 +255,27 @@ function SparklesIcon() {
       <path d="M19 17v4" />
       <path d="M3 5h4" />
       <path d="M17 19h4" />
+    </svg>
+  );
+}
+
+function ShareIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="mr-1"
+    >
+      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+      <polyline points="16 6 12 2 8 6" />
+      <line x1="12" y1="2" x2="12" y2="15" />
     </svg>
   );
 }

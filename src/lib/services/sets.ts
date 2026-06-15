@@ -123,6 +123,30 @@ export async function getSetWithFlashcards(
   };
 }
 
+export async function activateShareToken(
+  client: SupabaseClient | null,
+  userId: string,
+  setId: string,
+): Promise<{ data: string | null; error: string | null }> {
+  if (!client) return { data: null, error: "Supabase client not available" };
+
+  const existing = await client.from("sets").select("share_token").eq("id", setId).eq("user_id", userId).maybeSingle();
+  if (existing.error) return { data: null, error: existing.error.message };
+  if (!existing.data) return { data: null, error: "Set not found" };
+  if (existing.data.share_token) return { data: existing.data.share_token as string, error: null };
+
+  const result = await client
+    .from("sets")
+    .update({ share_token: crypto.randomUUID() })
+    .eq("id", setId)
+    .eq("user_id", userId)
+    .select("share_token")
+    .single();
+
+  if (result.error) return { data: null, error: result.error.message };
+  return { data: result.data.share_token as string, error: null };
+}
+
 export async function getSetByIdForUser(
   client: SupabaseClient | null,
   userId: string,
