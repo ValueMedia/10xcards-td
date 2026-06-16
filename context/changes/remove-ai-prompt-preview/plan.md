@@ -110,11 +110,11 @@ Remove all preview-related code from the settings page and delete the PromptPrev
 
 #### Automated
 
-- [x] 1.1 `npm run build` passes
-- [x] 1.2 `npm run lint` passes
+- [x] 1.1 `npm run build` passes — ca161b9
+- [x] 1.2 `npm run lint` passes — ca161b9
 
 #### Manual
 
-- [x] 1.3 Preview button removed from settings page AI Prompt section
-- [x] 1.4 Save button and prompt editing still functional
-- [x] 1.5 Default/Custom mode switching still works
+- [x] 1.3 Preview button removed from settings page AI Prompt section — ca161b9
+- [x] 1.4 Save button and prompt editing still functional — ca161b9
+- [x] 1.5 Default/Custom mode switching still works — ca161b9
