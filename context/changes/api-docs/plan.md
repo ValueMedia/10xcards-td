@@ -87,4 +87,4 @@ Install `@scalar/astro`, create the OpenAPI spec object covering all endpoints, 
 
 #### Manual
 
-- [ ] 1.4 Scalar UI renders at `/docs/api` with all endpoints
+- [x] 1.4 Scalar UI renders at `/docs/api` with all endpoints
