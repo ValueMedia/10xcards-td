@@ -25,7 +25,7 @@ export function StatsBlock({ stats }: Props) {
         {dailyMinutes.length === 0 || allZero ? (
           <p className="text-sm text-blue-100/40">No review sessions in the last 14 days.</p>
         ) : (
-          <div className="flex h-24 items-end gap-1">
+          <div className="flex h-24 gap-1">
             {dailyMinutes.map((d) => {
               const heightPct = (d.minutes / maxMinutes) * 100;
               const label = new Date(d.day + "T12:00:00Z").toLocaleDateString("en", { weekday: "short" });
