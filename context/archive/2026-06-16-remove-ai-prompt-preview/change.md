@@ -1,10 +1,10 @@
 ---
 change_id: remove-ai-prompt-preview
 title: Remove AI Prompt preview button and functionality on settings page
-status: implemented
+status: archived
 created: 2026-06-16
 updated: 2026-06-16
-archived_at: null
+archived_at: 2026-06-16T21:13:00Z
 ---
 
 ## Notes
