@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const DEFAULT_SYSTEM_PROMPT = `You are a helpful assistant that creates concise flashcards from a source text.
+export const DEFAULT_SYSTEM_PROMPT = `You are a helpful assistant that creates concise flashcards from a source text.
 
 Extract up to $COUNT important facts or concepts from the text below and return them as a JSON object with this exact shape:
 
