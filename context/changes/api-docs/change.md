@@ -1,7 +1,7 @@
 ---
 change_id: api-docs
 title: Add interactive API documentation with Scalar
-status: implementing
+status: implemented
 created: 2026-06-16
 updated: 2026-06-16
 archived_at: null

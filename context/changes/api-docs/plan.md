@@ -81,9 +81,9 @@ Install `@scalar/astro`, create the OpenAPI spec object covering all endpoints, 
 
 #### Automated
 
-- [x] 1.1 Build passes (`npm run build`)
-- [x] 1.2 Lint passes for new files
-- [x] 1.3 TypeScript type-checks pass (pre-existing errors only, none in new files)
+- [x] 1.1 Build passes (`npm run build`) — 46b4d47
+- [x] 1.2 Lint passes for new files — 46b4d47
+- [x] 1.3 TypeScript type-checks pass (pre-existing errors only, none in new files) — 46b4d47
 
 #### Manual
 
