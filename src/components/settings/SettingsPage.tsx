@@ -8,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Props {
   email: string;
@@ -256,29 +264,28 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
         <ChangePasswordDialog open={passwordOpen} onOpenChange={setPasswordOpen} />
         <DeleteAccountDialog open={deleteOpen} onOpenChange={setDeleteOpen} />
 
-        {/* Switch to Default Confirmation */}
-        {switchConfirmOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div className="mx-4 w-full max-w-sm rounded-lg border border-white/10 bg-[#0f1529] p-6 text-white">
-              <h3 className="text-lg font-semibold">Switch to default prompt?</h3>
-              <p className="mt-2 text-sm text-blue-100/50">
+        <Dialog open={switchConfirmOpen} onOpenChange={setSwitchConfirmOpen}>
+          <DialogContent className="border-white/10 bg-[#0f1529] text-white sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Switch to default prompt?</DialogTitle>
+              <DialogDescription className="text-blue-100/50">
                 This will delete your custom prompt. This action cannot be undone.
-              </p>
-              <div className="mt-4 flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  className="border-white/10 bg-white/5 text-white hover:bg-white/10"
-                  onClick={() => setSwitchConfirmOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button variant="destructive" onClick={handleSwitchToDefault}>
-                  Switch to default
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                className="border-white/10 bg-white/5 text-white hover:bg-white/10"
+                onClick={() => setSwitchConfirmOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleSwitchToDefault}>
+                Switch to default
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

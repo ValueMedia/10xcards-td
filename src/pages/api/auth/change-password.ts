@@ -5,6 +5,7 @@ import { changePassword } from "@/lib/services/user-settings";
 export const prerender = false;
 
 const schema = z.object({
+  currentPassword: z.string().min(1),
   newPassword: z.string().min(6),
 });
 
@@ -37,6 +38,17 @@ export const POST: APIRoute = async (context) => {
       }),
       { status: 400, headers: { "Content-Type": "application/json" } },
     );
+  }
+
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email!,
+    password: parsed.data.currentPassword,
+  });
+  if (signInError) {
+    return new Response(JSON.stringify({ error: "Current password is incorrect" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const { error } = await changePassword(supabase, parsed.data.newPassword);

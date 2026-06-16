@@ -17,6 +17,7 @@ interface Props {
 }
 
 export function ChangePasswordDialog({ open, onOpenChange }: Props) {
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +25,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
 
   function handleOpenChange(newOpen: boolean) {
     if (!newOpen) {
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
       setError(null);
@@ -49,7 +51,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
       const res = await fetch("/api/auth/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newPassword }),
+        body: JSON.stringify({ currentPassword, newPassword }),
       });
 
       if (res.ok) {
@@ -74,11 +76,28 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
         <DialogHeader>
           <DialogTitle>Change password</DialogTitle>
           <DialogDescription className="text-blue-100/50">
-            Enter your new password below.
+            Enter your current password and a new password below.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="space-y-3">
+            <div className="space-y-1.5">
+              <label htmlFor="current-password" className="text-sm text-blue-100/70">
+                Current password
+              </label>
+              <Input
+                id="current-password"
+                type="password"
+                placeholder="Enter current password"
+                value={currentPassword}
+                onChange={(e) => {
+                  setCurrentPassword(e.target.value);
+                  if (error) setError(null);
+                }}
+                disabled={pending}
+                className="border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
+              />
+            </div>
             <div className="space-y-1.5">
               <label htmlFor="new-password" className="text-sm text-blue-100/70">
                 New password

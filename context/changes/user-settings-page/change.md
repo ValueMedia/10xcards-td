@@ -1,7 +1,7 @@
 ---
 change_id: user-settings-page
 title: User settings page
-status: implemented
+status: impl_reviewed
 created: 2026-06-16
 updated: 2026-06-17
 archived_at: null

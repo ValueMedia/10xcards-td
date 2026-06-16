@@ -18,12 +18,14 @@ interface Props {
 
 export function DeleteAccountDialog({ open, onOpenChange }: Props) {
   const [confirmation, setConfirmation] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [pending, setPending] = useState(false);
-  const isConfirmed = confirmation === "DELETE";
+  const isConfirmed = confirmation === "DELETE" && currentPassword.length >= 6;
 
   function handleOpenChange(newOpen: boolean) {
     if (!newOpen) {
       setConfirmation("");
+      setCurrentPassword("");
     }
     onOpenChange(newOpen);
   }
@@ -34,7 +36,7 @@ export function DeleteAccountDialog({ open, onOpenChange }: Props) {
       const res = await fetch("/api/auth/delete-account", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ confirmation: "DELETE" }),
+        body: JSON.stringify({ confirmation: "DELETE", currentPassword }),
       });
 
       if (res.ok) {
@@ -60,6 +62,20 @@ export function DeleteAccountDialog({ open, onOpenChange }: Props) {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
+          <div className="space-y-1.5">
+            <label htmlFor="delete-current-password" className="text-sm text-blue-100/70">
+              Current password
+            </label>
+            <Input
+              id="delete-current-password"
+              type="password"
+              placeholder="Enter your current password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              disabled={pending}
+              className="border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
+            />
+          </div>
           <label htmlFor="delete-confirmation" className="text-sm text-blue-100/70">
             Type <span className="font-mono font-bold text-red-400">DELETE</span> to confirm
           </label>
