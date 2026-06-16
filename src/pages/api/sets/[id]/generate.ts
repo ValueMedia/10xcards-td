@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { generateFlashcardProposals, generateInputSchema, getAiErrorHttpStatus, errorMessage } from "@/lib/services/ai";
 import { checkRateLimit } from "@/lib/services/ai-rate-limit";
+import { getUserPrompt } from "@/lib/services/user-settings";
 import { getSecret } from "astro:env/server";
 import { env } from "cloudflare:workers";
 
@@ -84,16 +85,20 @@ export const POST: APIRoute = async (context) => {
   }
 
   const model = getSecret("OPENROUTER_MODEL") ?? undefined;
-  const systemPromptOverride = getSecret("OPENROUTER_SYSTEM_PROMPT") ?? undefined;
+  const envPromptOverride = getSecret("OPENROUTER_SYSTEM_PROMPT") ?? undefined;
   const appUrl = new URL(context.request.url).origin;
   const hourlyLimit = getSecret("AI_RATE_LIMIT_HOURLY");
   if (hourlyLimit !== undefined) {
     process.env.AI_RATE_LIMIT_HOURLY = hourlyLimit;
   }
 
+  const userPromptResult = await getUserPrompt(supabase, user.id);
+  const systemPromptOverride = userPromptResult.data?.prompt ?? envPromptOverride;
+  const count = userPromptResult.data?.flashcard_count ?? parsed.data.count;
+
   const { data, error } = await generateFlashcardProposals({
     text: parsed.data.text,
-    count: parsed.data.count,
+    count,
     apiKey,
     model,
     appUrl,

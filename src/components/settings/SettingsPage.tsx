@@ -102,30 +102,6 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
           Settings
         </h1>
 
-        {/* Language Section */}
-        <Card className="border-white/10 bg-white/10 backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-white">Language</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center gap-2">
-              <button
-                className="rounded-md bg-purple-600 px-3 py-1.5 text-sm font-medium text-white"
-                disabled
-              >
-                EN
-              </button>
-              <button
-                className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-blue-100/40 transition-colors hover:bg-white/10"
-                disabled
-              >
-                PL
-              </button>
-            </div>
-            <p className="text-xs text-blue-100/30">Coming soon</p>
-          </CardContent>
-        </Card>
-
         {/* AI Prompt Section */}
         <Card className="border-white/10 bg-white/10 backdrop-blur-xl">
           <CardHeader>
@@ -162,7 +138,7 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
                   disabled
                   className="min-h-40 border-white/10 bg-white/5 text-blue-100/50"
                 />
-                <div className="space-y-1.5">
+                <div className="flex items-center gap-3">
                   <label className="text-sm text-blue-100/70">Flashcards per generation</label>
                   <Input
                     type="number"
@@ -180,7 +156,7 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
                   placeholder="Enter your custom AI prompt..."
                   className="min-h-40 border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
                 />
-                <div className="space-y-1.5">
+                <div className="flex items-center gap-3">
                   <label htmlFor="flashcard-count" className="text-sm text-blue-100/70">
                     Flashcards per generation (1–20)
                   </label>
@@ -215,6 +191,30 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
                 )}
               </>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Language Section */}
+        <Card className="border-white/10 bg-white/10 backdrop-blur-xl">
+          <CardHeader>
+            <CardTitle className="text-white">Language</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-2">
+              <button
+                className="rounded-md bg-purple-600 px-3 py-1.5 text-sm font-medium text-white"
+                disabled
+              >
+                EN
+              </button>
+              <button
+                className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-blue-100/40 transition-colors hover:bg-white/10"
+                disabled
+              >
+                PL
+              </button>
+            </div>
+            <p className="text-xs text-blue-100/30">Coming soon</p>
           </CardContent>
         </Card>
 

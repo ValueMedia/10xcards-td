@@ -389,34 +389,34 @@ Uses shadcn/ui `DropdownMenu` components. Styled with cosmic theme colors.
 
 #### Automated
 
-- [x] 2.1 Type checking passes (`npm run build`)
-- [x] 2.2 Linting passes (`npm run lint`)
+- [x] 2.1 Type checking passes (`npm run build`) — 7bbca46
+- [x] 2.2 Linting passes (`npm run lint`) — 7bbca46
 
 #### Manual
 
-- [x] 2.3 Settings page renders correctly at `/settings` for authenticated users
-- [x] 2.4 Change password dialog opens, validates, and submits correctly
-- [x] 2.5 AI prompt section toggles between default and custom modes
-- [x] 2.6 Custom prompt saves and loads correctly after page refresh
-- [x] 2.7 Prompt preview shows rendered prompt with sample text
-- [x] 2.8 Delete account dialog requires "DELETE" text to enable button
-- [x] 2.9 Language toggle shows "Coming soon" and is non-functional
-- [x] 2.10 Unauthenticated users redirected to sign-in from `/settings`
+- [x] 2.3 Settings page renders correctly at `/settings` for authenticated users — 7bbca46
+- [x] 2.4 Change password dialog opens, validates, and submits correctly — 7bbca46
+- [x] 2.5 AI prompt section toggles between default and custom modes — 7bbca46
+- [x] 2.6 Custom prompt saves and loads correctly after page refresh — 7bbca46
+- [x] 2.7 Prompt preview shows rendered prompt with sample text — 7bbca46
+- [x] 2.8 Delete account dialog requires "DELETE" text to enable button — 7bbca46
+- [x] 2.9 Language toggle shows "Coming soon" and is non-functional — 7bbca46
+- [x] 2.10 Unauthenticated users redirected to sign-in from `/settings` — 7bbca46
 
 ### Phase 3: NavBar Dropdown and Generation Integration
 
 #### Automated
 
-- [ ] 3.1 Type checking passes (`npm run build`)
-- [ ] 3.2 Linting passes (`npm run lint`)
+- [x] 3.1 Type checking passes (`npm run build`)
+- [x] 3.2 Linting passes (`npm run lint`)
 
 #### Manual
 
-- [ ] 3.3 Profile icon appears in NavBar for authenticated users
-- [ ] 3.4 Dropdown opens with email, Settings link, and Sign out
-- [ ] 3.5 Clicking "Settings" navigates to `/settings`
-- [ ] 3.6 Clicking "Sign out" signs out and redirects to home
-- [ ] 3.7 Dropdown hover effect works on profile icon
-- [ ] 3.8 Generating flashcards with custom prompt produces different results
-- [ ] 3.9 Generating flashcards without custom prompt uses default
-- [ ] 3.10 NavBar looks correct on mobile (responsive)
+- [x] 3.3 Profile icon appears in NavBar for authenticated users
+- [x] 3.4 Dropdown opens with email, Settings link, and Sign out
+- [x] 3.5 Clicking "Settings" navigates to `/settings`
+- [x] 3.6 Clicking "Sign out" signs out and redirects to home
+- [x] 3.7 Dropdown hover effect works on profile icon
+- [x] 3.8 Generating flashcards with custom prompt produces different results
+- [x] 3.9 Generating flashcards without custom prompt uses default
+- [x] 3.10 NavBar looks correct on mobile (responsive)
