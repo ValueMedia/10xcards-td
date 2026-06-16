@@ -407,16 +407,16 @@ Uses shadcn/ui `DropdownMenu` components. Styled with cosmic theme colors.
 
 #### Automated
 
-- [x] 3.1 Type checking passes (`npm run build`)
-- [x] 3.2 Linting passes (`npm run lint`)
+- [x] 3.1 Type checking passes (`npm run build`) — ec07409
+- [x] 3.2 Linting passes (`npm run lint`) — ec07409
 
 #### Manual
 
-- [x] 3.3 Profile icon appears in NavBar for authenticated users
-- [x] 3.4 Dropdown opens with email, Settings link, and Sign out
-- [x] 3.5 Clicking "Settings" navigates to `/settings`
-- [x] 3.6 Clicking "Sign out" signs out and redirects to home
-- [x] 3.7 Dropdown hover effect works on profile icon
-- [x] 3.8 Generating flashcards with custom prompt produces different results
-- [x] 3.9 Generating flashcards without custom prompt uses default
-- [x] 3.10 NavBar looks correct on mobile (responsive)
+- [x] 3.3 Profile icon appears in NavBar for authenticated users — ec07409
+- [x] 3.4 Dropdown opens with email, Settings link, and Sign out — ec07409
+- [x] 3.5 Clicking "Settings" navigates to `/settings` — ec07409
+- [x] 3.6 Clicking "Sign out" signs out and redirects to home — ec07409
+- [x] 3.7 Dropdown hover effect works on profile icon — ec07409
+- [x] 3.8 Generating flashcards with custom prompt produces different results — ec07409
+- [x] 3.9 Generating flashcards without custom prompt uses default — ec07409
+- [x] 3.10 NavBar looks correct on mobile (responsive) — ec07409
