@@ -170,12 +170,12 @@ None — no data or schema changes.
 
 #### Automated
 
-- [x] 1.1 `npm run build` completes without errors
-- [x] 1.2 `npm run lint` passes without errors
+- [x] 1.1 `npm run build` completes without errors — 31e6b1c
+- [x] 1.2 `npm run lint` passes without errors — 31e6b1c
 
 #### Manual
 
-- [x] 1.3 All 6 buttons visible in 2-column grid on 375px viewport, no text overflow
-- [x] 1.4 Mobile text variants ("Sesja", "AI", "CSV", "Dodaj") appear below 640px
-- [x] 1.5 Full text variants appear at 640px+ with 3-column grid
-- [x] 1.6 Button touch targets measure 44px on mobile
+- [x] 1.3 All 6 buttons visible in 2-column grid on 375px viewport, no text overflow — 31e6b1c
+- [x] 1.4 Mobile text variants ("Sesja", "AI", "CSV", "Dodaj") appear below 640px — 31e6b1c
+- [x] 1.5 Full text variants appear at 640px+ with 3-column grid — 31e6b1c
+- [x] 1.6 Button touch targets measure 44px on mobile — 31e6b1c
