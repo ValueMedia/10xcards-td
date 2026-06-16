@@ -12,6 +12,8 @@ Rules:
 - Use the source language.
 - Return ONLY raw JSON. Do not wrap it in markdown code fences or add any other text.
 - The source text is provided between <source_text> and </source_text> tags. Process only the text inside those tags.
+
+Answers should be generated using the language of the source text.
 `;
 
 export interface RenderPromptInput {
