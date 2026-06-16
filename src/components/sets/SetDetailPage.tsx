@@ -111,11 +111,11 @@ export default function SetDetailPage({ initialData }: Props) {
               &nbsp;·&nbsp;{flashcards.filter((f) => f.state === State.Review).length}&nbsp;learned
             </p>
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {flashcards.length > 0 ? (
               <a
                 href={`/sets/${set.id}/browse`}
-                className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-teal-700 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-teal-600"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-xs transition-colors hover:bg-teal-600 sm:h-9 sm:py-2"
               >
                 <EyeIcon />
                 Browse
@@ -124,7 +124,7 @@ export default function SetDetailPage({ initialData }: Props) {
               <button
                 disabled
                 title="Add flashcards first"
-                className="inline-flex h-9 cursor-not-allowed items-center justify-center gap-2 rounded-md bg-teal-700 px-4 py-2 text-sm font-medium text-white opacity-50 shadow-xs"
+                className="inline-flex h-11 cursor-not-allowed items-center justify-center gap-2 rounded-md bg-teal-700 px-4 py-2.5 text-sm font-medium text-white opacity-50 shadow-xs sm:h-9 sm:py-2"
               >
                 <EyeIcon />
                 Browse
@@ -132,16 +132,18 @@ export default function SetDetailPage({ initialData }: Props) {
             )}
             <a
               href={`/sets/${set.id}/review`}
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-purple-700 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-purple-600"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-purple-700 px-4 py-2.5 text-sm font-medium text-white shadow-xs transition-colors hover:bg-purple-600 sm:h-9 sm:py-2"
             >
-              Rozpocznij sesję
+              <span className="sm:hidden">Learn</span>
+              <span className="hidden sm:inline">Start learn session</span>
             </a>
             <a
               href={`/generate?setId=${set.id}`}
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors hover:bg-blue-500"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-xs transition-colors hover:bg-blue-500 sm:h-9 sm:py-2"
             >
               <SparklesIcon />
-              Generate with AI
+              <span className="sm:hidden">Build with AI</span>
+              <span className="hidden sm:inline">Generate with AI</span>
             </a>
             <Button
               type="button"
@@ -149,7 +151,7 @@ export default function SetDetailPage({ initialData }: Props) {
                 setShareOpen(true);
               }}
               variant="outline"
-              className="w-full border-white/10 bg-white/5 text-white hover:bg-white/10"
+              className="h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 sm:h-9"
             >
               <ShareIcon />
               Share
@@ -160,20 +162,22 @@ export default function SetDetailPage({ initialData }: Props) {
                 setImportOpen(true);
               }}
               variant="outline"
-              className="w-full border-white/10 bg-white/5 text-white hover:bg-white/10"
+              className="h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 sm:h-9"
             >
               <UploadIcon />
-              Import CSV
+              <span className="sm:hidden">Import</span>
+              <span className="hidden sm:inline">Import CSV</span>
             </Button>
             <Button
               type="button"
               onClick={() => {
                 setCreateOpen(true);
               }}
-              className="w-full bg-purple-600 hover:bg-purple-500"
+              className="h-11 w-full bg-purple-600 hover:bg-purple-500 sm:h-9"
             >
               <PlusIcon />
-              New flashcard
+              <span className="sm:hidden">Add</span>
+              <span className="hidden sm:inline">New flashcard</span>
             </Button>
           </div>
         </div>
