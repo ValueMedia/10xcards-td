@@ -23,7 +23,7 @@ export default function SetDetailPage({ initialData }: Props) {
   const [state, setState] = useState<ParsedData>(() => {
     try {
       const parsed = JSON.parse(initialData) as ParsedData;
-      if (!parsed.set || typeof parsed.set.id !== "string") {
+      if (!parsed.set || typeof parsed.set.id !== "string" || !Array.isArray(parsed.flashcards)) {
         throw new Error("Invalid set data");
       }
       return parsed;
@@ -113,45 +113,42 @@ export default function SetDetailPage({ initialData }: Props) {
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {flashcards.length > 0 ? (
-              <a
-                href={`/sets/${set.id}/browse`}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-xs transition-colors hover:bg-teal-600 sm:h-9 sm:py-2"
-              >
-                <EyeIcon />
-                Browse
-              </a>
+              <Button asChild className="h-11 bg-teal-700 text-white shadow-xs hover:bg-teal-600 sm:h-9">
+                <a href={`/sets/${set.id}/browse`}>
+                  <EyeIcon />
+                  Browse
+                </a>
+              </Button>
             ) : (
-              <button
+              <Button
                 disabled
                 title="Add flashcards first"
-                className="inline-flex h-11 cursor-not-allowed items-center justify-center gap-2 rounded-md bg-teal-700 px-4 py-2.5 text-sm font-medium text-white opacity-50 shadow-xs sm:h-9 sm:py-2"
+                className="h-11 cursor-not-allowed bg-teal-700 text-white opacity-50 shadow-xs sm:h-9"
               >
                 <EyeIcon />
                 Browse
-              </button>
+              </Button>
             )}
-            <a
-              href={`/sets/${set.id}/review`}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-purple-700 px-4 py-2.5 text-sm font-medium text-white shadow-xs transition-colors hover:bg-purple-600 sm:h-9 sm:py-2"
-            >
-              <span className="sm:hidden">Learn</span>
-              <span className="hidden sm:inline">Start learn session</span>
-            </a>
-            <a
-              href={`/generate?setId=${set.id}`}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-xs transition-colors hover:bg-blue-500 sm:h-9 sm:py-2"
-            >
-              <SparklesIcon />
-              <span className="sm:hidden">Build with AI</span>
-              <span className="hidden sm:inline">Generate with AI</span>
-            </a>
+            <Button asChild className="h-11 bg-purple-700 text-white shadow-xs hover:bg-purple-600 sm:h-9">
+              <a href={`/sets/${set.id}/review`}>
+                <span className="sm:hidden">Learn</span>
+                <span className="hidden sm:inline">Start learn session</span>
+              </a>
+            </Button>
+            <Button asChild className="h-11 bg-blue-600 text-white shadow-xs hover:bg-blue-500 sm:h-9">
+              <a href={`/generate?setId=${set.id}`}>
+                <SparklesIcon />
+                <span className="sm:hidden">Build with AI</span>
+                <span className="hidden sm:inline">Generate with AI</span>
+              </a>
+            </Button>
             <Button
               type="button"
               onClick={() => {
                 setShareOpen(true);
               }}
               variant="outline"
-              className="h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 sm:h-9"
+              className="h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white sm:h-9"
             >
               <ShareIcon />
               Share
@@ -162,7 +159,7 @@ export default function SetDetailPage({ initialData }: Props) {
                 setImportOpen(true);
               }}
               variant="outline"
-              className="h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 sm:h-9"
+              className="h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white sm:h-9"
             >
               <UploadIcon />
               <span className="sm:hidden">Import</span>
