@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { DEFAULT_SYSTEM_PROMPT } from "@/lib/services/ai-prompt";
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
-import { PromptPreview } from "@/components/settings/PromptPreview";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,7 +30,6 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
   const [customPrompt, setCustomPrompt] = useState(initialPrompt ?? DEFAULT_SYSTEM_PROMPT);
   const [flashcardCount, setFlashcardCount] = useState(initialFlashcardCount ?? 5);
   const [saving, setSaving] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [switchConfirmOpen, setSwitchConfirmOpen] = useState(false);
@@ -77,7 +75,6 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
         setPromptMode("default");
         setCustomPrompt(DEFAULT_SYSTEM_PROMPT);
         setFlashcardCount(5);
-        setShowPreview(false);
         toast.success("Switched to default prompt");
       } else {
         const body: { error?: string } = await res.json();
@@ -98,7 +95,6 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
       if (mode === "default") {
         setCustomPrompt(DEFAULT_SYSTEM_PROMPT);
         setFlashcardCount(5);
-        setShowPreview(false);
       }
     }
   }
@@ -186,17 +182,7 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
                   >
                     {saving ? "Saving..." : "Save"}
                   </Button>
-                  <Button
-                    variant="outline"
-                    className="border-white/10 bg-white/5 text-white hover:bg-white/10"
-                    onClick={() => setShowPreview(!showPreview)}
-                  >
-                    {showPreview ? "Hide preview" : "Preview"}
-                  </Button>
                 </div>
-                {showPreview && (
-                  <PromptPreview prompt={customPrompt} count={flashcardCount} />
-                )}
               </>
             )}
           </CardContent>
