@@ -18,7 +18,16 @@ const { user } = Astro.locals;
           </a>
         </div>
         <div class="flex items-center gap-4">
-          <span class="text-sm text-blue-100/40">{user.email ?? "Signed in"}</span>
+          <span class="text-sm text-blue-100/40">
+            {user.email ? (
+              <>
+                <span class="sm:hidden">{user.email.split("@")[0]}</span>
+                <span class="hidden sm:inline">{user.email}</span>
+              </>
+            ) : (
+              "Signed in"
+            )}
+          </span>
           <form method="POST" action="/api/auth/signout">
             <button
               type="submit"
