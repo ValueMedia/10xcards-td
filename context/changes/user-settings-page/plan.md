@@ -375,33 +375,33 @@ Uses shadcn/ui `DropdownMenu` components. Styled with cosmic theme colors.
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly (`npx supabase db push --local`)
-- [x] 1.2 Type checking passes (`npm run build`)
-- [x] 1.3 Linting passes (`npm run lint`)
+- [x] 1.1 Migration applies cleanly (`npx supabase db push --local`) — 04f4c9e
+- [x] 1.2 Type checking passes (`npm run build`) — 04f4c9e
+- [x] 1.3 Linting passes (`npm run lint`) — 04f4c9e
 
 #### Manual
 
-- [x] 1.4 API endpoints return correct responses (tested via curl/dev tools)
-- [x] 1.5 RLS policies prevent cross-user prompt access
-- [x] 1.6 Account deletion cascades correctly (all user data removed)
+- [x] 1.4 API endpoints return correct responses (tested via curl/dev tools) — 04f4c9e
+- [x] 1.5 RLS policies prevent cross-user prompt access — 04f4c9e
+- [x] 1.6 Account deletion cascades correctly (all user data removed) — 04f4c9e
 
 ### Phase 2: Settings Page UI
 
 #### Automated
 
-- [ ] 2.1 Type checking passes (`npm run build`)
-- [ ] 2.2 Linting passes (`npm run lint`)
+- [x] 2.1 Type checking passes (`npm run build`)
+- [x] 2.2 Linting passes (`npm run lint`)
 
 #### Manual
 
-- [ ] 2.3 Settings page renders correctly at `/settings` for authenticated users
-- [ ] 2.4 Change password dialog opens, validates, and submits correctly
-- [ ] 2.5 AI prompt section toggles between default and custom modes
-- [ ] 2.6 Custom prompt saves and loads correctly after page refresh
-- [ ] 2.7 Prompt preview shows rendered prompt with sample text
-- [ ] 2.8 Delete account dialog requires "DELETE" text to enable button
-- [ ] 2.9 Language toggle shows "Coming soon" and is non-functional
-- [ ] 2.10 Unauthenticated users redirected to sign-in from `/settings`
+- [x] 2.3 Settings page renders correctly at `/settings` for authenticated users
+- [x] 2.4 Change password dialog opens, validates, and submits correctly
+- [x] 2.5 AI prompt section toggles between default and custom modes
+- [x] 2.6 Custom prompt saves and loads correctly after page refresh
+- [x] 2.7 Prompt preview shows rendered prompt with sample text
+- [x] 2.8 Delete account dialog requires "DELETE" text to enable button
+- [x] 2.9 Language toggle shows "Coming soon" and is non-functional
+- [x] 2.10 Unauthenticated users redirected to sign-in from `/settings`
 
 ### Phase 3: NavBar Dropdown and Generation Integration
 

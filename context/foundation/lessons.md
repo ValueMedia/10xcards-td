@@ -48,3 +48,10 @@
 - **Problem**: Serwis pobiera karty po `set_id` bez weryfikacji właściciela. Zestawy mają kolumnę `share_token` umożliwiającą dostęp innym użytkownikom, ale logika dostępu nie rozróżnia między właścicielem a użytkownikiem z tokenem — aktualnie akceptuje każde `set_id`.
 - **Rule**: Każda operacja na zestawie/kartach powinna sprawdzać: (1) `user_id` = właściciel, LUB (2) `set.share_token IS NOT NULL` i użytkownik przyszedł z poprawnym tokenem. Nie zezwalaj na dostęp po samym `set_id` bez żadnej z tych weryfikacji.
 - **Applies to**: wszystkie serwisy i endpointy operujące na zestawach i ich kartach
+
+## Nowa tabela z RLS wymaga GRANT dla roli authenticated
+
+- **Context**: user-settings-page Phase 1 — migracja tworząca `user_ai_prompts` z RLS nie nadawała GRANT SELECT/INSERT/UPDATE/DELETE dla roli `authenticated`. Zapytania zwracały `permission denied for table user_ai_prompts` mimo poprawnych polityk RLS.
+- **Problem**: Supabase wymaga dwóch warunków dostępu: (1) GRANT na poziomie tabeli (czy rola w ogóle może dotknąć tabeli), (2) polityki RLS (które wiersze/kolumny). Brak GRANT = odmowa dostępu niezależnie od polityk RLS. Istniejąca migracja `20260613105815_grant_table_permissions.sql` nadała GRANT dla starszych tabel, ale nowe tabele muszą mieć GRANT w swojej migracji.
+- **Rule**: Każda migracja tworząca nową tabelę z RLS musi zawierać `GRANT SELECT, INSERT, UPDATE, DELETE ON public.<tabela> TO authenticated;` (i ewentualnie `GRANT SELECT ON public.<tabela> TO anon;`). Sprawdź wzorzec w `20260613105815_grant_table_permissions.sql`.
+- **Applies to**: wszystkie nowe migracje Supabase tworzące tabele z RLS

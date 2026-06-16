@@ -1,0 +1,25 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getUserPrompt } from "@/lib/services/user-settings";
+import { SettingsPage } from "@/components/settings/SettingsPage";
+
+const { user, supabase } = Astro.locals;
+
+if (!user || !supabase) {
+  return Astro.redirect("/auth/signin");
+}
+
+const { data: promptData } = await getUserPrompt(supabase, user.id);
+
+const initialPrompt = promptData?.prompt ?? null;
+const initialFlashcardCount = promptData?.flashcard_count ?? null;
+---
+
+<Layout title="Settings">
+  <SettingsPage
+    email={user.email ?? ""}
+    initialPrompt={initialPrompt}
+    initialFlashcardCount={initialFlashcardCount}
+    client:load
+  />
+</Layout>
