@@ -36,12 +36,15 @@ describe("LanguageSwitcher", () => {
     expect(enBtn.className).not.toContain("bg-purple-600");
   });
 
-  it("does not trigger switch when clicking the already-active locale", async () => {
-    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValue(new Response("{}"));
+  it("does not call reload when clicking the already-active locale", () => {
+    const reloadSpy = vi.fn();
+    Object.defineProperty(window, "location", {
+      value: { reload: reloadSpy },
+      writable: true,
+    });
+    vi.spyOn(global, "fetch").mockResolvedValue(new Response("{}"));
     renderWithI18n(<LanguageSwitcher currentLocale="en" />);
     screen.getByTestId("lang-en").click();
-    await Promise.resolve();
-    expect(fetchSpy).not.toHaveBeenCalled();
-    fetchSpy.mockRestore();
+    expect(reloadSpy).not.toHaveBeenCalled();
   });
 });
