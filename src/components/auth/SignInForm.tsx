@@ -6,12 +6,23 @@ import { FormField } from "@/components/auth/FormField";
 import { PasswordToggle } from "@/components/auth/PasswordToggle";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
+import { I18nProvider } from "@/components/I18nProvider";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 interface Props {
   serverError?: string | null;
+  locale: SupportedLocale;
 }
 
-export default function SignInForm({ serverError }: Props) {
+export default function SignInForm({ locale, ...props }: Props) {
+  return (
+    <I18nProvider locale={locale}>
+      <SignInFormInner {...props} />
+    </I18nProvider>
+  );
+}
+
+function SignInFormInner({ serverError }: Omit<Props, "locale">) {
   const { t } = useTranslation("auth");
   const translatedError = serverError ? t(getErrorI18nKey(serverError)) : null;
   const [email, setEmail] = useState("");

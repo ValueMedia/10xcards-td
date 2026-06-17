@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { I18nProvider } from "@/components/I18nProvider";
 import type { SupportedLocale } from "@/lib/i18n/constants";
 
 interface Props {
@@ -29,7 +30,15 @@ interface Props {
 
 type PromptMode = "default" | "custom";
 
-export function SettingsPage({ email, initialPrompt, initialFlashcardCount, locale }: Props) {
+export function SettingsPage(props: Props) {
+  return (
+    <I18nProvider locale={props.locale}>
+      <SettingsPageInner {...props} />
+    </I18nProvider>
+  );
+}
+
+function SettingsPageInner({ email, initialPrompt, initialFlashcardCount, locale }: Props) {
   const { t } = useTranslation("settings");
   const initialMode: PromptMode = initialPrompt ? "custom" : "default";
   const [promptMode, setPromptMode] = useState<PromptMode>(initialMode);

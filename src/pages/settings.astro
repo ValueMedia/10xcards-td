@@ -2,7 +2,6 @@
 import Layout from "@/layouts/Layout.astro";
 import { getUserPrompt } from "@/lib/services/user-settings";
 import { SettingsPage } from "@/components/settings/SettingsPage";
-import { I18nProvider } from "@/components/I18nProvider";
 import { getTranslations } from "@/lib/i18n/ui";
 import type { SupportedLocale } from "@/lib/i18n/constants";
 
@@ -20,12 +19,11 @@ const initialFlashcardCount = promptData?.flashcard_count ?? null;
 ---
 
 <Layout title={t("settings.title")} locale={locale as SupportedLocale}>
-  <I18nProvider locale={locale as SupportedLocale} client:load>
-    <SettingsPage
-      email={user.email ?? ""}
-      initialPrompt={initialPrompt}
-      initialFlashcardCount={initialFlashcardCount}
-      locale={locale as SupportedLocale}
-    />
-  </I18nProvider>
+  <SettingsPage
+    email={user.email ?? ""}
+    initialPrompt={initialPrompt}
+    initialFlashcardCount={initialFlashcardCount}
+    locale={locale as SupportedLocale}
+    client:load
+  />
 </Layout>

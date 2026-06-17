@@ -8,6 +8,8 @@ import { RenameSetDialog } from "@/components/sets/RenameSetDialog";
 import { DeleteSetDialog } from "@/components/sets/DeleteSetDialog";
 import { StatsBlock } from "@/components/dashboard/StatsBlock";
 import { DonatedSetsSection } from "@/components/dashboard/DonatedSetsSection";
+import { I18nProvider } from "@/components/I18nProvider";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 type SetWithCount = FlashcardSet & { flashcard_count: number };
 
@@ -15,9 +17,18 @@ interface Props {
   initialSets: string;
   initialStats: string;
   initialDonatedSets: string;
+  locale: SupportedLocale;
 }
 
-export default function SetDashboard({ initialSets, initialStats, initialDonatedSets }: Props) {
+export default function SetDashboard(props: Props) {
+  return (
+    <I18nProvider locale={props.locale}>
+      <SetDashboardInner {...props} />
+    </I18nProvider>
+  );
+}
+
+function SetDashboardInner({ initialSets, initialStats, initialDonatedSets }: Props) {
   const { t } = useTranslation("dashboard");
   const [sets, setSets] = useState<SetWithCount[]>(() => {
     try {

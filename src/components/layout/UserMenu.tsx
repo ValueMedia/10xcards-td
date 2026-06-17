@@ -9,12 +9,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { I18nProvider } from "@/components/I18nProvider";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 interface Props {
   email: string;
+  locale: SupportedLocale;
 }
 
-export function UserMenu({ email }: Props) {
+export function UserMenu({ email, locale }: Props) {
+  return (
+    <I18nProvider locale={locale}>
+      <UserMenuInner email={email} />
+    </I18nProvider>
+  );
+}
+
+function UserMenuInner({ email }: { email: string }) {
   const { t } = useTranslation();
   const [signingOut, setSigningOut] = useState(false);
 

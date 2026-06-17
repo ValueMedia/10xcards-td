@@ -6,14 +6,25 @@ import { FormField } from "@/components/auth/FormField";
 import { PasswordToggle } from "@/components/auth/PasswordToggle";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
+import { I18nProvider } from "@/components/I18nProvider";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 const MIN_PASSWORD_LENGTH = 6;
 
 interface Props {
   serverError?: string | null;
+  locale: SupportedLocale;
 }
 
-export default function SignUpForm({ serverError }: Props) {
+export default function SignUpForm({ locale, ...props }: Props) {
+  return (
+    <I18nProvider locale={locale}>
+      <SignUpFormInner {...props} />
+    </I18nProvider>
+  );
+}
+
+function SignUpFormInner({ serverError }: Omit<Props, "locale">) {
   const { t } = useTranslation("auth");
   const translatedError = serverError ? t(getErrorI18nKey(serverError)) : null;
   const [email, setEmail] = useState("");
