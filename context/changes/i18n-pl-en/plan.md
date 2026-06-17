@@ -551,10 +551,10 @@ Wire up the existing disabled language switcher in SettingsPage, add cross-compo
 
 #### Automated
 
-- [x] 4.1 `npm run build` passes
-- [x] 4.2 `npm run lint` passes
-- [x] 4.3 Translation completeness test passes
-- [x] 4.4 Unit test for LanguageSwitcher component
+- [x] 4.1 `npm run build` passes — 0a791b7
+- [x] 4.2 `npm run lint` passes — 0a791b7
+- [x] 4.3 Translation completeness test passes — 0a791b7
+- [x] 4.4 Unit test for LanguageSwitcher component — 0a791b7
 
 #### Manual
 
