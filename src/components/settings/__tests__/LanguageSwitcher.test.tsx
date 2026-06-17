@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/lib/i18n";
@@ -14,37 +14,32 @@ function renderWithI18n(ui: React.ReactElement) {
 }
 
 describe("LanguageSwitcher", () => {
-  it("renders EN and PL buttons", () => {
+  it("renders EN and PL links", () => {
     renderWithI18n(<LanguageSwitcher currentLocale="en" />);
     expect(screen.getByTestId("lang-en")).toBeTruthy();
     expect(screen.getByTestId("lang-pl")).toBeTruthy();
   });
 
-  it("marks the current locale button as active (en)", () => {
+  it("marks the current locale link as active (en)", () => {
     renderWithI18n(<LanguageSwitcher currentLocale="en" />);
-    const enBtn = screen.getByTestId("lang-en") as HTMLButtonElement;
-    const plBtn = screen.getByTestId("lang-pl") as HTMLButtonElement;
-    expect(enBtn.className).toContain("bg-purple-600");
-    expect(plBtn.className).not.toContain("bg-purple-600");
+    const enLink = screen.getByTestId("lang-en") as HTMLAnchorElement;
+    const plLink = screen.getByTestId("lang-pl") as HTMLAnchorElement;
+    expect(enLink.className).toContain("bg-purple-600");
+    expect(plLink.className).not.toContain("bg-purple-600");
   });
 
-  it("marks the current locale button as active (pl)", () => {
+  it("marks the current locale link as active (pl)", () => {
     renderWithI18n(<LanguageSwitcher currentLocale="pl" />);
-    const enBtn = screen.getByTestId("lang-en") as HTMLButtonElement;
-    const plBtn = screen.getByTestId("lang-pl") as HTMLButtonElement;
-    expect(plBtn.className).toContain("bg-purple-600");
-    expect(enBtn.className).not.toContain("bg-purple-600");
+    const enLink = screen.getByTestId("lang-en") as HTMLAnchorElement;
+    const plLink = screen.getByTestId("lang-pl") as HTMLAnchorElement;
+    expect(plLink.className).toContain("bg-purple-600");
+    expect(enLink.className).not.toContain("bg-purple-600");
   });
 
-  it("does not call reload when clicking the already-active locale", () => {
-    const reloadSpy = vi.fn();
-    Object.defineProperty(window, "location", {
-      value: { reload: reloadSpy },
-      writable: true,
-    });
-    vi.spyOn(global, "fetch").mockResolvedValue(new Response("{}"));
+  it("links point to the locale-switch API endpoint", () => {
     renderWithI18n(<LanguageSwitcher currentLocale="en" />);
-    screen.getByTestId("lang-en").click();
-    expect(reloadSpy).not.toHaveBeenCalled();
+    const plLink = screen.getByTestId("lang-pl") as HTMLAnchorElement;
+    expect(plLink.getAttribute("href")).toContain("/api/locale-switch");
+    expect(plLink.getAttribute("href")).toContain("locale=pl");
   });
 });
