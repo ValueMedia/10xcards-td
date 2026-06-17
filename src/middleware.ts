@@ -86,5 +86,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  return next();
+  const response = await next();
+
+  // Prevent bfcache for page responses so locale cookie changes are reflected immediately
+  if (!context.url.pathname.startsWith("/api/")) {
+    response.headers.set("Cache-Control", "no-store");
+  }
+
+  return response;
 });

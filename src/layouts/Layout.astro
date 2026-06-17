@@ -45,6 +45,12 @@ const t = getTranslations(locale);
     <NavBar />
     <slot />
     <SonnerToaster client:load />
+    <script>
+      // Reload if page is restored from bfcache so locale cookie changes are applied
+      window.addEventListener("pageshow", function (e) {
+        if (e.persisted) window.location.reload();
+      });
+    </script>
   </body>
 </html>
 
