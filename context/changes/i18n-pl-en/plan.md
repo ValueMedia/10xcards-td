@@ -533,19 +533,19 @@ Wire up the existing disabled language switcher in SettingsPage, add cross-compo
 
 #### Automated
 
-- [x] 3.1 `npm run build` passes
-- [x] 3.2 `npm run lint` passes
-- [x] 3.3 Translation completeness test passes
-- [x] 3.4 No remaining hardcoded strings in Phase 1 scope files
+- [x] 3.1 `npm run build` passes — b8e4a22
+- [x] 3.2 `npm run lint` passes — b8e4a22
+- [x] 3.3 Translation completeness test passes — b8e4a22
+- [x] 3.4 No remaining hardcoded strings in Phase 1 scope files — b8e4a22
 
 #### Manual
 
-- [x] 3.5 Settings page renders correctly in both EN and PL
-- [x] 3.6 Auth pages render in both languages
-- [x] 3.7 Dashboard page renders in both languages
-- [x] 3.8 API error messages display localized text
-- [x] 3.9 Date formatting adapts to locale
-- [x] 3.10 Config-status banner shows localized text
+- [x] 3.5 Settings page renders correctly in both EN and PL — b8e4a22
+- [x] 3.6 Auth pages render in both languages — b8e4a22
+- [x] 3.7 Dashboard page renders in both languages — b8e4a22
+- [x] 3.8 API error messages display localized text — b8e4a22
+- [x] 3.9 Date formatting adapts to locale — b8e4a22
+- [x] 3.10 Config-status banner shows localized text — b8e4a22
 
 ### Phase 4: Language Switcher Activation
 

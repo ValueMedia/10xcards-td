@@ -3,7 +3,7 @@ change_id: i18n-pl-en
 title: Polish and English i18n support
 status: implementing
 created: 2026-06-17
-updated: 2026-06-18
+updated: 2026-06-17
 archived_at: null
 ---
 
