@@ -5,7 +5,7 @@ import { getUserPrompt, upsertUserPrompt, deleteUserPrompt } from "@/lib/service
 export const prerender = false;
 
 const putSchema = z.object({
-  prompt: z.string().min(1).max(2000),
+  prompt: z.string().min(1).max(10000),
   flashcard_count: z.number().int().min(1).max(20).nullable().optional(),
 });
 

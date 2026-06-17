@@ -1435,7 +1435,7 @@ export const openApiSpec = {
               schema: {
                 type: "object",
                 properties: {
-                  prompt: { type: "string", minLength: 1, maxLength: 2000 },
+                  prompt: { type: "string", minLength: 1, maxLength: 10000 },
                   flashcard_count: {
                     type: "integer",
                     minimum: 1,
