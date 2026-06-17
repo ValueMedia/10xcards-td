@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { FlashcardSet } from "@/types";
 import { SetCard } from "@/components/sets/SetCard";
 
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export function SetGrid({ sets, onRename, onDelete }: Props) {
+  const { t } = useTranslation("dashboard");
+
   if (sets.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -30,8 +33,8 @@ export function SetGrid({ sets, onRename, onDelete }: Props) {
             <path d="M12 5v14" />
           </svg>
         </div>
-        <p className="text-lg font-medium text-blue-100/60">No sets yet</p>
-        <p className="mt-1 text-sm text-blue-100/40">Create your first set to get started.</p>
+        <p className="text-lg font-medium text-blue-100/60">{t("set.noSets")}</p>
+        <p className="mt-1 text-sm text-blue-100/40">{t("set.noSetsDesc")}</p>
       </div>
     );
   }

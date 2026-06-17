@@ -17,6 +17,12 @@ export default defineConfig({
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ["@supabase/ssr"],
+    },
+    ssr: {
+      noExternal: ["@supabase/ssr"],
+    },
   },
   adapter: cloudflare(),
   env: {

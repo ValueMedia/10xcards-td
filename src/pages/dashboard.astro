@@ -5,8 +5,11 @@ import { getLearningStats } from "@/lib/services/stats";
 import type { LearningStats, DonatedSetTile } from "@/types";
 import SetDashboard from "@/components/sets/SetDashboard";
 import { I18nProvider } from "@/components/I18nProvider";
+import { getTranslations } from "@/lib/i18n/ui";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 const { user, supabase, locale } = Astro.locals;
+const t = getTranslations(locale as SupportedLocale);
 let sets: (import("@/types").FlashcardSet & { flashcard_count: number })[] = [];
 let dbError: string | null = null;
 let stats: LearningStats = { dailyMinutes: [], recentSets: [] };
@@ -25,14 +28,14 @@ if (user && supabase) {
 }
 ---
 
-<Layout title="Dashboard" locale={locale}>
+<Layout title={t("dashboard.title")} locale={locale as SupportedLocale}>
   {
     dbError ? (
       <div class="bg-cosmic flex min-h-screen items-center justify-center p-4 text-white">
-        <p class="text-red-400">Failed to load sets. Please try again later.</p>
+        <p class="text-red-400">{t("set.errorLoading")}</p>
       </div>
     ) : (
-      <I18nProvider locale={locale} client:load>
+      <I18nProvider locale={locale as SupportedLocale} client:load>
         <SetDashboard
           initialSets={JSON.stringify(sets)}
           initialStats={JSON.stringify(stats)}

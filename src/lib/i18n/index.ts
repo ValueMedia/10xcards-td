@@ -10,24 +10,31 @@ import plAuth from "./locales/pl/auth.json";
 import plSettings from "./locales/pl/settings.json";
 import plDashboard from "./locales/pl/dashboard.json";
 
+const resources = {
+  en: {
+    common: enCommon,
+    auth: enAuth,
+    settings: enSettings,
+    dashboard: enDashboard,
+  },
+  pl: {
+    common: plCommon,
+    auth: plAuth,
+    settings: plSettings,
+    dashboard: plDashboard,
+  },
+};
+
 void i18n.use(initReactI18next).init({
+  lng: "en",
   fallbackLng: "en",
+  fallbackNS: "common",
   ns: ["common", "auth", "settings", "dashboard"],
   defaultNS: "common",
-  resources: {
-    en: {
-      common: enCommon,
-      auth: enAuth,
-      settings: enSettings,
-      dashboard: enDashboard,
-    },
-    pl: {
-      common: plCommon,
-      auth: plAuth,
-      settings: plSettings,
-      dashboard: plDashboard,
-    },
-  },
+  resources,
+  keySeparator: false,
+  nsSeparator: false,
+  initImmediate: false,
   interpolation: {
     escapeValue: false,
   },

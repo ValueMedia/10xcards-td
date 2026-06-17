@@ -13,7 +13,7 @@ export const GET: APIRoute = async (context) => {
   const user = context.locals.user;
   const supabase = context.locals.supabase;
   if (!user?.id || !supabase) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });
@@ -21,23 +21,26 @@ export const GET: APIRoute = async (context) => {
 
   const { data, error } = await getUserPrompt(supabase, user.id);
   if (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "SERVER_ERROR" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
 
-  return new Response(JSON.stringify({ prompt: data?.prompt ?? null, flashcard_count: data?.flashcard_count ?? null }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  return new Response(
+    JSON.stringify({ prompt: data?.prompt ?? null, flashcard_count: data?.flashcard_count ?? null }),
+    {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    },
+  );
 };
 
 export const PUT: APIRoute = async (context) => {
   const user = context.locals.user;
   const supabase = context.locals.supabase;
   if (!user?.id || !supabase) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });
@@ -47,7 +50,7 @@ export const PUT: APIRoute = async (context) => {
   try {
     body = await context.request.json();
   } catch {
-    return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
+    return new Response(JSON.stringify({ error: "INVALID_JSON" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
@@ -57,22 +60,27 @@ export const PUT: APIRoute = async (context) => {
   if (!parsed.success) {
     return new Response(
       JSON.stringify({
-        error: "Validation failed",
+        error: "VALIDATION_FAILED",
         details: parsed.error.issues.map((i) => i.message),
       }),
       { status: 400, headers: { "Content-Type": "application/json" } },
     );
   }
 
-  const { data, error } = await upsertUserPrompt(supabase, user.id, parsed.data.prompt, parsed.data.flashcard_count ?? null);
+  const { data, error } = await upsertUserPrompt(
+    supabase,
+    user.id,
+    parsed.data.prompt,
+    parsed.data.flashcard_count ?? null,
+  );
   if (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "SERVER_ERROR" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
 
-  return new Response(JSON.stringify({ prompt: data!.prompt, flashcard_count: data!.flashcard_count }), {
+  return new Response(JSON.stringify({ prompt: data.prompt, flashcard_count: data.flashcard_count }), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
@@ -82,7 +90,7 @@ export const DELETE: APIRoute = async (context) => {
   const user = context.locals.user;
   const supabase = context.locals.supabase;
   if (!user?.id || !supabase) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });
@@ -90,7 +98,7 @@ export const DELETE: APIRoute = async (context) => {
 
   const { error } = await deleteUserPrompt(supabase, user.id);
   if (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "SERVER_ERROR" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

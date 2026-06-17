@@ -1,4 +1,5 @@
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { FlashcardSet } from "@/types";
 import {
   Card,
@@ -25,6 +26,9 @@ interface Props {
 }
 
 export function SetCard({ set, onRename, onDelete }: Props) {
+  const { t, i18n } = useTranslation("dashboard");
+  const locale = i18n.language;
+
   return (
     <Card className={cn("relative border-white/10 bg-white/5 backdrop-blur-xl transition-colors hover:bg-white/10")}>
       <a href={`/sets/${set.id}`} className="absolute inset-0 z-0" aria-label={set.name} />
@@ -51,7 +55,7 @@ export function SetCard({ set, onRename, onDelete }: Props) {
                 }}
               >
                 <Pencil className="mr-2 h-4 w-4" />
-                Rename
+                {t("set.rename")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"
@@ -61,20 +65,20 @@ export function SetCard({ set, onRename, onDelete }: Props) {
                 }}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t("set.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </CardAction>
         <CardTitle className="text-white">{set.name}</CardTitle>
         <CardDescription className="text-blue-100/50">
-          {set.flashcard_count}&nbsp;{set.flashcard_count === 1 ? "card" : "cards"}
+          {set.flashcard_count}&nbsp;{set.flashcard_count === 1 ? t("set.card") : t("set.cards")}
         </CardDescription>
       </CardHeader>
       <CardContent className="text-sm text-blue-100/40">
         <p>
-          Created{" "}
-          {new Date(set.created_at).toLocaleDateString("en-US", {
+          {t("set.created")}{" "}
+          {new Date(set.created_at).toLocaleDateString(locale, {
             month: "short",
             day: "numeric",
             year: "numeric",
@@ -83,11 +87,11 @@ export function SetCard({ set, onRename, onDelete }: Props) {
       </CardContent>
       <CardFooter className="text-xs text-blue-100/30">
         {set.last_opened_at
-          ? `Last opened ${new Date(set.last_opened_at).toLocaleDateString("en-US", {
+          ? `${t("set.lastOpened")} ${new Date(set.last_opened_at).toLocaleDateString(locale, {
               month: "short",
               day: "numeric",
             })}`
-          : "Not opened yet"}
+          : t("set.notOpenedYet")}
       </CardFooter>
     </Card>
   );

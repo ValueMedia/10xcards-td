@@ -22,13 +22,15 @@ export const openApiSpec = {
     schemas: {
       Error: {
         type: "object",
-        properties: { error: { type: "string" } },
+        description:
+          "Error response. The `error` field contains an uppercase error code (e.g. `UNAUTHORIZED`, `VALIDATION_FAILED`).",
+        properties: { error: { type: "string", example: "UNAUTHORIZED" } },
         required: ["error"],
       },
       ValidationError: {
         type: "object",
         properties: {
-          error: { type: "string", example: "Validation failed" },
+          error: { type: "string", example: "VALIDATION_FAILED" },
           details: { type: "array", items: { type: "string" } },
         },
         required: ["error", "details"],

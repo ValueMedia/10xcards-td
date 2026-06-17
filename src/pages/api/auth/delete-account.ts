@@ -2,7 +2,6 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { deleteUserAccount } from "@/lib/services/user-settings";
-import { createClient } from "@/lib/supabase";
 
 export const prerender = false;
 
@@ -15,7 +14,7 @@ export const POST: APIRoute = async (context) => {
   const user = context.locals.user;
   const supabase = context.locals.supabase;
   if (!user?.id || !supabase) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });
@@ -25,7 +24,7 @@ export const POST: APIRoute = async (context) => {
   try {
     body = await context.request.json();
   } catch {
-    return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
+    return new Response(JSON.stringify({ error: "INVALID_JSON" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
@@ -35,7 +34,7 @@ export const POST: APIRoute = async (context) => {
   if (!parsed.success) {
     return new Response(
       JSON.stringify({
-        error: "Validation failed",
+        error: "VALIDATION_FAILED",
         details: parsed.error.issues.map((i) => i.message),
       }),
       { status: 400, headers: { "Content-Type": "application/json" } },
@@ -47,7 +46,7 @@ export const POST: APIRoute = async (context) => {
     password: parsed.data.currentPassword,
   });
   if (signInError) {
-    return new Response(JSON.stringify({ error: "Current password is incorrect" }), {
+    return new Response(JSON.stringify({ error: "CURRENT_PASSWORD_INCORRECT" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });
@@ -55,7 +54,7 @@ export const POST: APIRoute = async (context) => {
 
   const adminClient = createAdminClient();
   if (!adminClient) {
-    return new Response(JSON.stringify({ error: "Service unavailable" }), {
+    return new Response(JSON.stringify({ error: "SERVICE_UNAVAILABLE" }), {
       status: 503,
       headers: { "Content-Type": "application/json" },
     });
@@ -63,7 +62,7 @@ export const POST: APIRoute = async (context) => {
 
   const { error } = await deleteUserAccount(adminClient, user.id);
   if (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "SERVER_ERROR" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

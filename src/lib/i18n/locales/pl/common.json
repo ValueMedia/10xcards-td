@@ -15,6 +15,10 @@
   "errors.notFound": "Nie znaleziono",
   "errors.serverError": "Coś poszło nie tak",
   "errors.rateLimitExceeded": "Zbyt wiele żądań. Spróbuj ponownie później.",
+  "errors.currentPasswordIncorrect": "Obecne hasło jest nieprawidłowe",
+  "errors.serviceUnavailable": "Usługa niedostępna",
+  "errors.invalidCredentials": "Nieprawidłowy email lub hasło",
+  "errors.emailAlreadyRegistered": "Ten email jest już zarejestrowany",
   "config.supabaseNotConfigured": "Supabase nie jest skonfigurowany — funkcje uwierzytelniania są wyłączone.",
   "config.setupInstructions": "Zobacz instrukcję konfiguracji"
 }

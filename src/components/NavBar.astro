@@ -1,6 +1,9 @@
 ---
 import { UserMenu } from "@/components/layout/UserMenu";
-const { user } = Astro.locals;
+import { getTranslations } from "@/lib/i18n/ui";
+import type { SupportedLocale } from "@/lib/i18n/constants";
+const { user, locale } = Astro.locals;
+const t = getTranslations(locale as SupportedLocale);
 ---
 
 {
@@ -15,10 +18,10 @@ const { user } = Astro.locals;
             10xCards
           </a>
           <a href="/dashboard" class="text-sm text-blue-100/60 transition-colors hover:text-white">
-            Dashboard
+            {t("nav.dashboard")}
           </a>
         </div>
-        <UserMenu email={user.email ?? ""} client:load />
+        <UserMenu email={user.email ?? ""} locale={locale as SupportedLocale} client:load />
       </div>
     </nav>
   )

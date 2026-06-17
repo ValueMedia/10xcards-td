@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { User, Settings, LogOut } from "lucide-react";
 import {
   DropdownMenu,
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function UserMenu({ email }: Props) {
+  const { t } = useTranslation();
   const [signingOut, setSigningOut] = useState(false);
 
   async function handleSignOut() {
@@ -39,7 +41,7 @@ export function UserMenu({ email }: Props) {
         <DropdownMenuItem asChild className="cursor-pointer focus:bg-white/10 focus:text-white">
           <a href="/settings" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
-            Settings
+            {t("nav.settings")}
           </a>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-white/10" />
@@ -49,7 +51,7 @@ export function UserMenu({ email }: Props) {
           disabled={signingOut}
         >
           <LogOut className="h-4 w-4" />
-          {signingOut ? "Signing out..." : "Sign out"}
+          {signingOut ? t("nav.signingOut") : t("nav.signout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

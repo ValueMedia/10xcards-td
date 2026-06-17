@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import type { FlashcardSet, LearningStats, DonatedSetTile } from "@/types";
 import { SetGrid } from "@/components/sets/SetGrid";
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function SetDashboard({ initialSets, initialStats, initialDonatedSets }: Props) {
+  const { t } = useTranslation("dashboard");
   const [sets, setSets] = useState<SetWithCount[]>(() => {
     try {
       return JSON.parse(initialSets) as SetWithCount[];
@@ -45,26 +47,32 @@ export default function SetDashboard({ initialSets, initialStats, initialDonated
   const [renameTarget, setRenameTarget] = useState<FlashcardSet | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<FlashcardSet | null>(null);
 
-  const handleCreate = useCallback((newSet: FlashcardSet) => {
-    setSets((prev) => [{ ...newSet, flashcard_count: 0 }, ...prev]);
-    setCreateOpen(false);
-    toast.success(`Set "${newSet.name}" created`);
-  }, []);
+  const handleCreate = useCallback(
+    (newSet: FlashcardSet) => {
+      setSets((prev) => [{ ...newSet, flashcard_count: 0 }, ...prev]);
+      setCreateOpen(false);
+      toast.success(t("set.setCreated", { name: newSet.name }));
+    },
+    [t],
+  );
 
-  const handleRename = useCallback((updated: FlashcardSet) => {
-    setSets((prev) => prev.map((s) => (s.id === updated.id ? { ...s, ...updated } : s)));
-    setRenameTarget(null);
-    toast.success(`Set renamed to "${updated.name}"`);
-  }, []);
+  const handleRename = useCallback(
+    (updated: FlashcardSet) => {
+      setSets((prev) => prev.map((s) => (s.id === updated.id ? { ...s, ...updated } : s)));
+      setRenameTarget(null);
+      toast.success(t("set.setRenamed", { name: updated.name }));
+    },
+    [t],
+  );
 
   const handleDelete = useCallback(
     (setId: string) => {
       const deleted = sets.find((s) => s.id === setId);
       setSets((prev) => prev.filter((s) => s.id !== setId));
       setDeleteTarget(null);
-      toast.success(`Set "${deleted?.name ?? "unknown"}" deleted`);
+      toast.success(t("set.setDeleted", { name: deleted?.name ?? "unknown" }));
     },
-    [sets],
+    [sets, t],
   );
 
   return (
@@ -74,7 +82,7 @@ export default function SetDashboard({ initialSets, initialStats, initialDonated
 
         <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-4">
           <h1 className="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-            My Sets
+            {t("dashboard.mySets")}
           </h1>
           <button
             type="button"
@@ -84,7 +92,7 @@ export default function SetDashboard({ initialSets, initialStats, initialDonated
             className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-500"
           >
             <PlusIcon />
-            New Set
+            {t("dashboard.newSet")}
           </button>
         </div>
 

@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { getErrorI18nKey } from "@/lib/i18n/api-errors";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,6 +19,7 @@ interface Props {
 }
 
 export function ChangePasswordDialog({ open, onOpenChange }: Props) {
+  const { t } = useTranslation("settings");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -38,11 +41,11 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
     setError(null);
 
     if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(t("changePassword.passwordMinLength"));
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("changePassword.passwordsDoNotMatch"));
       return;
     }
 
@@ -55,16 +58,16 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
       });
 
       if (res.ok) {
-        toast.success("Password changed successfully");
+        toast.success(t("changePassword.success"));
         handleOpenChange(false);
       } else {
         const body: { error?: string } = await res.json();
-        setError(body.error ?? "Failed to change password");
-        toast.error(body.error ?? "Failed to change password");
+        setError(body.error ? t(getErrorI18nKey(body.error)) : t("changePassword.failed"));
+        toast.error(body.error ? t(getErrorI18nKey(body.error)) : t("changePassword.failed"));
       }
     } catch {
-      setError("Network error. Please try again.");
-      toast.error("Network error");
+      setError(t("changePassword.networkError"));
+      toast.error(t("changePassword.networkError"));
     } finally {
       setPending(false);
     }
@@ -74,21 +77,19 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="border-white/10 bg-[#0f1529] text-white sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Change password</DialogTitle>
-          <DialogDescription className="text-blue-100/50">
-            Enter your current password and a new password below.
-          </DialogDescription>
+          <DialogTitle>{t("changePassword.title")}</DialogTitle>
+          <DialogDescription className="text-blue-100/50">{t("changePassword.description")}</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="space-y-3">
             <div className="space-y-1.5">
               <label htmlFor="current-password" className="text-sm text-blue-100/70">
-                Current password
+                {t("changePassword.currentPassword")}
               </label>
               <Input
                 id="current-password"
                 type="password"
-                placeholder="Enter current password"
+                placeholder={t("changePassword.currentPasswordPlaceholder")}
                 value={currentPassword}
                 onChange={(e) => {
                   setCurrentPassword(e.target.value);
@@ -100,12 +101,12 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
             </div>
             <div className="space-y-1.5">
               <label htmlFor="new-password" className="text-sm text-blue-100/70">
-                New password
+                {t("changePassword.newPassword")}
               </label>
               <Input
                 id="new-password"
                 type="password"
-                placeholder="Min. 6 characters"
+                placeholder={t("changePassword.newPasswordPlaceholder")}
                 value={newPassword}
                 onChange={(e) => {
                   setNewPassword(e.target.value);
@@ -117,12 +118,12 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
             </div>
             <div className="space-y-1.5">
               <label htmlFor="confirm-password" className="text-sm text-blue-100/70">
-                Confirm new password
+                {t("changePassword.confirmNewPassword")}
               </label>
               <Input
                 id="confirm-password"
                 type="password"
-                placeholder="Repeat your password"
+                placeholder={t("changePassword.confirmNewPasswordPlaceholder")}
                 value={confirmPassword}
                 onChange={(e) => {
                   setConfirmPassword(e.target.value);
@@ -135,12 +136,8 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
             {error && <p className="text-sm text-red-400">{error}</p>}
           </div>
           <DialogFooter className="mt-4">
-            <Button
-              type="submit"
-              disabled={pending}
-              className="bg-purple-600 hover:bg-purple-500"
-            >
-              {pending ? "Changing..." : "Change password"}
+            <Button type="submit" disabled={pending} className="bg-purple-600 hover:bg-purple-500">
+              {pending ? t("changePassword.buttonPending") : t("changePassword.button")}
             </Button>
           </DialogFooter>
         </form>
