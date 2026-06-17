@@ -25,6 +25,7 @@ const initialFlashcardCount = promptData?.flashcard_count ?? null;
       email={user.email ?? ""}
       initialPrompt={initialPrompt}
       initialFlashcardCount={initialFlashcardCount}
+      locale={locale as SupportedLocale}
     />
   </I18nProvider>
 </Layout>

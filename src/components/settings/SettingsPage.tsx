@@ -5,6 +5,7 @@ import { getErrorI18nKey } from "@/lib/i18n/api-errors";
 import { DEFAULT_SYSTEM_PROMPT } from "@/lib/services/ai-prompt";
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
+import { LanguageSwitcher } from "@/components/settings/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,16 +18,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 interface Props {
   email: string;
   initialPrompt: string | null;
   initialFlashcardCount: number | null;
+  locale: SupportedLocale;
 }
 
 type PromptMode = "default" | "custom";
 
-export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Props) {
+export function SettingsPage({ email, initialPrompt, initialFlashcardCount, locale }: Props) {
   const { t } = useTranslation("settings");
   const initialMode: PromptMode = initialPrompt ? "custom" : "default";
   const [promptMode, setPromptMode] = useState<PromptMode>(initialMode);
@@ -201,18 +204,7 @@ export function SettingsPage({ email, initialPrompt, initialFlashcardCount }: Pr
             <CardTitle className="text-white">{t("settings.language")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center gap-2">
-              <button className="rounded-md bg-purple-600 px-3 py-1.5 text-sm font-medium text-white" disabled>
-                {t("settings.english")}
-              </button>
-              <button
-                className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-blue-100/40 transition-colors hover:bg-white/10"
-                disabled
-              >
-                {t("settings.polish")}
-              </button>
-            </div>
-            <p className="text-xs text-blue-100/30">{t("settings.comingSoon")}</p>
+            <LanguageSwitcher currentLocale={locale} />
           </CardContent>
         </Card>
 
