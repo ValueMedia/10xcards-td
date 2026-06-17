@@ -88,9 +88,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const response = await next();
 
-  // Prevent bfcache for page responses so locale cookie changes are reflected immediately
+  // Prevent bfcache for page responses (Cloudflare Workers Response is immutable —
+  // must create a new Response to set headers)
   if (!context.url.pathname.startsWith("/api/")) {
-    response.headers.set("Cache-Control", "no-store");
+    const newHeaders = new Headers(response.headers);
+    newHeaders.set("Cache-Control", "no-store");
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: newHeaders,
+    });
   }
 
   return response;

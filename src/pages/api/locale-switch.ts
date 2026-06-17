@@ -7,16 +7,11 @@ export const prerender = false;
 
 export const GET: APIRoute = async (context) => {
   const locale = context.url.searchParams.get("locale") ?? "";
-  const redirect = context.url.searchParams.get("redirect") ?? "/settings";
+  const redirectParam = context.url.searchParams.get("redirect") ?? "/settings";
 
   const safeLocale: SupportedLocale = isValidLocale(locale) ? locale : DEFAULT_LOCALE;
-
-  context.cookies.set(LOCALE_COOKIE, safeLocale, {
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-    httpOnly: false,
-    sameSite: "lax",
-  });
+  // Guard against open redirects
+  const safeRedirect = redirectParam.startsWith("/") ? redirectParam : "/settings";
 
   const user = context.locals.user;
   const supabase = context.locals.supabase;
@@ -26,5 +21,22 @@ export const GET: APIRoute = async (context) => {
     });
   }
 
-  return context.redirect(redirect);
+  // Explicitly build the Set-Cookie header to ensure it reaches the browser
+  // even through Cloudflare Workers' response pipeline (context.cookies.set
+  // may be dropped on redirect responses by the adapter)
+  const cookieHeader = [
+    `${LOCALE_COOKIE}=${safeLocale}`,
+    "Path=/",
+    `Max-Age=${60 * 60 * 24 * 365}`,
+    "SameSite=Lax",
+  ].join("; ");
+
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: safeRedirect,
+      "Set-Cookie": cookieHeader,
+      "Cache-Control": "no-store",
+    },
+  });
 };
