@@ -9,6 +9,11 @@ import cloudflare from "@astrojs/cloudflare";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
+  i18n: {
+    locales: ["en", "pl"],
+    defaultLocale: "en",
+    routing: { prefixDefaultLocale: false },
+  },
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
