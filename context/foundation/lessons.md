@@ -55,3 +55,10 @@
 - **Problem**: Supabase wymaga dwóch warunków dostępu: (1) GRANT na poziomie tabeli (czy rola w ogóle może dotknąć tabeli), (2) polityki RLS (które wiersze/kolumny). Brak GRANT = odmowa dostępu niezależnie od polityk RLS. Istniejąca migracja `20260613105815_grant_table_permissions.sql` nadała GRANT dla starszych tabel, ale nowe tabele muszą mieć GRANT w swojej migracji.
 - **Rule**: Każda migracja tworząca nową tabelę z RLS musi zawierać `GRANT SELECT, INSERT, UPDATE, DELETE ON public.<tabela> TO authenticated;` (i ewentualnie `GRANT SELECT ON public.<tabela> TO anon;`). Sprawdź wzorzec w `20260613105815_grant_table_permissions.sql`.
 - **Applies to**: wszystkie nowe migracje Supabase tworzące tabele z RLS
+
+## ESLint crashuje na plikach .astro z @typescript-eslint/no-misused-promises
+
+- **Context**: i18n-pl-en Phase 1 — `npm run lint` crashuje na plikach `.astro` z błędem "Non-null Assertion Failed: Expected node to have a parent" w regule `@typescript-eslint/no-misused-promises`. Problem występuje na wielu plikach `.astro` (index, settings, dashboard), nie jest związany ze zmianami i18n.
+- **Problem**: `astro-eslint-parser` i `@typescript-eslint/no-misused-promises` nie współpracują poprawnie. Uruchomienie `npm run lint` na całym projekcie kończy się crashem zamiast raportu. Lintowanie tylko plików `.ts`/`.tsx` działa poprawnie.
+- **Rule**: Kiedy `npm run lint` crashuje, uruchom ESLint selektywnie na zmienionych plikach `.ts`/`.tsx` (np. `npx eslint src/middleware.ts src/lib/i18n/constants.ts`). Nie trać czasu na debugowanie crasha `astro-eslint-parser` — to znany problem. `npm run build` sprawdza typy Astro poprawnie.
+- **Applies to**: wszystkie fazy implementacji, gdy ESLint crashuje na `.astro`

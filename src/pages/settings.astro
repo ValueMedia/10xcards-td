@@ -2,8 +2,9 @@
 import Layout from "@/layouts/Layout.astro";
 import { getUserPrompt } from "@/lib/services/user-settings";
 import { SettingsPage } from "@/components/settings/SettingsPage";
+import { I18nProvider } from "@/components/I18nProvider";
 
-const { user, supabase } = Astro.locals;
+const { user, supabase, locale } = Astro.locals;
 
 if (!user || !supabase) {
   return Astro.redirect("/auth/signin");
@@ -15,11 +16,12 @@ const initialPrompt = promptData?.prompt ?? null;
 const initialFlashcardCount = promptData?.flashcard_count ?? null;
 ---
 
-<Layout title="Settings">
-  <SettingsPage
-    email={user.email ?? ""}
-    initialPrompt={initialPrompt}
-    initialFlashcardCount={initialFlashcardCount}
-    client:load
-  />
+<Layout title="Settings" locale={locale}>
+  <I18nProvider locale={locale} client:load>
+    <SettingsPage
+      email={user.email ?? ""}
+      initialPrompt={initialPrompt}
+      initialFlashcardCount={initialFlashcardCount}
+    />
+  </I18nProvider>
 </Layout>

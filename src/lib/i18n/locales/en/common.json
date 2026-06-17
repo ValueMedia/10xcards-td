@@ -1,0 +1,20 @@
+{
+  "app.title": "10x Cards - TD",
+  "banner.attention": "Attention:",
+  "banner.docs": "Documentation",
+  "nav.dashboard": "Dashboard",
+  "nav.settings": "Settings",
+  "nav.signout": "Sign out",
+  "nav.signingOut": "Signing out...",
+  "errors.unauthorized": "Unauthorized",
+  "errors.supabaseNotConfigured": "Supabase is not configured",
+  "errors.invalidJson": "Invalid JSON body",
+  "errors.validationFailed": "Validation failed",
+  "errors.networkError": "Network error",
+  "errors.forbidden": "Forbidden",
+  "errors.notFound": "Not found",
+  "errors.serverError": "Something went wrong",
+  "errors.rateLimitExceeded": "Too many requests. Please try again later.",
+  "config.supabaseNotConfigured": "Supabase is not configured — authentication features are disabled.",
+  "config.setupInstructions": "Setup instructions"
+}

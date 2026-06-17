@@ -4,8 +4,9 @@ import { listSetsWithFlashcardCounts, getDonatedSets } from "@/lib/services/sets
 import { getLearningStats } from "@/lib/services/stats";
 import type { LearningStats, DonatedSetTile } from "@/types";
 import SetDashboard from "@/components/sets/SetDashboard";
+import { I18nProvider } from "@/components/I18nProvider";
 
-const { user, supabase } = Astro.locals;
+const { user, supabase, locale } = Astro.locals;
 let sets: (import("@/types").FlashcardSet & { flashcard_count: number })[] = [];
 let dbError: string | null = null;
 let stats: LearningStats = { dailyMinutes: [], recentSets: [] };
@@ -24,19 +25,20 @@ if (user && supabase) {
 }
 ---
 
-<Layout title="Dashboard">
+<Layout title="Dashboard" locale={locale}>
   {
     dbError ? (
       <div class="bg-cosmic flex min-h-screen items-center justify-center p-4 text-white">
         <p class="text-red-400">Failed to load sets. Please try again later.</p>
       </div>
     ) : (
-      <SetDashboard
-        initialSets={JSON.stringify(sets)}
-        initialStats={JSON.stringify(stats)}
-        initialDonatedSets={JSON.stringify(donatedSets)}
-        client:load
-      />
+      <I18nProvider locale={locale} client:load>
+        <SetDashboard
+          initialSets={JSON.stringify(sets)}
+          initialStats={JSON.stringify(stats)}
+          initialDonatedSets={JSON.stringify(donatedSets)}
+        />
+      </I18nProvider>
     )
   }
 </Layout>

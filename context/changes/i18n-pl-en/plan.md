@@ -143,9 +143,9 @@ Set up the foundational i18n infrastructure: types, Supabase migration, locale r
 
 #### Manual Verification:
 
-- [x] 1.5 `context.locals.locale` is set correctly on page requests
-- [x] 1.6 API `/api/user/locale` accepts valid locales and rejects invalid ones
-- [x] 1.7 Cookie `preferred-locale` is set on first visit and updated on locale change
+- [x] 1.5 `context.locals.locale` is set correctly on page requests — d42d4bc
+- [x] 1.6 API `/api/user/locale` accepts valid locales and rejects invalid ones — d42d4bc
+- [x] 1.7 Cookie `preferred-locale` is set on first visit and updated on locale change — d42d4bc
 
 **Implementation Note**: After completing this phase and all automated verification passes, pause for manual confirmation.
 
@@ -227,10 +227,10 @@ Set up the translation infrastructure: react-i18next initialization, Astro dicti
 
 #### Automated Verification:
 
-- [ ] 2.1 `npm run build` passes with new i18n imports
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 Translation completeness test: script that checks every key in `en/*.json` exists in `pl/*.json` (and vice versa)
-- [ ] 2.4 Type checking passes
+- [x] 2.1 `npm run build` passes with new i18n imports
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 Translation completeness test passes
+- [x] 2.4 Type checking passes
 
 #### Manual Verification:
 
@@ -503,10 +503,10 @@ Wire up the existing disabled language switcher in SettingsPage, add cross-compo
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly
-- [x] 1.2 Type checking passes: `npm run build`
-- [x] 1.3 Linting passes: `npm run lint`
-- [x] 1.4 Unit test for locale resolution logic
+- [x] 1.1 Migration applies cleanly — d42d4bc
+- [x] 1.2 Type checking passes: `npm run build` — d42d4bc
+- [x] 1.3 Linting passes: `npm run lint` — d42d4bc
+- [x] 1.4 Unit test for locale resolution logic — d42d4bc
 
 #### Manual
 
