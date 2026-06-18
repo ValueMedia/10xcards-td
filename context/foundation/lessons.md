@@ -73,3 +73,17 @@
   3. „Martwe przyciski" to prawie zawsze brak hydratacji, nie błąd w handlerze — najpierw sprawdź, czy komponent ma `client:*` i czy jest korzeniem wyspy.
   4. Efekty uboczne (jak `changeLanguage`) trzymaj w `useEffect`/inicjalizacji z guardem (`useRef`), nie w ciele komponentu — inaczej odpalają się co render i nie reagują na zmianę propów.
 - **Applies to**: wszystkie wyspy React + Context (i18n, theme, store) renderowane z plików `.astro`
+
+## Deploy na Cloudflare przez push do GitHub, nie `wrangler deploy`
+
+- **Context**: Wdrożenia aplikacji na Cloudflare Workers (worker `10xcards-td`) — zmiany w kodzie i konfiguracji.
+- **Problem**: Agent może odruchowo uruchomić `npx wrangler deploy`, omijając pipeline CI/CD i potencjalnie rozjeżdżając produkcję z gałęzią `main`. Zmiany w kodzie nie trafiają na produkcję, dopóki nie zostaną wypchnięte do GitHub.
+- **Rule**: Nie uruchamiaj `npx wrangler deploy`. Wdrożenie kodu następuje automatycznie po pushu do `main` (synchronizacja z GitHub / CI). Wyjątek to sekrety — ustawiaj je przez `wrangler secret put` (aktywują się od razu), ale zmiany w kodzie wchodzą na produkcję dopiero po pushu.
+- **Applies to**: implement, impl-review
+
+## Zmiana funkcji API wymaga aktualizacji dokumentacji OpenAPI/Scalar
+
+- **Context**: Każda zmiana kontraktu API w `src/pages/api/**` — nowy endpoint, zmiana metody, parametrów, kształtu request/response lub kodów błędów. Dokumentacja żyje w `src/lib/openapi/openapi-spec.ts` i zasila Scalar pod `/docs/api`.
+- **Problem**: Zmiana cambridge-dict-cli dodała `GET /api/dict/{word}`, ale nie zaktualizowała `openapi-spec.ts`. Dokumentacja rozjechała się z faktycznym API — konsumenci (i Scalar) nie widzieli nowego endpointu, mimo że działał on na produkcji.
+- **Rule**: Przy każdej zmianie kontraktu API zaktualizuj `src/lib/openapi/openapi-spec.ts` w tej samej fazie/commicie: ścieżka + parametry, schematy w `components.schemas`, kody odpowiedzi i tag. Dodanie lub zmianę endpointu bez aktualizacji spec-a traktuj jako pracę niedokończoną.
+- **Applies to**: plan, implement, impl-review

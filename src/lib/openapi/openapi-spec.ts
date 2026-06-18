@@ -105,9 +105,105 @@ export const openApiSpec = {
         enum: [1, 2, 3, 4],
         description: "FSRS rating: 1=Again, 2=Hard, 3=Good, 4=Easy",
       },
+      DictionaryEntry: {
+        type: "object",
+        description: "A single Cambridge Dictionary sense for a looked-up word.",
+        properties: {
+          definition: { type: "string", example: "Clever and difficult, sometimes in a bad way." },
+          type: { type: "string", nullable: true, description: "Part of speech (e.g. noun, verb, adjective)" },
+          dictionaryRegion: { type: "string", enum: ["UK", "US"], nullable: true },
+          info: {
+            type: "string",
+            nullable: true,
+            description: "CEFR level and/or usage labels (e.g. C1, formal, literary)",
+          },
+          examples: {
+            type: "array",
+            items: { type: "string" },
+            description: "Up to 2 example sentences",
+          },
+        },
+        required: ["definition", "type", "dictionaryRegion", "info", "examples"],
+      },
     },
   },
   paths: {
+    "/api/dict/{word}": {
+      parameters: [
+        {
+          name: "word",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "English word or phrase to look up (spaces are normalized to hyphens, case-insensitive)",
+        },
+      ],
+      get: {
+        summary: "Look up a word in the Cambridge Dictionary",
+        description:
+          "Live-scrapes dictionary.cambridge.org for UK+US definitions, part of speech, CEFR level/usage labels, and up to 2 examples per sense. No cache — every request scrapes live. Rate-limited to 30 requests per minute per user. Also used internally by the AI generation pipeline (`POST /api/sets/{id}/generate`) via OpenRouter function-calling.",
+        tags: ["Dictionary"],
+        security: [{ cookieAuth: [] }],
+        responses: {
+          "200": {
+            description: "Lookup succeeded. `entries` is empty when the word is unknown.",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    word: { type: "string" },
+                    entries: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/DictionaryEntry" },
+                    },
+                  },
+                  required: ["word", "entries"],
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Missing or empty word parameter",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "429": {
+            description: "Rate limit exceeded (30 per minute)",
+            headers: {
+              "Retry-After": {
+                schema: { type: "string", example: "60" },
+                description: "Seconds until rate limit resets",
+              },
+            },
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "502": {
+            description: "Cambridge Dictionary upstream unavailable (network/timeout)",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
     "/api/auth/signup": {
       post: {
         summary: "Register a new account",

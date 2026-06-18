@@ -7,8 +7,8 @@ const DEFAULT_COUNT = 5;
 const MAX_COUNT = 20;
 const DEFAULT_MODEL = "google/gemini-flash-1.5";
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const REQUEST_TIMEOUT_MS = 25_000;
-const MAX_TOOL_TURNS = 5;
+const REQUEST_TIMEOUT_MS = 40_000;
+const MAX_TOOL_TURNS = 8;
 
 export type AiServiceError =
   | { kind: "unconfigured"; message: string }
@@ -127,7 +127,23 @@ function stripMarkdownFences(raw: string): string {
     const withoutClosing = withoutOpening.replace(/\n?```$/, "");
     return withoutClosing.trim();
   }
+  // Some models (notably gemini-2.5-flash-lite) prefix the payload with a bare
+  // language tag like `json\n{...}` — a code fence that lost its backticks.
+  // Strip a leading lone-word line that isn't itself the start of the JSON.
+  const bareTag = /^[a-zA-Z]+\s*\n([[{][\s\S]*)$/.exec(trimmed);
+  if (bareTag) {
+    return bareTag[1].trim();
+  }
   return trimmed;
+}
+
+// Last-resort recovery: pull the outermost JSON object out of a string that has
+// leading/trailing prose the model added despite the "raw JSON only" instruction.
+function extractJsonObject(s: string): string | null {
+  const start = s.indexOf("{");
+  const end = s.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) return null;
+  return s.slice(start, end + 1);
 }
 
 export function parseProposals(rawContent: string): { data: FlashcardProposal[]; error: AiServiceError | null } {
@@ -136,7 +152,16 @@ export function parseProposals(rawContent: string): { data: FlashcardProposal[];
   try {
     parsed = JSON.parse(cleaned);
   } catch {
-    return { data: [], error: { kind: "parseError", message: "Failed to parse AI response as JSON" } };
+    const extracted = extractJsonObject(cleaned);
+    if (extracted) {
+      try {
+        parsed = JSON.parse(extracted);
+      } catch {
+        return { data: [], error: { kind: "parseError", message: "Failed to parse AI response as JSON" } };
+      }
+    } else {
+      return { data: [], error: { kind: "parseError", message: "Failed to parse AI response as JSON" } };
+    }
   }
 
   const validation = proposalsResponseSchema.safeParse(parsed);
@@ -196,7 +221,9 @@ export async function generateFlashcardProposals(input: GenerateInput): Promise<
         messages,
         temperature: 0.3,
       };
-      if (useTools) {
+      // On the final allowed turn, drop the tools so the model is forced to
+      // emit its answer instead of requesting yet another lookup it can't make.
+      if (useTools && turn < MAX_TOOL_TURNS - 1) {
         body.tools = tools;
       }
 
@@ -237,20 +264,27 @@ export async function generateFlashcardProposals(input: GenerateInput): Promise<
 
       if (useTools && toolCalls && toolCalls.length > 0 && onToolCall) {
         // Echo the assistant turn (with its tool_calls) back into the
-        // conversation, then resolve each call locally and append the result.
+        // conversation, then resolve all calls concurrently and append the
+        // results. Running them in parallel matters when the LLM requests many
+        // lookups at once (up to 20 words) — each is an independent live scrape,
+        // so serial awaits would stack their latency against the request timeout.
         messages.push({ role: "assistant", content: message.content, tool_calls: toolCalls });
-        for (const call of toolCalls) {
-          let args: Record<string, unknown> = {};
-          try {
-            const parsedArgs = JSON.parse(call.function.arguments) as unknown;
-            if (parsedArgs && typeof parsedArgs === "object") {
-              args = parsedArgs as Record<string, unknown>;
+        const results = await Promise.all(
+          toolCalls.map(async (call) => {
+            let args: Record<string, unknown> = {};
+            try {
+              const parsedArgs = JSON.parse(call.function.arguments) as unknown;
+              if (parsedArgs && typeof parsedArgs === "object") {
+                args = parsedArgs as Record<string, unknown>;
+              }
+            } catch {
+              args = {};
             }
-          } catch {
-            args = {};
-          }
-          const result = await onToolCall(call.function.name, args);
-          messages.push({ role: "tool", tool_call_id: call.id, content: result });
+            return { id: call.id, content: await onToolCall(call.function.name, args) };
+          }),
+        );
+        for (const { id, content } of results) {
+          messages.push({ role: "tool", tool_call_id: id, content });
         }
         continue;
       }

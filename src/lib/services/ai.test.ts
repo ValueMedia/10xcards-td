@@ -69,6 +69,20 @@ describe("parseProposals", () => {
     expect(data).toHaveLength(1);
   });
 
+  it("strips a bare language tag prefix and parses (gemini-flash-lite quirk)", () => {
+    const raw = "json\n" + JSON.stringify({ flashcards: [{ front: "Q", back: "A" }] }) + "\n";
+    const { data, error } = parseProposals(raw);
+    expect(error).toBeNull();
+    expect(data).toHaveLength(1);
+  });
+
+  it("recovers JSON wrapped in surrounding prose", () => {
+    const raw = 'Here are your flashcards:\n{"flashcards":[{"front":"Q","back":"A"}]}\nHope that helps!';
+    const { data, error } = parseProposals(raw);
+    expect(error).toBeNull();
+    expect(data).toHaveLength(1);
+  });
+
   it("returns parseError for invalid JSON", () => {
     const { data, error } = parseProposals("not-json");
     expect(data).toHaveLength(0);
@@ -275,7 +289,10 @@ describe("generateFlashcardProposals — function calling", () => {
 
     expect(data).toHaveLength(0);
     expect(error?.kind).toBe("apiError");
-    expect(fetchMock).toHaveBeenCalledTimes(5);
+    expect(fetchMock).toHaveBeenCalledTimes(8);
+    // Final turn drops tools to force a non-tool answer.
+    expect(bodyOf(fetchMock, 7).tools).toBeUndefined();
+    expect(bodyOf(fetchMock, 6).tools).toBeDefined();
   });
 
   it("does not send tools and stays single-turn when no tools provided (regression)", async () => {
