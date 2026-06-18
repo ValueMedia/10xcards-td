@@ -47,7 +47,8 @@ export default function ReviewSession({ setId, setName }: Props) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [flipped, setFlipped] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [showingBack, setShowingBack] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [nextDue, setNextDue] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
@@ -121,7 +122,8 @@ export default function ReviewSession({ setId, setName }: Props) {
           setPhase("summary");
         } else {
           setCurrentIndex(nextIdx);
-          setFlipped(false);
+          setRevealed(false);
+          setShowingBack(false);
         }
       } catch {
         toast.error("Nie udało się zapisać oceny. Spróbuj jeszcze raz.");
@@ -138,8 +140,13 @@ export default function ReviewSession({ setId, setName }: Props) {
       if ((e.target as Element).closest("button, input")) return;
       if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
-        if (!flipped) setFlipped(true);
-      } else if (flipped && !submitting) {
+        if (!revealed) {
+          setRevealed(true);
+          setShowingBack(true);
+        } else {
+          setShowingBack((s) => !s);
+        }
+      } else if (revealed && !submitting) {
         const idx = ["1", "2", "3", "4"].indexOf(e.key);
         if (idx !== -1) {
           void handleRate(GRADE_LABELS[idx].rating, GRADE_LABELS[idx].key);
@@ -150,7 +157,7 @@ export default function ReviewSession({ setId, setName }: Props) {
     return () => {
       window.removeEventListener("keydown", handler);
     };
-  }, [phase, flipped, submitting, handleRate]);
+  }, [phase, revealed, submitting, handleRate]);
 
   if (phase === "loading") {
     return (
@@ -249,17 +256,23 @@ export default function ReviewSession({ setId, setName }: Props) {
           <FlashcardBrowseCard
             front={card.front}
             back={card.back}
-            flipped={flipped}
+            flipped={showingBack}
             onFlip={() => {
-              if (!flipped) setFlipped(true);
+              if (!revealed) {
+                setRevealed(true);
+                setShowingBack(true);
+              } else {
+                setShowingBack((s) => !s);
+              }
             }}
           />
 
           <div className="flex w-full gap-2">
-            {!flipped ? (
+            {!revealed ? (
               <Button
                 onClick={() => {
-                  setFlipped(true);
+                  setRevealed(true);
+                  setShowingBack(true);
                 }}
                 className="w-full bg-white/10 text-white hover:bg-white/20"
                 variant="outline"
@@ -286,8 +299,8 @@ export default function ReviewSession({ setId, setName }: Props) {
               ))
             )}
           </div>
-          {!flipped && <p className="text-xs text-blue-100/30">Space / Enter — pokaż odpowiedź</p>}
-          {flipped && <p className="text-xs text-blue-100/30">1 – 4 — oceń kartę</p>}
+          {!revealed && <p className="text-xs text-blue-100/30">Space / Enter — pokaż odpowiedź</p>}
+          {revealed && <p className="text-xs text-blue-100/30">1 – 4 — oceń kartę</p>}
         </div>
       </div>
     </div>

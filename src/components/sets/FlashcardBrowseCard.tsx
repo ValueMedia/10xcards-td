@@ -10,7 +10,7 @@ interface Props {
 export function FlashcardBrowseCard({ front, back, flipped, onFlip }: Props) {
   return (
     <div
-      className="card-flip-container w-full"
+      className="card-flip-container w-full outline-none focus:outline-none focus-visible:outline-none"
       style={{ height: "320px" }}
       role="button"
       tabIndex={0}
