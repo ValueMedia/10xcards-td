@@ -62,3 +62,14 @@
 - **Problem**: `astro-eslint-parser` i `@typescript-eslint/no-misused-promises` nie współpracują poprawnie. Uruchomienie `npm run lint` na całym projekcie kończy się crashem zamiast raportu. Lintowanie tylko plików `.ts`/`.tsx` działa poprawnie.
 - **Rule**: Kiedy `npm run lint` crashuje, uruchom ESLint selektywnie na zmienionych plikach `.ts`/`.tsx` (np. `npx eslint src/middleware.ts src/lib/i18n/constants.ts`). Nie trać czasu na debugowanie crasha `astro-eslint-parser` — to znany problem. `npm run build` sprawdza typy Astro poprawnie.
 - **Applies to**: wszystkie fazy implementacji, gdy ESLint crashuje na `.astro`
+
+## React Context i hydratacja muszą żyć WEWNĄTRZ jednej wyspy Astro, nie nad nią
+
+- **Context**: i18n-pl-en (commity `89d655d`, `8f1eacc`) — przyciski w `SignInForm`, `SignUpForm`, `UserMenu`, `SetDashboard`, `SettingsPage` nie reagowały na kliknięcia. Provider był owijany w `.astro`: `<I18nProvider locale={locale} client:load><SignInForm serverError={error} /></I18nProvider>`.
+- **Problem**: `client:load` postawione na wrapperze hydratuje TYLKO wrapper. Dziecko wstawione przez Astro trafia tam jako slot (`<slot/>`) — to osobny, statyczny HTML wyrenderowany na serwerze, NIE część tego samego drzewa React. Skutki: (1) dziecko nigdy się nie hydratuje → cały JS (`useState`, `onClick`) martwy → „martwe przyciski"; (2) React Context nie przekracza granicy wyspy przez slot; (3) komponent bez providera nad sobą (UserMenu) rzuca „Invalid hook call" w SSR. Dodatkowo efekt uboczny (`i18n.changeLanguage`) wołany w ciele komponentu odpala się przy każdym renderze i nie śledzi zmiany propa.
+- **Rule**:
+  1. Granica wyspy Astro = granica drzewa React. Provider (context) montuj WEWNĄTRZ komponentu, który ma `client:*`, nie nad nim w `.astro`. Wzorzec: eksportowany komponent zwraca `<Provider><Inner/></Provider>`, a `.astro` hydratuje go bezpośrednio (`<SignInForm locale={locale} client:load />`).
+  2. Przez granicę wyspy przekazuj dane serializowalnymi propsami (np. `locale: string`), nigdy przez React Context.
+  3. „Martwe przyciski" to prawie zawsze brak hydratacji, nie błąd w handlerze — najpierw sprawdź, czy komponent ma `client:*` i czy jest korzeniem wyspy.
+  4. Efekty uboczne (jak `changeLanguage`) trzymaj w `useEffect`/inicjalizacji z guardem (`useRef`), nie w ciele komponentu — inaczej odpalają się co render i nie reagują na zmianę propów.
+- **Applies to**: wszystkie wyspy React + Context (i18n, theme, store) renderowane z plików `.astro`
