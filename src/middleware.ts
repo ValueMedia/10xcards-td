@@ -21,10 +21,18 @@ function isProtected(pathname: string, routes: string[]): boolean {
 
 function resolveLocaleFromHeader(header: string | null): SupportedLocale | null {
   if (!header) return null;
-  const preferred = header.split(",").map((lang) => lang.split(";")[0].trim().toLowerCase());
-  for (const lang of preferred) {
-    if (isValidLocale(lang)) return lang;
-    const base = lang.split("-")[0];
+  const ranked = header
+    .split(",")
+    .map((part, index) => {
+      const [tag, ...params] = part.trim().split(";");
+      const qParam = params.find((p) => p.trim().startsWith("q="));
+      const q = qParam ? Number.parseFloat(qParam.trim().slice(2)) : 1;
+      return { tag: tag.trim().toLowerCase(), q: Number.isNaN(q) ? 0 : q, index };
+    })
+    .sort((a, b) => b.q - a.q || a.index - b.index);
+  for (const { tag } of ranked) {
+    if (isValidLocale(tag)) return tag;
+    const base = tag.split("-")[0];
     if (isValidLocale(base)) return base;
   }
   return null;
@@ -71,6 +79,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       maxAge: 60 * 60 * 24 * 365,
       httpOnly: false,
       sameSite: "lax",
+      secure: true,
     });
   }
 

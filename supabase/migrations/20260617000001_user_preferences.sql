@@ -30,4 +30,4 @@ before update on public.user_preferences
 for each row
 execute function public.handle_updated_at();
 
-grant select, insert, update, delete on public.user_preferences to authenticated;
+grant select, insert, update on public.user_preferences to authenticated;

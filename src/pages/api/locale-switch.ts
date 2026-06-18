@@ -5,9 +5,10 @@ import { upsertUserLocale } from "@/lib/services/user-settings";
 
 export const prerender = false;
 
-export const GET: APIRoute = async (context) => {
-  const locale = context.url.searchParams.get("locale") ?? "";
-  const redirectParam = context.url.searchParams.get("redirect") ?? "/settings";
+export const POST: APIRoute = async (context) => {
+  const form = await context.request.formData();
+  const locale = (form.get("locale") as string | null) ?? "";
+  const redirectParam = (form.get("redirect") as string | null) ?? "/settings";
 
   const safeLocale: SupportedLocale = isValidLocale(locale) ? locale : DEFAULT_LOCALE;
   // Guard against open redirects
@@ -29,6 +30,7 @@ export const GET: APIRoute = async (context) => {
     "Path=/",
     `Max-Age=${60 * 60 * 24 * 365}`,
     "SameSite=Lax",
+    "Secure",
   ].join("; ");
 
   return new Response(null, {

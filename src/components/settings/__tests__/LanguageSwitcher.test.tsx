@@ -36,10 +36,13 @@ describe("LanguageSwitcher", () => {
     expect(enLink.className).not.toContain("bg-purple-600");
   });
 
-  it("links point to the locale-switch API endpoint", () => {
+  it("submits a POST form to the locale-switch API endpoint", () => {
     renderWithI18n(<LanguageSwitcher currentLocale="en" />);
-    const plLink = screen.getByTestId("lang-pl") as HTMLAnchorElement;
-    expect(plLink.getAttribute("href")).toContain("/api/locale-switch");
-    expect(plLink.getAttribute("href")).toContain("locale=pl");
+    const plButton = screen.getByTestId("lang-pl") as HTMLButtonElement;
+    const form = plButton.closest("form") as HTMLFormElement;
+    expect(form.getAttribute("method")).toBe("post");
+    expect(form.getAttribute("action")).toBe("/api/locale-switch");
+    const localeInput = form.querySelector('input[name="locale"]') as HTMLInputElement;
+    expect(localeInput.value).toBe("pl");
   });
 });
