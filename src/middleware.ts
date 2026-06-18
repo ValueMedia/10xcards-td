@@ -11,6 +11,7 @@ const PROTECTED_API_ROUTES = [
   "/api/reviews",
   "/api/share",
   "/api/user-prompt",
+  "/api/dict",
   "/api/auth/change-password",
   "/api/auth/delete-account",
 ];

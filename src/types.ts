@@ -93,3 +93,11 @@ export interface Review {
   review: string;
   created_at: string;
 }
+
+export interface DictionaryEntry {
+  definition: string;
+  type: string | null;
+  dictionaryRegion: "UK" | "US" | null;
+  info: string | null;
+  examples: string[];
+}

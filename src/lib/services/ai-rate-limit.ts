@@ -33,3 +33,40 @@ export async function checkRateLimit(
   await kv.put(key, String(count + 1), { expirationTtl: 3600 });
   return { allowed: true, limit, remaining: limit - count - 1 };
 }
+
+// Dictionary endpoint rate limiting. Separate contract from checkRateLimit:
+// minute-granularity buckets (vs hourly), a `dict:minute:` key prefix, and a
+// 60s TTL. Reuses the same AI_RATE_LIMIT KV namespace — no new binding.
+const DICT_LIMIT_PER_MINUTE = 30;
+
+export function getDictLimit(): number {
+  return DICT_LIMIT_PER_MINUTE;
+}
+
+export function dictRateLimitKey(userId: string, now = new Date()): string {
+  const minute = now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM
+  return `dict:minute:${userId}:${minute}`;
+}
+
+export async function checkDictRateLimit(
+  kv: KVNamespace | null,
+  userId: string,
+  now = new Date(),
+): Promise<{ allowed: boolean; limit: number; remaining: number }> {
+  const limit = getDictLimit();
+  if (!kv) {
+    return { allowed: false, limit, remaining: 0 };
+  }
+
+  const key = dictRateLimitKey(userId, now);
+  const current = await kv.get(key);
+  const parsed = current ? Number.parseInt(current, 10) : 0;
+  const count = Number.isNaN(parsed) ? 0 : parsed;
+
+  if (count >= limit) {
+    return { allowed: false, limit, remaining: 0 };
+  }
+
+  await kv.put(key, String(count + 1), { expirationTtl: 60 });
+  return { allowed: true, limit, remaining: limit - count - 1 };
+}

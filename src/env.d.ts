@@ -10,3 +10,12 @@ declare namespace App {
     };
   }
 }
+
+// Bindings reachable via `import { env } from "cloudflare:workers"`, whose type
+// is `Cloudflare.Env`. Augment that namespace so `env.AI_RATE_LIMIT` type-checks
+// (mirrors App.Runtime.env; also resolves the same gap in generate.ts).
+declare namespace Cloudflare {
+  interface Env {
+    AI_RATE_LIMIT: KVNamespace;
+  }
+}
