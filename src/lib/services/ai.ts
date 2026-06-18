@@ -8,6 +8,7 @@ const MAX_COUNT = 20;
 const DEFAULT_MODEL = "google/gemini-flash-1.5";
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const REQUEST_TIMEOUT_MS = 25_000;
+const MAX_TOOL_TURNS = 5;
 
 export type AiServiceError =
   | { kind: "unconfigured"; message: string }
@@ -21,6 +22,26 @@ export interface FlashcardProposal {
   back: string;
 }
 
+export interface ToolDefinition {
+  type: "function";
+  function: {
+    name: string;
+    description: string;
+    parameters: Record<string, unknown>;
+  };
+}
+
+interface ToolCall {
+  id: string;
+  type: "function";
+  function: { name: string; arguments: string };
+}
+
+type OpenRouterMessage =
+  | { role: "system" | "user"; content: string }
+  | { role: "assistant"; content: string | null; tool_calls?: ToolCall[] }
+  | { role: "tool"; tool_call_id: string; content: string };
+
 export interface GenerateInput {
   text: string;
   count?: number;
@@ -28,6 +49,8 @@ export interface GenerateInput {
   model?: string;
   appUrl?: string;
   systemPromptOverride?: string | null;
+  tools?: ToolDefinition[];
+  onToolCall?: (name: string, args: Record<string, unknown>) => Promise<string>;
 }
 
 export const generateInputSchema = z.object({
@@ -43,7 +66,16 @@ const openRouterResponseSchema = z.object({
   choices: z.array(
     z.object({
       message: z.object({
-        content: z.string(),
+        content: z.string().nullable(),
+        tool_calls: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.literal("function"),
+              function: z.object({ name: z.string(), arguments: z.string() }),
+            }),
+          )
+          .optional(),
       }),
     }),
   ),
@@ -133,6 +165,10 @@ export async function generateFlashcardProposals(input: GenerateInput): Promise<
   }
 
   const { text, count, apiKey, model, appUrl, systemPromptOverride } = parsedInput.data;
+  // `tools`/`onToolCall` carry a function value that zod strips during parsing,
+  // so read them from the raw input rather than `parsedInput.data`.
+  const { tools, onToolCall } = input;
+  const useTools = Boolean(tools && tools.length > 0 && onToolCall);
 
   if (!apiKey) {
     return { data: [], error: { kind: "unconfigured", message: "OpenRouter API key is not configured" } };
@@ -140,53 +176,99 @@ export async function generateFlashcardProposals(input: GenerateInput): Promise<
 
   const { system, user } = renderFlashcardPrompt({ text, count, systemPromptOverride });
 
+  const messages: OpenRouterMessage[] = [
+    { role: "system", content: system },
+    { role: "user", content: user },
+  ];
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
     controller.abort();
   }, REQUEST_TIMEOUT_MS);
 
   try {
-    const response = await fetch(OPENROUTER_API_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": appUrl ?? "https://10xcards.app",
-        "X-Title": "10xCards",
-      },
-      body: JSON.stringify({
+    // Multi-turn loop: re-request whenever the LLM asks for tool calls, feeding
+    // the results back as `role: "tool"` messages, until it returns final
+    // content or we hit the round-trip cap.
+    for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
+      const body: Record<string, unknown> = {
         model: model ?? DEFAULT_MODEL,
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: user },
-        ],
+        messages,
         temperature: 0.3,
-      }),
-      signal: controller.signal,
-    });
+      };
+      if (useTools) {
+        body.tools = tools;
+      }
 
-    if (!response.ok) {
-      const bodyText = await response.text();
-      return {
-        data: [],
-        error: {
-          kind: "apiError",
-          message: `OpenRouter request failed (${response.status}): ${bodyText.slice(0, 200)}`,
+      const response = await fetch(OPENROUTER_API_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": appUrl ?? "https://10xcards.app",
+          "X-Title": "10xCards",
         },
-      };
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const bodyText = await response.text();
+        return {
+          data: [],
+          error: {
+            kind: "apiError",
+            message: `OpenRouter request failed (${response.status}): ${bodyText.slice(0, 200)}`,
+          },
+        };
+      }
+
+      const raw = await response.json();
+      const parsedResponse = openRouterResponseSchema.safeParse(raw);
+      if (!parsedResponse.success || parsedResponse.data.choices.length === 0) {
+        return {
+          data: [],
+          error: { kind: "apiError", message: "OpenRouter returned an unexpected response format" },
+        };
+      }
+
+      const message = parsedResponse.data.choices[0].message;
+      const toolCalls = message.tool_calls;
+
+      if (useTools && toolCalls && toolCalls.length > 0 && onToolCall) {
+        // Echo the assistant turn (with its tool_calls) back into the
+        // conversation, then resolve each call locally and append the result.
+        messages.push({ role: "assistant", content: message.content, tool_calls: toolCalls });
+        for (const call of toolCalls) {
+          let args: Record<string, unknown> = {};
+          try {
+            const parsedArgs = JSON.parse(call.function.arguments) as unknown;
+            if (parsedArgs && typeof parsedArgs === "object") {
+              args = parsedArgs as Record<string, unknown>;
+            }
+          } catch {
+            args = {};
+          }
+          const result = await onToolCall(call.function.name, args);
+          messages.push({ role: "tool", tool_call_id: call.id, content: result });
+        }
+        continue;
+      }
+
+      // No (more) tool calls — this is the final response. The schema makes
+      // `content` nullable; a null here means the LLM produced neither text nor
+      // a tool call, which we cannot parse into proposals.
+      const content = message.content;
+      if (content === null) {
+        return { data: [], error: { kind: "apiError", message: "OpenRouter returned no content" } };
+      }
+      return parseProposals(content);
     }
 
-    const raw = await response.json();
-    const parsedResponse = openRouterResponseSchema.safeParse(raw);
-    if (!parsedResponse.success || parsedResponse.data.choices.length === 0) {
-      return {
-        data: [],
-        error: { kind: "apiError", message: "OpenRouter returned an unexpected response format" },
-      };
-    }
-
-    const content = parsedResponse.data.choices[0].message.content;
-    return parseProposals(content);
+    return {
+      data: [],
+      error: { kind: "apiError", message: "Exceeded maximum tool-call rounds without a final response" },
+    };
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
       return { data: [], error: { kind: "timeout", message: "AI generation timed out" } };

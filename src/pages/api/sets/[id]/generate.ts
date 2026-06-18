@@ -1,12 +1,45 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import { generateFlashcardProposals, generateInputSchema, getAiErrorHttpStatus, errorMessage } from "@/lib/services/ai";
+import {
+  generateFlashcardProposals,
+  generateInputSchema,
+  getAiErrorHttpStatus,
+  errorMessage,
+  type ToolDefinition,
+} from "@/lib/services/ai";
 import { checkRateLimit } from "@/lib/services/ai-rate-limit";
 import { getUserPrompt } from "@/lib/services/user-settings";
+import { lookupWord } from "@/lib/services/dictionary";
 import { getSecret } from "astro:env/server";
 import { env } from "cloudflare:workers";
 
 export const prerender = false;
+
+const DICTIONARY_TOOL: ToolDefinition = {
+  type: "function",
+  function: {
+    name: "lookup_word",
+    description:
+      "Look up an English word in the Cambridge Dictionary. Returns definitions, part of speech, CEFR level (A1-C2), usage labels (formal/informal), and up to 2 example sentences per definition. Use this when you need to understand a word's meaning or find example sentences for flashcards.",
+    parameters: {
+      type: "object",
+      properties: { word: { type: "string", description: "The English word to look up" } },
+      required: ["word"],
+    },
+  },
+};
+
+async function handleToolCall(name: string, args: Record<string, unknown>): Promise<string> {
+  if (name !== "lookup_word") return JSON.stringify({ error: "Unknown tool" });
+  const word = typeof args.word === "string" ? args.word : "";
+  if (!word) return JSON.stringify({ error: "Missing word argument" });
+  try {
+    const entries = await lookupWord(word);
+    return JSON.stringify(entries);
+  } catch {
+    return JSON.stringify({ error: "Dictionary lookup failed" });
+  }
+}
 
 const paramsSchema = generateInputSchema
   .omit({ count: true, apiKey: true, model: true, appUrl: true, systemPromptOverride: true })
@@ -103,6 +136,8 @@ export const POST: APIRoute = async (context) => {
     model,
     appUrl,
     systemPromptOverride,
+    tools: [DICTIONARY_TOOL],
+    onToolCall: handleToolCall,
   });
 
   if (error) {

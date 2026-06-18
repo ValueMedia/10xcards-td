@@ -7,6 +7,50 @@ function makeOpenRouterResponse(content: string) {
   };
 }
 
+function makeToolCallResponse(calls: { id: string; name: string; args: Record<string, unknown> }[]) {
+  return {
+    choices: [
+      {
+        message: {
+          content: null,
+          tool_calls: calls.map((c) => ({
+            id: c.id,
+            type: "function",
+            function: { name: c.name, arguments: JSON.stringify(c.args) },
+          })),
+        },
+      },
+    ],
+  };
+}
+
+const DICTIONARY_TOOL = {
+  type: "function" as const,
+  function: {
+    name: "lookup_word",
+    description: "Look up an English word.",
+    parameters: {
+      type: "object",
+      properties: { word: { type: "string" } },
+      required: ["word"],
+    },
+  },
+};
+
+const SAMPLE_TEXT = "This is a sample text long enough to pass the minimum length validation rule in the service.";
+
+interface RequestBody {
+  model: string;
+  temperature: number;
+  messages: { role: string; content: string | null }[];
+  tools?: unknown[];
+}
+
+function bodyOf(fetchMock: ReturnType<typeof vi.mocked<typeof fetch>>, callIndex: number): RequestBody {
+  const init = fetchMock.mock.calls[callIndex][1];
+  return JSON.parse((init?.body ?? "{}") as string) as RequestBody;
+}
+
 describe("parseProposals", () => {
   it("parses raw JSON proposals", () => {
     const raw = JSON.stringify({
@@ -116,6 +160,145 @@ describe("generateFlashcardProposals", () => {
     });
     expect(data).toHaveLength(0);
     expect(error?.kind).toBe("unconfigured");
+  });
+});
+
+describe("generateFlashcardProposals — function calling", () => {
+  beforeEach(() => {
+    vi.stubGlobal("fetch", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("executes tool calls then returns final content", async () => {
+    const fetchMock = vi.mocked(globalThis.fetch);
+    fetchMock
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify(makeToolCallResponse([{ id: "call_1", name: "lookup_word", args: { word: "x" } }])),
+          {
+            status: 200,
+          },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify(makeOpenRouterResponse(JSON.stringify({ flashcards: [{ front: "Q", back: "A" }] }))),
+          {
+            status: 200,
+          },
+        ),
+      );
+
+    const onToolCall = vi.fn().mockResolvedValue(JSON.stringify([{ definition: "An unknown thing." }]));
+
+    const { data, error } = await generateFlashcardProposals({
+      text: SAMPLE_TEXT,
+      count: 1,
+      apiKey: "test-key",
+      tools: [DICTIONARY_TOOL],
+      onToolCall,
+    });
+
+    expect(error).toBeNull();
+    expect(data).toHaveLength(1);
+    expect(onToolCall).toHaveBeenCalledTimes(1);
+    expect(onToolCall).toHaveBeenCalledWith("lookup_word", { word: "x" });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    // Second request must include the assistant tool_calls turn + tool result.
+    const secondBody = bodyOf(fetchMock, 1);
+    const roles = secondBody.messages.map((m) => m.role);
+    expect(roles).toContain("assistant");
+    expect(roles).toContain("tool");
+    expect(secondBody.tools).toHaveLength(1);
+  });
+
+  it("feeds tool error JSON back to the LLM and still resolves", async () => {
+    const fetchMock = vi.mocked(globalThis.fetch);
+    fetchMock
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify(makeToolCallResponse([{ id: "call_1", name: "lookup_word", args: { word: "x" } }])),
+          { status: 200 },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify(makeOpenRouterResponse(JSON.stringify({ flashcards: [{ front: "Q", back: "A" }] }))),
+          {
+            status: 200,
+          },
+        ),
+      );
+
+    const onToolCall = vi.fn().mockResolvedValue(JSON.stringify({ error: "Dictionary lookup failed" }));
+
+    const { data, error } = await generateFlashcardProposals({
+      text: SAMPLE_TEXT,
+      count: 1,
+      apiKey: "test-key",
+      tools: [DICTIONARY_TOOL],
+      onToolCall,
+    });
+
+    expect(error).toBeNull();
+    expect(data).toHaveLength(1);
+    const toolMessage = bodyOf(fetchMock, 1).messages.find((m) => m.role === "tool");
+    expect(toolMessage?.content).toContain("Dictionary lookup failed");
+  });
+
+  it("returns apiError when max tool-call rounds are exceeded", async () => {
+    const fetchMock = vi.mocked(globalThis.fetch);
+    // Return a fresh Response per call — a single Response body can only be read once.
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify(makeToolCallResponse([{ id: "call_1", name: "lookup_word", args: { word: "x" } }])),
+          { status: 200 },
+        ),
+      ),
+    );
+
+    const onToolCall = vi.fn().mockResolvedValue(JSON.stringify([]));
+
+    const { data, error } = await generateFlashcardProposals({
+      text: SAMPLE_TEXT,
+      count: 1,
+      apiKey: "test-key",
+      tools: [DICTIONARY_TOOL],
+      onToolCall,
+    });
+
+    expect(data).toHaveLength(0);
+    expect(error?.kind).toBe("apiError");
+    expect(fetchMock).toHaveBeenCalledTimes(5);
+  });
+
+  it("does not send tools and stays single-turn when no tools provided (regression)", async () => {
+    const fetchMock = vi.mocked(globalThis.fetch);
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify(makeOpenRouterResponse(JSON.stringify({ flashcards: [{ front: "Q", back: "A" }] }))),
+        {
+          status: 200,
+        },
+      ),
+    );
+
+    const { data, error } = await generateFlashcardProposals({
+      text: SAMPLE_TEXT,
+      count: 1,
+      apiKey: "test-key",
+    });
+
+    expect(error).toBeNull();
+    expect(data).toHaveLength(1);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(bodyOf(fetchMock, 0).tools).toBeUndefined();
   });
 });
 

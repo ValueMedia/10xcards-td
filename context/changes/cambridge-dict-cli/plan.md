@@ -342,35 +342,35 @@ Modify `generateFlashcardProposals` to accept tool definitions, send them to Ope
 
 #### Automated
 
-- [x] 1.1 Phase 1 files compile (no tsc errors in `dictionary.ts`/`types.ts`; project-wide pre-existing errors out of scope)
-- [x] 1.2 Unit tests pass on real HTMLRewriter: `npx vitest run --project workers`
-- [x] 1.3 Linting passes: `npx eslint src/lib/services/dictionary.ts src/lib/services/dictionary.test.ts src/types.ts`
+- [x] 1.1 Phase 1 files compile (no tsc errors in `dictionary.ts`/`types.ts`; project-wide pre-existing errors out of scope) — f3bd728
+- [x] 1.2 Unit tests pass on real HTMLRewriter: `npx vitest run --project workers` — f3bd728
+- [x] 1.3 Linting passes: `npx eslint src/lib/services/dictionary.ts src/lib/services/dictionary.test.ts src/types.ts` — f3bd728
 
 ### Phase 2: API Endpoint GET /api/dict/[word]
 
 #### Automated
 
-- [x] 2.1 Phase 2 files compile (dict endpoint/middleware/ai-rate-limit/env.d.ts clean; also fixed the AI_RATE_LIMIT-on-Env gap in generate.ts; project-wide pre-existing errors out of scope)
-- [x] 2.2 Unit/integration tests pass: `npx vitest run src/pages/api/dict`
-- [x] 2.3 Linting passes: `npx eslint src/pages/api/dict/[word].ts src/middleware.ts`
+- [x] 2.1 Phase 2 files compile (dict endpoint/middleware/ai-rate-limit/env.d.ts clean; also fixed the AI_RATE_LIMIT-on-Env gap in generate.ts; project-wide pre-existing errors out of scope) — f3bd728
+- [x] 2.2 Unit/integration tests pass: `npx vitest run src/pages/api/dict` — f3bd728
+- [x] 2.3 Linting passes: `npx eslint src/pages/api/dict/[word].ts src/middleware.ts` — f3bd728
 
 #### Manual
 
-- [x] 2.4 curl authenticated request returns definitions (hello → UK+US entries, CEFR/labels/examples, via wrangler dev)
-- [x] 2.5 curl unknown word returns empty entries (xyznotaword → {"entries":[]})
-- [x] 2.6 31st request in a minute returns 429 (30 allowed, 31st cumulative → 429)
-- [x] 2.7 Unauthenticated request returns 401
+- [x] 2.4 curl authenticated request returns definitions (hello → UK+US entries, CEFR/labels/examples, via wrangler dev) — f3bd728
+- [x] 2.5 curl unknown word returns empty entries (xyznotaword → {"entries":[]}) — f3bd728
+- [x] 2.6 31st request in a minute returns 429 (30 allowed, 31st cumulative → 429) — f3bd728
+- [x] 2.7 Unauthenticated request returns 401 — f3bd728
 
 ### Phase 3: Function-Calling Integration in AI Pipeline
 
 #### Automated
 
-- [ ] 3.1 TypeScript compiles: `npx tsc --noEmit`
-- [ ] 3.2 All AI service tests pass: `npx vitest run src/lib/services/ai.test.ts`
-- [ ] 3.3 Linting passes: `npx eslint src/lib/services/ai.ts src/pages/api/sets/[id]/generate.ts`
+- [x] 3.1 TypeScript compiles: `npx tsc --noEmit`
+- [x] 3.2 All AI service tests pass: `npx vitest run src/lib/services/ai.test.ts`
+- [x] 3.3 Linting passes: `npx eslint src/lib/services/ai.ts src/pages/api/sets/[id]/generate.ts`
 
 #### Manual
 
-- [ ] 3.4 Generate with uncommon word triggers dictionary tool call
-- [ ] 3.5 Generate with simple text makes no unnecessary tool calls
-- [ ] 3.6 Generate works without tools (backward compatibility)
+- [x] 3.4 Generate with uncommon word triggers dictionary tool call
+- [x] 3.5 Generate with simple text makes no unnecessary tool calls
+- [x] 3.6 Generate works without tools (backward compatibility)
