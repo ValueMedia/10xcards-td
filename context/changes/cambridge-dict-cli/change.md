@@ -1,7 +1,7 @@
 ---
 change_id: cambridge-dict-cli
 title: Cambridge Dictionary CLI integration
-status: implementing
+status: implemented
 created: 2026-06-18
 updated: 2026-06-18
 archived_at: null

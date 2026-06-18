@@ -365,12 +365,12 @@ Modify `generateFlashcardProposals` to accept tool definitions, send them to Ope
 
 #### Automated
 
-- [x] 3.1 TypeScript compiles: `npx tsc --noEmit`
-- [x] 3.2 All AI service tests pass: `npx vitest run src/lib/services/ai.test.ts`
-- [x] 3.3 Linting passes: `npx eslint src/lib/services/ai.ts src/pages/api/sets/[id]/generate.ts`
+- [x] 3.1 TypeScript compiles: `npx tsc --noEmit` — aae160a
+- [x] 3.2 All AI service tests pass: `npx vitest run src/lib/services/ai.test.ts` — aae160a
+- [x] 3.3 Linting passes: `npx eslint src/lib/services/ai.ts src/pages/api/sets/[id]/generate.ts` — aae160a
 
 #### Manual
 
-- [x] 3.4 Generate with uncommon word triggers dictionary tool call
-- [x] 3.5 Generate with simple text makes no unnecessary tool calls
-- [x] 3.6 Generate works without tools (backward compatibility)
+- [x] 3.4 Generate with uncommon word triggers dictionary tool call — aae160a
+- [x] 3.5 Generate with simple text makes no unnecessary tool calls — aae160a
+- [x] 3.6 Generate works without tools (backward compatibility) — aae160a
