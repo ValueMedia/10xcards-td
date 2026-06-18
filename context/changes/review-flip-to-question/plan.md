@@ -160,16 +160,16 @@ Split the flip state and rewire the card, keyboard handler, button branch, hint 
 
 #### Automated
 
-- [x] 1.1 Build passes (includes astro check): `npm run build`
-- [x] 1.2 Tests pass: `npx vitest run`
+- [x] 1.1 Build passes (includes astro check): `npm run build` — 9c5c346
+- [x] 1.2 Tests pass: `npx vitest run` — 9c5c346
 
 #### Manual
 
-- [x] 1.3 Reveal via button shows grade buttons + "1 – 4" hint
-- [x] 1.4 After reveal, Space toggles both ways; grade buttons stay on both sides
-- [x] 1.5 After reveal, Enter toggles like Space
-- [x] 1.6 After reveal, clicking the card toggles
-- [x] 1.7 Keys 1–4 grade while the question side is showing
-- [x] 1.8 Grade buttons work from either side and advance
-- [x] 1.9 Next card resets to question, un-revealed
-- [x] 1.10 Before reveal, Space/Enter/click only reveal (no premature grading)
+- [x] 1.3 Reveal via button shows grade buttons + "1 – 4" hint — 9c5c346
+- [x] 1.4 After reveal, Space toggles both ways; grade buttons stay on both sides — 9c5c346
+- [x] 1.5 After reveal, Enter toggles like Space — 9c5c346
+- [x] 1.6 After reveal, clicking the card toggles — 9c5c346
+- [x] 1.7 Keys 1–4 grade while the question side is showing — 9c5c346
+- [x] 1.8 Grade buttons work from either side and advance — 9c5c346
+- [x] 1.9 Next card resets to question, un-revealed — 9c5c346
+- [x] 1.10 Before reveal, Space/Enter/click only reveal (no premature grading) — 9c5c346
