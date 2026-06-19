@@ -4,7 +4,7 @@ import { getUserLocale } from "@/lib/services/user-settings";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, isValidLocale } from "@/lib/i18n/constants";
 import type { SupportedLocale } from "@/lib/i18n/constants";
 
-const PROTECTED_PAGE_ROUTES = ["/dashboard", "/sets", "/generate", "/settings"];
+const PROTECTED_PAGE_ROUTES = ["/dashboard", "/sets", "/generate", "/settings", "/lookup_word"];
 const PROTECTED_API_ROUTES = [
   "/api/sets",
   "/api/flashcards",

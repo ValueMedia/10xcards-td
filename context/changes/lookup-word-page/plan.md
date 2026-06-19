@@ -286,30 +286,30 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 1.1 Build passes: `npm run build`
-- [x] 1.2 Lint passes on changed file: `npx eslint src/components/sets/SetDetailPage.tsx`
+- [x] 1.1 Build passes: `npm run build` — 60bb93f
+- [x] 1.2 Lint passes on changed file: `npx eslint src/components/sets/SetDetailPage.tsx` — 60bb93f
 
 #### Manual
 
-- [x] 1.3 New-flashcard control opens a dropdown with two items
-- [x] 1.4 "Manually" opens the existing create dialog and creating a card still works
-- [x] 1.5 "Lookup Word" navigates to `/lookup_word?setId=<current set id>`
-- [x] 1.6 Trigger keeps its look and responsive label on mobile/desktop
+- [x] 1.3 New-flashcard control opens a dropdown with two items — 60bb93f
+- [x] 1.4 "Manually" opens the existing create dialog and creating a card still works — 60bb93f
+- [x] 1.5 "Lookup Word" navigates to `/lookup_word?setId=<current set id>` — 60bb93f
+- [x] 1.6 Trigger keeps its look and responsive label on mobile/desktop — 60bb93f
 
 ### Phase 2: Lookup page route, server-side validation, and shell
 
 #### Automated
 
-- [ ] 2.1 Build passes: `npm run build`
-- [ ] 2.2 Lint passes on changed `.ts`/`.tsx`
+- [x] 2.1 Build passes: `npm run build`
+- [x] 2.2 Lint passes on changed `.ts`/`.tsx`
 
 #### Manual
 
-- [ ] 2.3 `/lookup_word?setId=<owned set>` shows header, Cambridge intro, and set name
-- [ ] 2.4 Missing `setId` or non-owned set redirects to `/dashboard`
-- [ ] 2.5 Logged-out visit redirects to `/auth/signin`
-- [ ] 2.6 UI matches the rest of the app (dark theme, card styling)
-- [ ] 2.7 Locale en/pl translates the header/intro
+- [x] 2.3 `/lookup_word?setId=<owned set>` shows header, Cambridge intro, and set name
+- [x] 2.4 Missing `setId` or non-owned set redirects to `/dashboard`
+- [x] 2.5 Logged-out visit redirects to `/auth/signin`
+- [x] 2.6 UI matches the rest of the app (dark theme, card styling)
+- [x] 2.7 Locale en/pl translates the header/intro
 
 ### Phase 3: Dictionary search and results rendering
 
