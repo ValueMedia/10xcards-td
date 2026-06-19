@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { FlashcardBrowseCard } from "@/components/sets/FlashcardBrowseCard";
 import { Button } from "@/components/ui/button";
+import { useReverseMode } from "@/components/hooks/useReverseMode";
 import { cn } from "@/lib/utils";
 import type { Flashcard } from "@/types";
 
@@ -11,9 +12,10 @@ interface Props {
 }
 
 export default function FlashcardBrowseView({ setId, setName, flashcards }: Props) {
+  const [reverse] = useReverseMode(setId);
   const [order, setOrder] = useState<number[]>(() => flashcards.map((_, i) => i));
   const [position, setPosition] = useState(0);
-  const [flipped, setFlipped] = useState(false);
+  const [flipped, setFlipped] = useState(reverse);
 
   const currentCard = flashcards[order[position]];
   const isFirst = position === 0;
@@ -22,22 +24,22 @@ export default function FlashcardBrowseView({ setId, setName, flashcards }: Prop
   const goNext = useCallback(() => {
     setPosition((p) => {
       if (p < order.length - 1) {
-        setFlipped(false);
+        setFlipped(reverse);
         return p + 1;
       }
       return p;
     });
-  }, [order.length]);
+  }, [order.length, reverse]);
 
   const goPrev = useCallback(() => {
     setPosition((p) => {
       if (p > 0) {
-        setFlipped(false);
+        setFlipped(reverse);
         return p - 1;
       }
       return p;
     });
-  }, []);
+  }, [reverse]);
 
   const flip = useCallback(() => {
     setFlipped((f) => !f);
@@ -51,8 +53,8 @@ export default function FlashcardBrowseView({ setId, setName, flashcards }: Prop
     }
     setOrder(arr);
     setPosition(0);
-    setFlipped(false);
-  }, [flashcards]);
+    setFlipped(reverse);
+  }, [flashcards, reverse]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

@@ -179,28 +179,28 @@ None. Absent `localStorage` key is treated as `false`, so existing users default
 
 #### Automated
 
-- [x] 1.1 Type checking passes (build): `npm run build`
-- [x] 1.2 Linting passes on changed TS/TSX files
-- [x] 1.3 `@radix-ui/react-switch` present in `package.json`
+- [x] 1.1 Type checking passes (build): `npm run build` — 08f6c65
+- [x] 1.2 Linting passes on changed TS/TSX files — 08f6c65
+- [x] 1.3 `@radix-ui/react-switch` present in `package.json` — 08f6c65
 
 #### Manual
 
-- [x] 1.4 Set page shows a "Reverse mode" switch in a row above the flashcard list
-- [x] 1.5 Toggling on + reload persists on; `localStorage` has `reverseMode:<setId>="true"`
-- [x] 1.6 Toggling off updates `localStorage` to `"false"` and persists across reload
-- [x] 1.7 Fresh set shows switch off with no `reverseMode` key until toggled
-- [x] 1.8 Card faces read "Front"/"Back"; existing Front-first behavior unchanged
+- [x] 1.4 Set page shows a "Reverse mode" switch in a row above the flashcard list — 08f6c65
+- [x] 1.5 Toggling on + reload persists on; `localStorage` has `reverseMode:<setId>="true"` — 08f6c65
+- [x] 1.6 Toggling off updates `localStorage` to `"false"` and persists across reload — 08f6c65
+- [x] 1.7 Fresh set shows switch off with no `reverseMode` key until toggled — 08f6c65
+- [x] 1.8 Card faces read "Front"/"Back"; existing Front-first behavior unchanged — 08f6c65
 
 ### Phase 2: Apply Reverse Mode on Browse & Review
 
 #### Automated
 
-- [ ] 2.1 Type checking passes (build): `npm run build`
-- [ ] 2.2 Linting passes on changed files
+- [x] 2.1 Type checking passes (build): `npm run build`
+- [x] 2.2 Linting passes on changed files
 
 #### Manual
 
-- [ ] 2.3 Reverse on: `/browse` shows Back first; flip reveals Front; Next/Prev/Shuffle reset to Back
-- [ ] 2.4 Reverse on: `/review` prompts with Back; reveal shows Front; flip toggles; grading advances with Back-first next card
-- [ ] 2.5 Reverse off: both screens behave exactly as before (Front first)
-- [ ] 2.6 Toggle change reflected on browse/review without a Front→Back flash on load
+- [x] 2.3 Reverse on: `/browse` shows Back first; flip reveals Front; Next/Prev/Shuffle reset to Back
+- [x] 2.4 Reverse on: `/review` prompts with Back; reveal shows Front; flip toggles; grading advances with Back-first next card
+- [x] 2.5 Reverse off: both screens behave exactly as before (Front first)
+- [x] 2.6 Toggle change reflected on browse/review without a Front→Back flash on load

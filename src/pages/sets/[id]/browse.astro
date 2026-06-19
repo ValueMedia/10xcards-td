@@ -30,5 +30,5 @@ if (!found || !id) {
 ---
 
 <Layout title={`Browse — ${setName}`}>
-  <FlashcardBrowseView client:load setId={id} setName={setName} flashcards={flashcards} />
+  <FlashcardBrowseView client:only="react" setId={id} setName={setName} flashcards={flashcards} />
 </Layout>

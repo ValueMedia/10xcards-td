@@ -5,6 +5,7 @@ import type { Flashcard, SessionSummary } from "@/types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FlashcardBrowseCard } from "@/components/sets/FlashcardBrowseCard";
+import { useReverseMode } from "@/components/hooks/useReverseMode";
 
 type Phase = "loading" | "empty" | "error" | "reviewing" | "summary";
 
@@ -44,11 +45,12 @@ function formatDate(iso: string): string {
 }
 
 export default function ReviewSession({ setId, setName }: Props) {
+  const [reverse] = useReverseMode(setId);
   const [phase, setPhase] = useState<Phase>("loading");
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const [showingBack, setShowingBack] = useState(false);
+  const [showingBack, setShowingBack] = useState(reverse);
   const [submitting, setSubmitting] = useState(false);
   const [nextDue, setNextDue] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
@@ -123,7 +125,7 @@ export default function ReviewSession({ setId, setName }: Props) {
         } else {
           setCurrentIndex(nextIdx);
           setRevealed(false);
-          setShowingBack(false);
+          setShowingBack(reverse);
         }
       } catch {
         toast.error("Nie udało się zapisać oceny. Spróbuj jeszcze raz.");
@@ -131,7 +133,7 @@ export default function ReviewSession({ setId, setName }: Props) {
         setSubmitting(false);
       }
     },
-    [cards, currentIndex, submitting, setId],
+    [cards, currentIndex, submitting, setId, reverse],
   );
 
   useEffect(() => {
@@ -142,7 +144,7 @@ export default function ReviewSession({ setId, setName }: Props) {
         e.preventDefault();
         if (!revealed) {
           setRevealed(true);
-          setShowingBack(true);
+          setShowingBack(!reverse);
         } else {
           setShowingBack((s) => !s);
         }
@@ -157,7 +159,7 @@ export default function ReviewSession({ setId, setName }: Props) {
     return () => {
       window.removeEventListener("keydown", handler);
     };
-  }, [phase, revealed, submitting, handleRate]);
+  }, [phase, revealed, submitting, handleRate, reverse]);
 
   if (phase === "loading") {
     return (
@@ -260,7 +262,7 @@ export default function ReviewSession({ setId, setName }: Props) {
             onFlip={() => {
               if (!revealed) {
                 setRevealed(true);
-                setShowingBack(true);
+                setShowingBack(!reverse);
               } else {
                 setShowingBack((s) => !s);
               }
@@ -272,7 +274,7 @@ export default function ReviewSession({ setId, setName }: Props) {
               <Button
                 onClick={() => {
                   setRevealed(true);
-                  setShowingBack(true);
+                  setShowingBack(!reverse);
                 }}
                 className="w-full bg-white/10 text-white hover:bg-white/20"
                 variant="outline"
