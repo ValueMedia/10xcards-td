@@ -87,3 +87,10 @@
 - **Problem**: Zmiana cambridge-dict-cli dodała `GET /api/dict/{word}`, ale nie zaktualizowała `openapi-spec.ts`. Dokumentacja rozjechała się z faktycznym API — konsumenci (i Scalar) nie widzieli nowego endpointu, mimo że działał on na produkcji.
 - **Rule**: Przy każdej zmianie kontraktu API zaktualizuj `src/lib/openapi/openapi-spec.ts` w tej samej fazie/commicie: ścieżka + parametry, schematy w `components.schemas`, kody odpowiedzi i tag. Dodanie lub zmianę endpointu bez aktualizacji spec-a traktuj jako pracę niedokończoną.
 - **Applies to**: plan, implement, impl-review
+
+## Stan z localStorage w wyspie Astro: czytaj w client:only, nie client:load
+
+- **Context**: flashcard-reverse-mode — `useReverseMode` czyta `localStorage` w inicjalizatorze `useState`, a wyspy (`SetDetailPage`, `FlashcardBrowseView`, `ReviewSession`) były montowane przez `client:load`.
+- **Problem**: Serwer renderuje wyspę bez `window`, więc wartość początkowa = domyślna (np. `false`). Klient w inicjalizatorze czyta `localStorage` i dostaje inną wartość (`true`). React 19 **NIE patchuje** tej niezgodności hydratacji („This won't be patched up") — w DOM zostaje stan serwerowy, więc UI pokazuje złą wartość po przeładowaniu. Dodatkowo: rzut z `localStorage` (Safari private mode → `QuotaExceededError`, storage zablokowany → `SecurityError`) w inicjalizatorze `useState` wywala całą wyspę; przy `client:only` nie ma fallbacku SSR, więc strona renderuje pustkę.
+- **Rule**: Wyspę, która czyta `localStorage` (albo inny stan dostępny tylko po stronie klienta) w inicjalizatorze `useState`, montuj przez `client:only="react"`, nie `client:load` — wtedy nie ma renderu serwerowego i nie ma niezgodności hydratacji ani migotania. Zawsze owijaj `localStorage.getItem`/`setItem` w `try/catch` (read → wartość domyślna, write → ciche zignorowanie). Alternatywa zachowująca SSR: inicjalizuj wartością zgodną z serwerem i synchronizuj z `localStorage` w `useEffect` po montażu (kosztem jednokadrowego migotania).
+- **Applies to**: wszystkie wyspy React renderowane z `.astro`, które czytają localStorage/sessionStorage/inny stan klienta
