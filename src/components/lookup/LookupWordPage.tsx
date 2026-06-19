@@ -112,6 +112,7 @@ function LookupWordPageInner({ setId, setName }: Props) {
 
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
+            autoFocus
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
