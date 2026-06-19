@@ -9,6 +9,12 @@ import { DeleteFlashcardDialog } from "@/components/sets/DeleteFlashcardDialog";
 import { ImportCsvDialog } from "@/components/sets/ImportCsvDialog";
 import { ShareSetModal } from "@/components/sets/ShareSetModal";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 interface Props {
   initialData: string;
@@ -165,17 +171,32 @@ export default function SetDetailPage({ initialData }: Props) {
               <span className="sm:hidden">Import</span>
               <span className="hidden sm:inline">Import CSV</span>
             </Button>
-            <Button
-              type="button"
-              onClick={() => {
-                setCreateOpen(true);
-              }}
-              className="h-11 w-full bg-purple-600 hover:bg-purple-500 sm:h-9"
-            >
-              <PlusIcon />
-              <span className="sm:hidden">Add</span>
-              <span className="hidden sm:inline">New flashcard</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="button" className="h-11 w-full bg-purple-600 hover:bg-purple-500 sm:h-9">
+                  <PlusIcon />
+                  <span className="sm:hidden">Add</span>
+                  <span className="hidden sm:inline">New flashcard</span>
+                  <ChevronDownIcon />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onSelect={() => {
+                    setCreateOpen(true);
+                  }}
+                >
+                  Manually
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => {
+                    window.location.assign(`/lookup_word?setId=${set.id}`);
+                  }}
+                >
+                  Lookup Word
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -252,6 +273,25 @@ function PlusIcon() {
     >
       <path d="M5 12h14" />
       <path d="M12 5v14" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="size-4"
+    >
+      <path d="m6 9 6 6 6-6" />
     </svg>
   );
 }
