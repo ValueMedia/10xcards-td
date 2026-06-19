@@ -35,6 +35,10 @@ function LookupWordPageInner({ setId, setName }: Props) {
   // The create form unlocks once a search has *completed* — a successful
   // fetch, including an empty-result one. A network/HTTP error keeps it hidden.
   const [searchCompleted, setSearchCompleted] = useState(false);
+  // Monotonic id so an out-of-order (superseded) response can't overwrite the
+  // latest search's state. The loading guard already prevents UI-triggered
+  // overlap; this is the correctness backstop.
+  const searchSeqRef = useRef(0);
 
   function messageForStatus(status: number): string {
     switch (status) {
@@ -51,6 +55,7 @@ function LookupWordPageInner({ setId, setName }: Props) {
     const word = query.trim();
     if (!word || loading) return;
 
+    const seq = ++searchSeqRef.current;
     setLoading(true);
     setError(null);
     // Reset the previous result up front so a new search never visually
@@ -60,9 +65,11 @@ function LookupWordPageInner({ setId, setName }: Props) {
 
     try {
       const data = await lookupWordClient(word);
+      if (seq !== searchSeqRef.current) return; // superseded by a newer search
       setResult(data);
       setSearchCompleted(true);
     } catch (err) {
+      if (seq !== searchSeqRef.current) return; // superseded by a newer search
       const status = err instanceof DictionaryLookupError ? err.status : 0;
       const msg = messageForStatus(status);
       setError(msg);
@@ -70,7 +77,7 @@ function LookupWordPageInner({ setId, setName }: Props) {
       setSearchCompleted(false);
       toast.error(msg);
     } finally {
-      setLoading(false);
+      if (seq === searchSeqRef.current) setLoading(false);
     }
   }
 
@@ -170,7 +177,10 @@ function CreateCardForm({ setId }: { setId: string }) {
         setError(null);
         toast.success(t("lookup.form.saved"));
       } else {
-        const msg = t("lookup.form.error");
+        // Surface the server's specific error when present (e.g. 404 "Set
+        // not found"), falling back to the generic localized message.
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        const msg = body?.error ?? t("lookup.form.error");
         setError(msg);
         toast.error(msg);
       }
