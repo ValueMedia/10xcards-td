@@ -9,6 +9,8 @@ import { DeleteFlashcardDialog } from "@/components/sets/DeleteFlashcardDialog";
 import { ImportCsvDialog } from "@/components/sets/ImportCsvDialog";
 import { ShareSetModal } from "@/components/sets/ShareSetModal";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { useReverseMode } from "@/components/hooks/useReverseMode";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -44,6 +46,7 @@ export default function SetDetailPage({ initialData }: Props) {
   const [shareOpen, setShareOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Flashcard | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Flashcard | null>(null);
+  const [reverseMode, setReverseMode] = useReverseMode(set?.id ?? "");
 
   const handleCreate = useCallback((flashcard: Flashcard) => {
     setState((prev) => ({
@@ -199,6 +202,15 @@ export default function SetDetailPage({ initialData }: Props) {
             </DropdownMenu>
           </div>
         </div>
+
+        {flashcards.length > 0 && (
+          <div className="mb-4 flex items-center justify-end gap-3">
+            <label htmlFor="reverse-mode" className="text-sm text-blue-100/60">
+              Reverse mode (Back first)
+            </label>
+            <Switch id="reverse-mode" checked={reverseMode} onCheckedChange={setReverseMode} />
+          </div>
+        )}
 
         <FlashcardList flashcards={flashcards} onEdit={setEditTarget} onDelete={setDeleteTarget} />
       </div>

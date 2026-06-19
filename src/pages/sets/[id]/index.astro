@@ -64,7 +64,7 @@ if (!isServerError && !data) {
 {
   data && (
     <Layout title={data.set.name}>
-      <SetDetailPage initialData={JSON.stringify(data)} client:load />
+      <SetDetailPage initialData={JSON.stringify(data)} client:only="react" />
     </Layout>
   )
 }

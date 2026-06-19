@@ -14,7 +14,7 @@ export function FlashcardBrowseCard({ front, back, flipped, onFlip }: Props) {
       style={{ height: "320px" }}
       role="button"
       tabIndex={0}
-      aria-label={flipped ? "Answer — click to flip back" : "Question — click to reveal answer"}
+      aria-label={flipped ? "Back side — click to flip" : "Front side — click to flip"}
       onClick={onFlip}
       onKeyDown={(e) => {
         if (e.key === "Enter") onFlip();
@@ -25,7 +25,7 @@ export function FlashcardBrowseCard({ front, back, flipped, onFlip }: Props) {
           className="card-flip-face flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
           aria-hidden={flipped}
         >
-          <span className="absolute top-4 left-4 text-xs font-medium text-blue-100/40">Question</span>
+          <span className="absolute top-4 left-4 text-xs font-medium text-blue-100/40">Front</span>
           <p className="text-center text-2xl font-medium text-white">{front}</p>
           <span className="absolute bottom-4 text-xs text-blue-100/30">Click to flip</span>
         </div>
@@ -33,7 +33,7 @@ export function FlashcardBrowseCard({ front, back, flipped, onFlip }: Props) {
           className="card-flip-face card-flip-back flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
           aria-hidden={!flipped}
         >
-          <span className="absolute top-4 left-4 text-xs font-medium text-blue-100/40">Answer</span>
+          <span className="absolute top-4 left-4 text-xs font-medium text-blue-100/40">Back</span>
           <p className="text-center text-2xl font-medium text-white">{back}</p>
         </div>
       </div>
