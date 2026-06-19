@@ -5,6 +5,8 @@ import { I18nProvider } from "@/components/I18nProvider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { flashcardContentSchema } from "@/lib/services/flashcards";
 import { DictionaryLookupError, lookupWordClient, type DictionaryLookupResult } from "@/lib/dict-client";
 import type { DictionaryEntry } from "@/types";
 import type { SupportedLocale } from "@/lib/i18n/constants";
@@ -30,6 +32,9 @@ function LookupWordPageInner({ setId, setName }: Props) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<DictionaryLookupResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // The create form unlocks once a search has *completed* — a successful
+  // fetch, including an empty-result one. A network/HTTP error keeps it hidden.
+  const [searchCompleted, setSearchCompleted] = useState(false);
 
   function messageForStatus(status: number): string {
     switch (status) {
@@ -56,11 +61,13 @@ function LookupWordPageInner({ setId, setName }: Props) {
     try {
       const data = await lookupWordClient(word);
       setResult(data);
+      setSearchCompleted(true);
     } catch (err) {
       const status = err instanceof DictionaryLookupError ? err.status : 0;
       const msg = messageForStatus(status);
       setError(msg);
       setResult(null);
+      setSearchCompleted(false);
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -123,8 +130,106 @@ function LookupWordPageInner({ setId, setName }: Props) {
             <SearchResults result={result} emptyLabel={t("lookup.noResults", { word: result.word })} />
           </section>
         )}
+
+        {searchCompleted && <CreateCardForm setId={setId} />}
       </div>
     </div>
+  );
+}
+
+function CreateCardForm({ setId }: { setId: string }) {
+  const { t } = useTranslation("lookup");
+  const [front, setFront] = useState("");
+  const [back, setBack] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  async function submit() {
+    const parsed = flashcardContentSchema.safeParse({ front, back });
+    if (!parsed.success) {
+      setError(t("lookup.form.invalid"));
+      return;
+    }
+
+    setError(null);
+    setPending(true);
+
+    try {
+      const res = await fetch("/api/flashcards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ set_id: setId, front: parsed.data.front, back: parsed.data.back }),
+      });
+
+      if (res.status === 201) {
+        // Stay on the page so the user can add another card; clear the fields
+        // but leave the search result visible.
+        setFront("");
+        setBack("");
+        setError(null);
+        toast.success(t("lookup.form.saved"));
+      } else {
+        const msg = t("lookup.form.error");
+        setError(msg);
+        toast.error(msg);
+      }
+    } catch {
+      const msg = t("lookup.form.error");
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setPending(false);
+    }
+  }
+
+  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault();
+    void submit();
+  }
+
+  return (
+    <Card className="border-white/10 bg-white/10 py-4 backdrop-blur-xl">
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <h2 className="text-base font-semibold text-blue-100/80">{t("lookup.form.heading")}</h2>
+          <div className="space-y-2">
+            <label htmlFor="lookup-front" className="text-sm font-medium text-white">
+              {t("lookup.form.question")}
+            </label>
+            <Textarea
+              id="lookup-front"
+              value={front}
+              onChange={(e) => {
+                setFront(e.target.value);
+                if (error) setError(null);
+              }}
+              disabled={pending}
+              className="border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="lookup-back" className="text-sm font-medium text-white">
+              {t("lookup.form.answer")}
+            </label>
+            <Textarea
+              id="lookup-back"
+              value={back}
+              onChange={(e) => {
+                setBack(e.target.value);
+                if (error) setError(null);
+              }}
+              disabled={pending}
+              className="border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
+            />
+          </div>
+          {error && <p className="text-sm text-red-400">{error}</p>}
+          <Button type="submit" disabled={pending} className="bg-purple-600 hover:bg-purple-500">
+            {pending ? t("lookup.form.saving") : t("lookup.form.save")}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 

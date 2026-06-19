@@ -315,27 +315,27 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 3.1 Build passes: `npm run build`
-- [x] 3.2 Lint passes on changed files
+- [x] 3.1 Build passes: `npm run build` — ada476d
+- [x] 3.2 Lint passes on changed files — ada476d
 
 #### Manual
 
-- [x] 3.3 Searching a real word renders entries (definition/type/region/examples) in app style
-- [x] 3.4 Searching a nonsense word shows the "no results" message
-- [x] 3.5 Network/HTTP error shows inline message + toast and does NOT show the form
-- [x] 3.6 Search button disabled on empty input and during loading; Enter triggers search
+- [x] 3.3 Searching a real word renders entries (definition/type/region/examples) in app style — ada476d
+- [x] 3.4 Searching a nonsense word shows the "no results" message — ada476d
+- [x] 3.5 Network/HTTP error shows inline message + toast and does NOT show the form — ada476d
+- [x] 3.6 Search button disabled on empty input and during loading; Enter triggers search — ada476d
 
 ### Phase 4: Manual flashcard create form
 
 #### Automated
 
-- [ ] 4.1 Build passes: `npm run build`
-- [ ] 4.2 Lint passes on changed file
+- [x] 4.1 Build passes: `npm run build`
+- [x] 4.2 Lint passes on changed file
 
 #### Manual
 
-- [ ] 4.3 Q/A form hidden before first search, appears after a completed search (incl. empty results)
-- [ ] 4.4 Saving creates the flashcard: success toast, fields clear, results stay visible
-- [ ] 4.5 Created card appears in the set when navigating back to `/sets/<id>`
-- [ ] 4.6 Empty/over-1000-char fields rejected; server error shows inline message + toast
-- [ ] 4.7 Saving two different cards in a row works without reload
+- [x] 4.3 Q/A form hidden before first search, appears after a completed search (incl. empty results)
+- [x] 4.4 Saving creates the flashcard: success toast, fields clear, results stay visible
+- [x] 4.5 Created card appears in the set when navigating back to `/sets/<id>`
+- [x] 4.6 Empty/over-1000-char fields rejected; server error shows inline message + toast
+- [x] 4.7 Saving two different cards in a row works without reload

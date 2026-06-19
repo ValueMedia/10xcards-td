@@ -10,5 +10,13 @@
   "lookup.noResults": "Nie znaleziono definicji dla \"{{word}}\".",
   "lookup.error.rateLimit": "Zbyt wiele wyszukiwań. Odczekaj chwilę i spróbuj ponownie.",
   "lookup.error.unavailable": "Usługa słownika jest chwilowo niedostępna. Spróbuj ponownie później.",
-  "lookup.error.generic": "Coś poszło nie tak podczas wyszukiwania słowa. Spróbuj ponownie."
+  "lookup.error.generic": "Coś poszło nie tak podczas wyszukiwania słowa. Spróbuj ponownie.",
+  "lookup.form.heading": "Utwórz fiszkę",
+  "lookup.form.question": "Pytanie",
+  "lookup.form.answer": "Odpowiedź",
+  "lookup.form.save": "Zapisz",
+  "lookup.form.saving": "Zapisywanie...",
+  "lookup.form.saved": "Fiszka zapisana",
+  "lookup.form.error": "Nie udało się zapisać fiszki. Spróbuj ponownie.",
+  "lookup.form.invalid": "Pytanie i odpowiedź są wymagane (maks. 1000 znaków każde)."
 }
