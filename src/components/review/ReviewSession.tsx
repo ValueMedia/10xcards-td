@@ -136,18 +136,25 @@ export default function ReviewSession({ setId, setName }: Props) {
     [cards, currentIndex, submitting, setId, reverse],
   );
 
+  // Reveal the answer side on first flip, then toggle faces on subsequent flips.
+  // Shared by the keyboard handler, the card click, and the "Pokaż odpowiedź" button
+  // so the three stay in lockstep.
+  const flipCard = useCallback(() => {
+    if (!revealed) {
+      setRevealed(true);
+      setShowingBack(!reverse);
+    } else {
+      setShowingBack((s) => !s);
+    }
+  }, [revealed, reverse]);
+
   useEffect(() => {
     if (phase !== "reviewing") return;
     const handler = (e: KeyboardEvent) => {
       if ((e.target as Element).closest("button, input")) return;
       if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
-        if (!revealed) {
-          setRevealed(true);
-          setShowingBack(!reverse);
-        } else {
-          setShowingBack((s) => !s);
-        }
+        flipCard();
       } else if (revealed && !submitting) {
         const idx = ["1", "2", "3", "4"].indexOf(e.key);
         if (idx !== -1) {
@@ -159,7 +166,7 @@ export default function ReviewSession({ setId, setName }: Props) {
     return () => {
       window.removeEventListener("keydown", handler);
     };
-  }, [phase, revealed, submitting, handleRate, reverse]);
+  }, [phase, revealed, submitting, handleRate, flipCard]);
 
   if (phase === "loading") {
     return (
@@ -255,30 +262,11 @@ export default function ReviewSession({ setId, setName }: Props) {
         </div>
 
         <div className="flex flex-col items-center gap-6">
-          <FlashcardBrowseCard
-            front={card.front}
-            back={card.back}
-            flipped={showingBack}
-            onFlip={() => {
-              if (!revealed) {
-                setRevealed(true);
-                setShowingBack(!reverse);
-              } else {
-                setShowingBack((s) => !s);
-              }
-            }}
-          />
+          <FlashcardBrowseCard front={card.front} back={card.back} flipped={showingBack} onFlip={flipCard} />
 
           <div className="flex w-full gap-2">
             {!revealed ? (
-              <Button
-                onClick={() => {
-                  setRevealed(true);
-                  setShowingBack(!reverse);
-                }}
-                className="w-full bg-white/10 text-white hover:bg-white/20"
-                variant="outline"
-              >
+              <Button onClick={flipCard} className="w-full bg-white/10 text-white hover:bg-white/20" variant="outline">
                 Pokaż odpowiedź
               </Button>
             ) : (
