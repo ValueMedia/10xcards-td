@@ -1,7 +1,7 @@
 ---
 change_id: lookup-word-page
 title: Add a "Lookup Word" page to create flashcards from Cambridge Dictionary results
-status: implementing
+status: implemented
 created: 2026-06-19
 updated: 2026-06-19
 archived_at: null

@@ -329,13 +329,13 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 4.1 Build passes: `npm run build`
-- [x] 4.2 Lint passes on changed file
+- [x] 4.1 Build passes: `npm run build` — ef5ed6a
+- [x] 4.2 Lint passes on changed file — ef5ed6a
 
 #### Manual
 
-- [x] 4.3 Q/A form hidden before first search, appears after a completed search (incl. empty results)
-- [x] 4.4 Saving creates the flashcard: success toast, fields clear, results stay visible
-- [x] 4.5 Created card appears in the set when navigating back to `/sets/<id>`
-- [x] 4.6 Empty/over-1000-char fields rejected; server error shows inline message + toast
-- [x] 4.7 Saving two different cards in a row works without reload
+- [x] 4.3 Q/A form hidden before first search, appears after a completed search (incl. empty results) — ef5ed6a
+- [x] 4.4 Saving creates the flashcard: success toast, fields clear, results stay visible — ef5ed6a
+- [x] 4.5 Created card appears in the set when navigating back to `/sets/<id>` — ef5ed6a
+- [x] 4.6 Empty/over-1000-char fields rejected; server error shows inline message + toast — ef5ed6a
+- [x] 4.7 Saving two different cards in a row works without reload — ef5ed6a
