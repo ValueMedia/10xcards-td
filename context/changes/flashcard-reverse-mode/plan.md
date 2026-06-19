@@ -195,12 +195,12 @@ None. Absent `localStorage` key is treated as `false`, so existing users default
 
 #### Automated
 
-- [x] 2.1 Type checking passes (build): `npm run build`
-- [x] 2.2 Linting passes on changed files
+- [x] 2.1 Type checking passes (build): `npm run build` — 13eee88
+- [x] 2.2 Linting passes on changed files — 13eee88
 
 #### Manual
 
-- [x] 2.3 Reverse on: `/browse` shows Back first; flip reveals Front; Next/Prev/Shuffle reset to Back
-- [x] 2.4 Reverse on: `/review` prompts with Back; reveal shows Front; flip toggles; grading advances with Back-first next card
-- [x] 2.5 Reverse off: both screens behave exactly as before (Front first)
-- [x] 2.6 Toggle change reflected on browse/review without a Front→Back flash on load
+- [x] 2.3 Reverse on: `/browse` shows Back first; flip reveals Front; Next/Prev/Shuffle reset to Back — 13eee88
+- [x] 2.4 Reverse on: `/review` prompts with Back; reveal shows Front; flip toggles; grading advances with Back-first next card — 13eee88
+- [x] 2.5 Reverse off: both screens behave exactly as before (Front first) — 13eee88
+- [x] 2.6 Toggle change reflected on browse/review without a Front→Back flash on load — 13eee88
