@@ -300,30 +300,30 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 2.1 Build passes: `npm run build`
-- [x] 2.2 Lint passes on changed `.ts`/`.tsx`
+- [x] 2.1 Build passes: `npm run build` — 3380fde
+- [x] 2.2 Lint passes on changed `.ts`/`.tsx` — 3380fde
 
 #### Manual
 
-- [x] 2.3 `/lookup_word?setId=<owned set>` shows header, Cambridge intro, and set name
-- [x] 2.4 Missing `setId` or non-owned set redirects to `/dashboard`
-- [x] 2.5 Logged-out visit redirects to `/auth/signin`
-- [x] 2.6 UI matches the rest of the app (dark theme, card styling)
-- [x] 2.7 Locale en/pl translates the header/intro
+- [x] 2.3 `/lookup_word?setId=<owned set>` shows header, Cambridge intro, and set name — 3380fde
+- [x] 2.4 Missing `setId` or non-owned set redirects to `/dashboard` — 3380fde
+- [x] 2.5 Logged-out visit redirects to `/auth/signin` — 3380fde
+- [x] 2.6 UI matches the rest of the app (dark theme, card styling) — 3380fde
+- [x] 2.7 Locale en/pl translates the header/intro — 3380fde
 
 ### Phase 3: Dictionary search and results rendering
 
 #### Automated
 
-- [ ] 3.1 Build passes: `npm run build`
-- [ ] 3.2 Lint passes on changed files
+- [x] 3.1 Build passes: `npm run build`
+- [x] 3.2 Lint passes on changed files
 
 #### Manual
 
-- [ ] 3.3 Searching a real word renders entries (definition/type/region/examples) in app style
-- [ ] 3.4 Searching a nonsense word shows the "no results" message
-- [ ] 3.5 Network/HTTP error shows inline message + toast and does NOT show the form
-- [ ] 3.6 Search button disabled on empty input and during loading; Enter triggers search
+- [x] 3.3 Searching a real word renders entries (definition/type/region/examples) in app style
+- [x] 3.4 Searching a nonsense word shows the "no results" message
+- [x] 3.5 Network/HTTP error shows inline message + toast and does NOT show the form
+- [x] 3.6 Search button disabled on empty input and during loading; Enter triggers search
 
 ### Phase 4: Manual flashcard create form
 

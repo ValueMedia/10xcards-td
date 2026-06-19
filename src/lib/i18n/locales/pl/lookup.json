@@ -2,5 +2,13 @@
   "lookup.heading": "Wyszukaj słowo",
   "lookup.intro": "Wyszukuj definicje słów i fraz w Cambridge Dictionary, a następnie utwórz fiszkę w swoim zestawie.",
   "lookup.addingTo": "Dodajesz do: {{name}}",
-  "lookup.backToSet": "Powrót do zestawu"
+  "lookup.backToSet": "Powrót do zestawu",
+  "lookup.searchPlaceholder": "Słowo lub fraza",
+  "lookup.searchButton": "Szukaj",
+  "lookup.searching": "Szukam...",
+  "lookup.responseHeading": "Odpowiedź z Cambridge Dictionary",
+  "lookup.noResults": "Nie znaleziono definicji dla \"{{word}}\".",
+  "lookup.error.rateLimit": "Zbyt wiele wyszukiwań. Odczekaj chwilę i spróbuj ponownie.",
+  "lookup.error.unavailable": "Usługa słownika jest chwilowo niedostępna. Spróbuj ponownie później.",
+  "lookup.error.generic": "Coś poszło nie tak podczas wyszukiwania słowa. Spróbuj ponownie."
 }

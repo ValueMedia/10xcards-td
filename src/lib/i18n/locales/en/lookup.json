@@ -1,6 +1,14 @@
 {
   "lookup.heading": "Look up a word",
-  "lookup.intro": "Search word and phrase definitions from the Cambridge Dictionary, then create a flashcard in your set.",
+  "lookup.intro": "Search word and phrase definitions from Cambridge Dictionary, then create a flashcard in your set.",
   "lookup.addingTo": "Adding to: {{name}}",
-  "lookup.backToSet": "Back to set"
+  "lookup.backToSet": "Back to set",
+  "lookup.searchPlaceholder": "Word or phrase",
+  "lookup.searchButton": "Search",
+  "lookup.searching": "Searching...",
+  "lookup.responseHeading": "Response from Cambridge Dictionary",
+  "lookup.noResults": "No definitions found for \"{{word}}\".",
+  "lookup.error.rateLimit": "Too many lookups. Please wait a moment and try again.",
+  "lookup.error.unavailable": "The dictionary service is unavailable right now. Please try again later.",
+  "lookup.error.generic": "Something went wrong while looking up the word. Please try again."
 }

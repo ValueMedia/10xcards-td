@@ -1,6 +1,12 @@
+import { useLayoutEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { I18nProvider } from "@/components/I18nProvider";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { DictionaryLookupError, lookupWordClient, type DictionaryLookupResult } from "@/lib/dict-client";
+import type { DictionaryEntry } from "@/types";
 import type { SupportedLocale } from "@/lib/i18n/constants";
 
 interface Props {
@@ -20,6 +26,52 @@ export function LookupWordPage(props: Props) {
 function LookupWordPageInner({ setId, setName }: Props) {
   const { t } = useTranslation("lookup");
 
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<DictionaryLookupResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  function messageForStatus(status: number): string {
+    switch (status) {
+      case 429:
+        return t("lookup.error.rateLimit");
+      case 502:
+        return t("lookup.error.unavailable");
+      default:
+        return t("lookup.error.generic");
+    }
+  }
+
+  async function runSearch() {
+    const word = query.trim();
+    if (!word || loading) return;
+
+    setLoading(true);
+    setError(null);
+    // Reset the previous result up front so a new search never visually
+    // accumulates with the old one (and stale results don't linger while
+    // the request is in flight).
+    setResult(null);
+
+    try {
+      const data = await lookupWordClient(word);
+      setResult(data);
+    } catch (err) {
+      const status = err instanceof DictionaryLookupError ? err.status : 0;
+      const msg = messageForStatus(status);
+      setError(msg);
+      setResult(null);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault();
+    void runSearch();
+  }
+
   return (
     <div className="bg-cosmic flex min-h-screen items-start justify-center p-4 pt-8">
       <div className="w-full max-w-2xl space-y-6">
@@ -38,13 +90,125 @@ function LookupWordPageInner({ setId, setName }: Props) {
           <p className="text-sm text-blue-100/60">{t("lookup.addingTo", { name: setName })}</p>
         </div>
 
-        <Card className="border-white/10 bg-white/10 backdrop-blur-xl">
-          <CardContent className="pt-6">
+        <Card className="border-white/10 bg-white/10 py-4 backdrop-blur-xl">
+          <CardContent>
             <p className="text-sm text-blue-100/70">{t("lookup.intro")}</p>
           </CardContent>
         </Card>
+
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <Input
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+            }}
+            placeholder={t("lookup.searchPlaceholder")}
+            disabled={loading}
+            className="border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
+          />
+          <Button
+            type="submit"
+            disabled={loading || query.trim() === ""}
+            className="shrink-0 bg-purple-600 hover:bg-purple-500"
+          >
+            {loading ? t("lookup.searching") : t("lookup.searchButton")}
+          </Button>
+        </form>
+
+        {error && <p className="text-sm text-red-400">{error}</p>}
+
+        {result && (
+          <section className="space-y-3">
+            <h2 className="text-base font-semibold text-blue-100/80">{t("lookup.responseHeading")}</h2>
+            <SearchResults result={result} emptyLabel={t("lookup.noResults", { word: result.word })} />
+          </section>
+        )}
       </div>
     </div>
+  );
+}
+
+// At most this many result cards are visible at once; the rest scroll.
+const MAX_VISIBLE_CARDS = 2;
+// Matches the `space-y-3` gap between cards (0.75rem).
+const CARD_GAP_PX = 12;
+
+function SearchResults({ result, emptyLabel }: { result: DictionaryLookupResult; emptyLabel: string }) {
+  if (result.entries.length === 0) {
+    return (
+      <Card className="border-white/10 bg-white/10 backdrop-blur-xl">
+        <CardContent>
+          <p className="text-sm text-blue-100/60">{emptyLabel}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return <ResultsList result={result} />;
+}
+
+function ResultsList({ result }: { result: DictionaryLookupResult }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Cards vary in height (examples count), so derive the container cap from
+  // the actual rendered height of the first MAX_VISIBLE_CARDS cards plus the
+  // gaps between them. Anything beyond that scrolls. Applied imperatively to
+  // avoid an extra render from setState-in-effect.
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const list = listRef.current;
+    if (!container || !list) return;
+    const cards = Array.from(list.children) as HTMLElement[];
+    if (cards.length <= MAX_VISIBLE_CARDS) {
+      container.style.maxHeight = "";
+      return;
+    }
+    const total =
+      cards.slice(0, MAX_VISIBLE_CARDS).reduce((sum, el) => sum + el.offsetHeight, 0) +
+      CARD_GAP_PX * (MAX_VISIBLE_CARDS - 1);
+    container.style.maxHeight = `${total}px`;
+  }, [result]);
+
+  return (
+    <div ref={containerRef} className="overflow-y-auto pr-1">
+      <div ref={listRef} className="space-y-3">
+        {result.entries.map((entry) => (
+          <EntryCard
+            key={`${entry.type ?? ""}-${entry.dictionaryRegion ?? ""}-${entry.definition}`}
+            word={result.word}
+            entry={entry}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EntryCard({ word, entry }: { word: string; entry: DictionaryEntry }) {
+  return (
+    <Card className="border-white/10 bg-white/10 pt-4 backdrop-blur-xl">
+      <CardContent className="space-y-2">
+        <h2 className="text-lg font-semibold text-white">{word}</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          {entry.type && <span className="text-sm font-medium text-purple-200 italic">{entry.type}</span>}
+          {entry.dictionaryRegion && (
+            <span className="rounded border border-white/20 px-1.5 py-0.5 text-xs font-medium text-blue-100/70">
+              {entry.dictionaryRegion}
+            </span>
+          )}
+          {entry.info && <span className="text-xs text-blue-100/50">{entry.info}</span>}
+        </div>
+        <p className="text-sm text-white">{entry.definition}</p>
+        {entry.examples.length > 0 && (
+          <ul className="list-disc space-y-1 pl-5 text-sm text-blue-100/60">
+            {entry.examples.map((example) => (
+              <li key={example}>{example}</li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
