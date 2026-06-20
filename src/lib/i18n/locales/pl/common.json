@@ -48,5 +48,14 @@
   "set.flashcardUpdated": "Zaktualizowano fiszkę",
   "set.flashcardDeleted": "Usunięto fiszkę",
   "set.imported": "Zaimportowano {{count}} fiszek",
-  "set.linesSkipped": " · pominięto {{count}} wierszy"
+  "set.linesSkipped": " · pominięto {{count}} wierszy",
+  "set.resetProgress": "Resetuj postęp",
+  "set.resetProgressShort": "Resetuj",
+  "set.resetProgressConfirmTitle": "Zresetować postęp?",
+  "set.resetProgressConfirmDesc": "Spowoduje to usunięcie całego postępu nauki dla tego zestawu oraz historii powtórek. Wszystkie fiszki ponownie staną się do powtórki. Tej operacji nie można cofnąć.",
+  "set.resetProgressCancel": "Anuluj",
+  "set.resetProgressConfirm": "Resetuj postęp",
+  "set.resetting": "Resetowanie...",
+  "set.resetProgressSuccess": "Postęp zresetowany",
+  "set.resetProgressError": "Nie udało się zresetować postępu"
 }

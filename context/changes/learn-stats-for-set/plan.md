@@ -293,29 +293,29 @@ Add i18n to the island, a header reset button with a responsive label, a confirm
 
 #### Automated
 
-- [x] 2.1 Migration applies cleanly to local Supabase
-- [x] 2.2 Type checking + build passes: `npm run build`
-- [x] 2.3 Lint passes on changed files
+- [x] 2.1 Migration applies cleanly to local Supabase — bc433b3
+- [x] 2.2 Type checking + build passes: `npm run build` — bc433b3
+- [x] 2.3 Lint passes on changed files — bc433b3
 
 #### Manual
 
-- [x] 2.4 POST reset on owned set returns success; flashcards reset + reviews deleted
-- [x] 2.5 Reset on non-owned set errors and changes nothing
-- [x] 2.6 session_log rows for the set untouched
-- [x] 2.7 New endpoint appears in Scalar at `/docs/api`
+- [x] 2.4 POST reset on owned set returns success; flashcards reset + reviews deleted — bc433b3
+- [x] 2.5 Reset on non-owned set errors and changes nothing — bc433b3
+- [x] 2.6 session_log rows for the set untouched — bc433b3
+- [x] 2.7 New endpoint appears in Scalar at `/docs/api` — bc433b3
 
 ### Phase 3: Reset-progress UI in ReviewSession
 
 #### Automated
 
-- [ ] 3.1 Type checking + build passes: `npm run build`
-- [ ] 3.2 Lint passes on changed files
-- [ ] 3.3 en/pl common.json have identical new key sets
+- [x] 3.1 Type checking + build passes: `npm run build`
+- [x] 3.2 Lint passes on changed files
+- [x] 3.3 en/pl common.json have identical new key sets
 
 #### Manual
 
-- [ ] 3.4 Responsive label: full on desktop, short on mobile; EN/PL correct
-- [ ] 3.5 Dialog opens; Cancel is a no-op
-- [ ] 3.6 Confirm resets progress and restarts session from first card + success toast
-- [ ] 3.7 Network failure shows error toast, session unchanged
-- [ ] 3.8 Rest of review UI visually unchanged
+- [x] 3.4 Responsive label: full on desktop, short on mobile; EN/PL correct
+- [x] 3.5 Dialog opens; Cancel is a no-op
+- [x] 3.6 Confirm resets progress and restarts session from first card + success toast
+- [x] 3.7 Network failure shows error toast, session unchanged
+- [x] 3.8 Rest of review UI visually unchanged

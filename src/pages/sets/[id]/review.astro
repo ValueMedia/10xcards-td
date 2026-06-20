@@ -4,9 +4,10 @@ export const prerender = false;
 import Layout from "@/layouts/Layout.astro";
 import { getSetByIdForUser } from "@/lib/services/sets";
 import ReviewSession from "@/components/review/ReviewSession";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 const { id } = Astro.params;
-const { user, supabase } = Astro.locals;
+const { user, supabase, locale } = Astro.locals;
 
 let setName = "";
 let found = false;
@@ -27,5 +28,5 @@ if (!found || !id) {
 ---
 
 <Layout title={`Review — ${setName}`}>
-  <ReviewSession client:only="react" setId={id} setName={setName} />
+  <ReviewSession client:only="react" setId={id} setName={setName} locale={locale as SupportedLocale} />
 </Layout>

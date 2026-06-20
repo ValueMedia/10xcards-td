@@ -48,5 +48,14 @@
   "set.flashcardUpdated": "Flashcard updated",
   "set.flashcardDeleted": "Flashcard deleted",
   "set.imported": "Imported {{count}} flashcards",
-  "set.linesSkipped": " · {{count}} lines skipped"
+  "set.linesSkipped": " · {{count}} lines skipped",
+  "set.resetProgress": "Reset progress",
+  "set.resetProgressShort": "Reset",
+  "set.resetProgressConfirmTitle": "Reset progress?",
+  "set.resetProgressConfirmDesc": "This will erase all learning progress for this set and delete its review history. All cards become due again. This action cannot be undone.",
+  "set.resetProgressCancel": "Cancel",
+  "set.resetProgressConfirm": "Reset progress",
+  "set.resetting": "Resetting...",
+  "set.resetProgressSuccess": "Progress reset",
+  "set.resetProgressError": "Failed to reset progress"
 }

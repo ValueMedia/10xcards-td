@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Rating } from "@/types";
 import type { Flashcard, SessionSummary } from "@/types";
@@ -6,12 +7,16 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FlashcardBrowseCard } from "@/components/sets/FlashcardBrowseCard";
 import { useReverseMode } from "@/components/hooks/useReverseMode";
+import { I18nProvider } from "@/components/I18nProvider";
+import type { SupportedLocale } from "@/lib/i18n/constants";
+import { ResetProgressDialog } from "@/components/review/ResetProgressDialog";
 
 type Phase = "loading" | "empty" | "error" | "reviewing" | "summary";
 
 interface Props {
   setId: string;
   setName: string;
+  locale: SupportedLocale;
 }
 
 const GRADE_LABELS: { rating: Rating; label: string; key: keyof SessionSummary["byGrade"] }[] = [
@@ -44,7 +49,16 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleString("pl-PL", { dateStyle: "long", timeStyle: "short" });
 }
 
-export default function ReviewSession({ setId, setName }: Props) {
+export default function ReviewSession({ locale, ...props }: Props) {
+  return (
+    <I18nProvider locale={locale}>
+      <ReviewSessionInner {...props} />
+    </I18nProvider>
+  );
+}
+
+function ReviewSessionInner({ setId, setName }: Omit<Props, "locale">) {
+  const { t } = useTranslation("common");
   const [reverse] = useReverseMode(setId);
   const [phase, setPhase] = useState<Phase>("loading");
   const [cards, setCards] = useState<Flashcard[]>([]);
@@ -54,6 +68,8 @@ export default function ReviewSession({ setId, setName }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [nextDue, setNextDue] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [summary, setSummary] = useState<SessionSummary>({
     total: 0,
     byGrade: { again: 0, hard: 0, good: 0, easy: 0 },
@@ -135,6 +151,28 @@ export default function ReviewSession({ setId, setName }: Props) {
     },
     [cards, currentIndex, submitting, setId, reverse],
   );
+
+  const handleReset = useCallback(async () => {
+    if (resetting) return;
+    setResetting(true);
+    try {
+      const res = await fetch(`/api/sets/${setId}/reset-progress`, { method: "POST" });
+      if (!res.ok) throw new Error("Reset failed");
+      // Reload the session from a clean slate. Order matters: clear the view
+      // state first, then bump retryCount so the load effect repopulates cards.
+      setCurrentIndex(0);
+      setRevealed(false);
+      setShowingBack(reverse);
+      setPhase("loading");
+      setRetryCount((n) => n + 1);
+      setResetOpen(false);
+      toast.success(t("set.resetProgressSuccess"));
+    } catch {
+      toast.error(t("set.resetProgressError"));
+    } finally {
+      setResetting(false);
+    }
+  }, [resetting, setId, reverse, t]);
 
   // Reveal the answer side on first flip, then toggle faces on subsequent flips.
   // Shared by the keyboard handler, the card click, and the "Pokaż odpowiedź" button
@@ -256,10 +294,31 @@ export default function ReviewSession({ setId, setName }: Props) {
             <BackIcon />
             {setName}
           </a>
-          <span className="text-sm text-blue-100/50">
-            {currentIndex + 1} / {cards.length}
-          </span>
+          <div className="flex items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setResetOpen(true);
+              }}
+              className="border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+            >
+              <span className="hidden sm:inline">{t("set.resetProgress")}</span>
+              <span className="sm:hidden">{t("set.resetProgressShort")}</span>
+            </Button>
+            <span className="text-sm text-blue-100/50">
+              {currentIndex + 1} / {cards.length}
+            </span>
+          </div>
         </div>
+
+        <ResetProgressDialog
+          open={resetOpen}
+          onOpenChange={setResetOpen}
+          onConfirm={() => void handleReset()}
+          pending={resetting}
+        />
 
         <div className="flex flex-col items-center gap-6">
           <FlashcardBrowseCard
