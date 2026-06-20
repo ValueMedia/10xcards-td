@@ -1,10 +1,10 @@
 ---
 change_id: flashcard-reverse-front-flash
 title: Reverse mode — hide the Front face flashing during card navigation on browse/review
-status: impl_reviewed
+status: archived
 created: 2026-06-19
 updated: 2026-06-20
-archived_at: null
+archived_at: 2026-06-20T05:53:34Z
 ---
 
 ## Notes
