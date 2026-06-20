@@ -3,6 +3,7 @@
   "lookup.intro": "Wyszukuj definicje słów i fraz w Cambridge Dictionary, a następnie utwórz fiszkę w swoim zestawie.",
   "lookup.addingTo": "Dodajesz do: {{name}}",
   "lookup.backToSet": "Powrót do zestawu",
+  "lookup.backToGenerate": "Wróć do generowania",
   "lookup.searchPlaceholder": "Słowo lub fraza",
   "lookup.searchButton": "Szukaj",
   "lookup.searching": "Szukam...",

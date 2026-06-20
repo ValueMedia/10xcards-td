@@ -245,27 +245,27 @@ On arrival, fill the search field from the handoff and auto-run the search; clea
 
 #### Automated
 
-- [x] 2.1 Build passes: `npm run build`
-- [x] 2.2 Lint passes on changed files
+- [x] 2.1 Build passes: `npm run build` — fe05ff3
+- [x] 2.2 Lint passes on changed files — fe05ff3
 
 #### Manual
 
-- [x] 2.3 Check button appears next to Generate; popup opens with an input
-- [x] 2.4 Empty/whitespace blocks confirm; >100 chars prevented
-- [x] 2.5 Confirm navigates to `/lookup_word?setId=...` (same tab), popup closed
-- [x] 2.6 Returning to `/generate` restores text + proposals; refresh clears them
+- [x] 2.3 Check button appears next to Generate; popup opens with an input — fe05ff3
+- [x] 2.4 Empty/whitespace blocks confirm; >100 chars prevented — fe05ff3
+- [x] 2.5 Confirm navigates to `/lookup_word?setId=...` (same tab), popup closed — fe05ff3
+- [x] 2.6 Returning to `/generate` restores text + proposals; refresh clears them — fe05ff3
 
 ### Phase 3: /lookup_word — consume prefill, auto-search, Back button
 
 #### Automated
 
-- [ ] 3.1 Build passes: `npm run build`
-- [ ] 3.2 Lint passes on changed files
+- [x] 3.1 Build passes: `npm run build`
+- [x] 3.2 Lint passes on changed files
 
 #### Manual
 
-- [ ] 3.3 Arriving from Check fills field + auto-searches; URL has no `word` param
-- [ ] 3.4 Refresh of `/lookup_word` does not re-run the prefilled search
-- [ ] 3.5 "Back to generate" returns to `/generate` with state restored
-- [ ] 3.6 "Back to set" from a Check-originated lookup leaves no stale restore
-- [ ] 3.7 New button label renders correctly in PL and EN
+- [x] 3.3 Arriving from Check fills field + auto-searches; URL has no `word` param
+- [x] 3.4 Refresh of `/lookup_word` does not re-run the prefilled search
+- [x] 3.5 "Back to generate" returns to `/generate` with state restored
+- [x] 3.6 "Back to set" from a Check-originated lookup leaves no stale restore
+- [x] 3.7 New button label renders correctly in PL and EN

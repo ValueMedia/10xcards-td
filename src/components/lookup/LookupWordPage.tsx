@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { I18nProvider } from "@/components/I18nProvider";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { flashcardContentSchema } from "@/lib/services/flashcards";
 import { DictionaryLookupError, lookupWordClient, type DictionaryLookupResult } from "@/lib/dict-client";
+import { clearGenerateSnapshot, consumeLookupPrefill, hasGenerateSnapshot } from "@/lib/handoff";
 import type { DictionaryEntry } from "@/types";
 import type { SupportedLocale } from "@/lib/i18n/constants";
 
@@ -39,6 +40,9 @@ function LookupWordPageInner({ setId, setName }: Props) {
   // latest search's state. The loading guard already prevents UI-triggered
   // overlap; this is the correctness backstop.
   const searchSeqRef = useRef(0);
+  // Whether a /generate snapshot exists for this set (i.e. we arrived from
+  // Check). Read post-mount since sessionStorage is client-only.
+  const [showBackToGenerate, setShowBackToGenerate] = useState(false);
 
   function messageForStatus(status: number): string {
     switch (status) {
@@ -51,8 +55,8 @@ function LookupWordPageInner({ setId, setName }: Props) {
     }
   }
 
-  async function runSearch() {
-    const word = query.trim();
+  async function runSearch(wordArg?: string) {
+    const word = (wordArg ?? query).trim();
     if (!word || loading) return;
 
     const seq = ++searchSeqRef.current;
@@ -86,16 +90,50 @@ function LookupWordPageInner({ setId, setName }: Props) {
     void runSearch();
   }
 
+  // On arrival from Check: prefill the query and auto-run the search, then
+  // remove the prefill key (so a manual refresh does not re-search). Also note
+  // whether a /generate snapshot exists, to conditionally show the Back button.
+  // Runs post-mount (never in a useState initializer) to avoid a hydration
+  // mismatch under client:load — see lessons.md.
+  useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect
+    setShowBackToGenerate(hasGenerateSnapshot(setId));
+    const prefill = consumeLookupPrefill();
+    if (prefill) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect
+      setQuery(prefill);
+      void runSearch(prefill);
+    }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [setId]);
+
   return (
     <div className="bg-cosmic flex min-h-screen items-start justify-center p-4 pt-8">
       <div className="w-full max-w-2xl space-y-6">
-        <a
-          href={`/sets/${setId}`}
-          className="inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
-        >
-          <BackIcon />
-          {t("lookup.backToSet")}
-        </a>
+        <div className="flex items-center gap-4">
+          {showBackToGenerate && (
+            <button
+              type="button"
+              onClick={() => {
+                window.location.href = `/generate?setId=${setId}`;
+              }}
+              className="inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
+            >
+              <BackIcon />
+              {t("lookup.backToGenerate")}
+            </button>
+          )}
+          <a
+            href={`/sets/${setId}`}
+            onClick={() => {
+              clearGenerateSnapshot(setId);
+            }}
+            className="inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
+          >
+            <BackIcon />
+            {t("lookup.backToSet")}
+          </a>
+        </div>
 
         <div className="space-y-1">
           <h1 className="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">

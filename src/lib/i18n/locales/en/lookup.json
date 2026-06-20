@@ -3,6 +3,7 @@
   "lookup.intro": "Search word or phrase definitions from Cambridge Dictionary, then create a flashcard in your set.",
   "lookup.addingTo": "Adding to: {{name}}",
   "lookup.backToSet": "Back to set",
+  "lookup.backToGenerate": "Back to generate",
   "lookup.searchPlaceholder": "Word or phrase",
   "lookup.searchButton": "Search",
   "lookup.searching": "Searching...",
