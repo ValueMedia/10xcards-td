@@ -93,12 +93,12 @@ Constrain both prompt `Textarea` fields to a 600px max height with vertical over
 
 #### Automated
 
-- [x] 1.1 Type checking + Astro check passes: `npm run build`
-- [x] 1.2 Linting passes on the changed file: `npx eslint src/components/settings/SettingsPage.tsx`
+- [x] 1.1 Type checking + Astro check passes: `npm run build` — 1daf3a2
+- [x] 1.2 Linting passes on the changed file: `npx eslint src/components/settings/SettingsPage.tsx` — 1daf3a2
 
 #### Manual
 
-- [x] 1.3 Custom-mode field caps at 600px with vertical scrollbar for long prompts
-- [x] 1.4 Short prompt renders field at normal height (≥160px), unchanged
-- [x] 1.5 Default-mode field also caps at 600px with scroll
-- [x] 1.6 No layout regression elsewhere on the settings page
+- [x] 1.3 Custom-mode field caps at 600px with vertical scrollbar for long prompts — 1daf3a2
+- [x] 1.4 Short prompt renders field at normal height (≥160px), unchanged — 1daf3a2
+- [x] 1.5 Default-mode field also caps at 600px with scroll — 1daf3a2
+- [x] 1.6 No layout regression elsewhere on the settings page — 1daf3a2
