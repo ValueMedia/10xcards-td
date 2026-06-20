@@ -232,28 +232,28 @@ On arrival, fill the search field from the handoff and auto-run the search; clea
 
 #### Automated
 
-- [x] 1.1 Build passes: `npm run build`
-- [x] 1.2 Lint passes on changed TS/TSX
+- [x] 1.1 Build passes: `npm run build` — 3e16fd1
+- [x] 1.2 Lint passes on changed TS/TSX — 3e16fd1
 
 #### Manual
 
-- [x] 1.3 `/generate` renders correctly with `locale=en`
-- [x] 1.4 `/generate` renders correctly with `locale=pl`
-- [x] 1.5 Generate flow works end-to-end with no regressions
+- [x] 1.3 `/generate` renders correctly with `locale=en` — 3e16fd1
+- [x] 1.4 `/generate` renders correctly with `locale=pl` — 3e16fd1
+- [x] 1.5 Generate flow works end-to-end with no regressions — 3e16fd1
 
 ### Phase 2: Check button, popup & /generate-side handoff
 
 #### Automated
 
-- [ ] 2.1 Build passes: `npm run build`
-- [ ] 2.2 Lint passes on changed files
+- [x] 2.1 Build passes: `npm run build`
+- [x] 2.2 Lint passes on changed files
 
 #### Manual
 
-- [ ] 2.3 Check button appears next to Generate; popup opens with an input
-- [ ] 2.4 Empty/whitespace blocks confirm; >100 chars prevented
-- [ ] 2.5 Confirm navigates to `/lookup_word?setId=...` (same tab), popup closed
-- [ ] 2.6 Returning to `/generate` restores text + proposals; refresh clears them
+- [x] 2.3 Check button appears next to Generate; popup opens with an input
+- [x] 2.4 Empty/whitespace blocks confirm; >100 chars prevented
+- [x] 2.5 Confirm navigates to `/lookup_word?setId=...` (same tab), popup closed
+- [x] 2.6 Returning to `/generate` restores text + proposals; refresh clears them
 
 ### Phase 3: /lookup_word — consume prefill, auto-search, Back button
 

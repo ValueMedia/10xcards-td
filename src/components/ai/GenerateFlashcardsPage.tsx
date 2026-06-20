@@ -4,11 +4,21 @@ import { useTranslation } from "react-i18next";
 import { I18nProvider } from "@/components/I18nProvider";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import FlashcardProposalCard from "@/components/ai/FlashcardProposalCard";
 import type { FlashcardProposal } from "@/lib/services/ai";
 import { flashcardContentSchema } from "@/lib/services/flashcards";
+import { saveGenerateSnapshot, saveLookupPrefill, consumeGenerateSnapshot } from "@/lib/handoff";
 import type { SupportedLocale } from "@/lib/i18n/constants";
 
 interface Props {
@@ -30,6 +40,7 @@ interface SaveResponse {
 
 const MIN_INPUT_LENGTH = 10;
 const MAX_INPUT_LENGTH = 8000;
+const MAX_CHECK_LENGTH = 100;
 
 const FRIENDLY_ERROR_KINDS = ["timeout", "apiError", "unconfigured", "parseError", "noProposals", "rateLimit"];
 
@@ -49,7 +60,25 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
   const [proposals, setProposals] = useState<FlashcardProposal[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [checkOpen, setCheckOpen] = useState(false);
+  const [checkWord, setCheckWord] = useState("");
   const proposalsRef = useRef<HTMLDivElement>(null);
+
+  // Restore a saved page snapshot when returning from /lookup_word. Runs
+  // post-mount (never in a useState initializer) to avoid a hydration mismatch
+  // under client:load — see lessons.md. consume* removes the key so a manual
+  // refresh does not re-restore stale state.
+  useEffect(() => {
+    const snap = consumeGenerateSnapshot(setId);
+    if (snap) {
+      // Restore-on-mount is the intended pattern here (see lessons.md); the
+      // synchronous setState in this effect is deliberate, not a perf smell.
+      // eslint-disable-next-line @eslint-react/set-state-in-effect
+      setText(snap.text);
+      // eslint-disable-next-line @eslint-react/set-state-in-effect
+      setProposals(snap.proposals);
+    }
+  }, [setId]);
 
   const friendlyErrorMessage = (error: string | undefined, kind: string | undefined): string => {
     if (kind && FRIENDLY_ERROR_KINDS.includes(kind)) {
@@ -153,6 +182,19 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
     }
   };
 
+  const trimmedCheckWord = checkWord.trim();
+
+  const handleCheckConfirm = () => {
+    if (trimmedCheckWord === "") return;
+    // Preserve the current page state, then hand the word off to /lookup_word.
+    // The word travels via sessionStorage (not the URL), so it never lingers
+    // as a query param. Navigation is a full reload (same tab).
+    saveGenerateSnapshot(setId, { text, proposals });
+    saveLookupPrefill(trimmedCheckWord);
+    setCheckOpen(false);
+    window.location.href = `/lookup_word?setId=${setId}`;
+  };
+
   return (
     <div className="bg-cosmic min-h-screen p-4 text-white">
       <div className="mx-auto max-w-3xl">
@@ -203,24 +245,36 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
                 {t("generate.charCount", { len: text.length, max: MAX_INPUT_LENGTH })}
                 {inputTooShort && text.length > 0 && ` · ${t("generate.tooShort", { min: MIN_INPUT_LENGTH })}`}
               </p>
-              <Button
-                type="button"
-                onClick={handleGenerate}
-                disabled={!canGenerate}
-                className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50"
-              >
-                {isGenerating ? (
-                  <>
-                    <Spinner />
-                    {t("generate.generating")}
-                  </>
-                ) : (
-                  <>
-                    <SparklesIcon />
-                    {t("generate.generateButton")}
-                  </>
-                )}
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setCheckOpen(true);
+                  }}
+                  className="border-white/10 bg-transparent text-white hover:bg-white/10"
+                >
+                  {t("generate.check.button")}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleGenerate}
+                  disabled={!canGenerate}
+                  className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Spinner />
+                      {t("generate.generating")}
+                    </>
+                  ) : (
+                    <>
+                      <SparklesIcon />
+                      {t("generate.generateButton")}
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -314,6 +368,45 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
             </div>
           </div>
         )}
+
+        <Dialog open={checkOpen} onOpenChange={setCheckOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t("generate.check.title")}</DialogTitle>
+              <DialogDescription>{t("generate.check.description")}</DialogDescription>
+            </DialogHeader>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCheckConfirm();
+              }}
+            >
+              <Input
+                autoFocus
+                value={checkWord}
+                onChange={(e) => {
+                  setCheckWord(e.target.value);
+                }}
+                placeholder={t("generate.check.placeholder")}
+                maxLength={MAX_CHECK_LENGTH}
+              />
+              <DialogFooter className="mt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setCheckOpen(false);
+                  }}
+                >
+                  {t("generate.check.cancel")}
+                </Button>
+                <Button type="submit" disabled={trimmedCheckWord === ""}>
+                  {t("generate.check.confirm")}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
