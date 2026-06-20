@@ -12,8 +12,10 @@ import { ShareSetModal } from "@/components/sets/ShareSetModal";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useReverseMode } from "@/components/hooks/useReverseMode";
+import { ActivityChart } from "@/components/dashboard/ActivityChart";
 import { I18nProvider } from "@/components/I18nProvider";
 import type { SupportedLocale } from "@/lib/i18n/constants";
+import type { DailyStats } from "@/types";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -23,6 +25,7 @@ import {
 
 interface Props {
   initialData: string;
+  activity: string;
   locale: SupportedLocale;
 }
 
@@ -39,7 +42,7 @@ export default function SetDetailPage({ locale, ...props }: Props) {
   );
 }
 
-function SetDetailPageInner({ initialData }: Omit<Props, "locale">) {
+function SetDetailPageInner({ initialData, activity }: Omit<Props, "locale">) {
   const { t } = useTranslation("common");
   const [state, setState] = useState<ParsedData>(() => {
     try {
@@ -50,6 +53,14 @@ function SetDetailPageInner({ initialData }: Omit<Props, "locale">) {
       return parsed;
     } catch {
       return { set: null, flashcards: [] };
+    }
+  });
+  const [dailyMinutes] = useState<DailyStats[]>(() => {
+    try {
+      const parsed = JSON.parse(activity) as DailyStats[];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
     }
   });
   const { set, flashcards } = state;
@@ -134,6 +145,10 @@ function SetDetailPageInner({ initialData }: Omit<Props, "locale">) {
           <BackIcon />
           {t("set.backToDashboard")}
         </a>
+
+        <div className="mb-8">
+          <ActivityChart dailyMinutes={dailyMinutes} />
+        </div>
 
         <div className="mb-8 flex flex-col gap-3">
           <div>

@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { getSetWithFlashcards } from "@/lib/services/sets";
+import { getSetActivity } from "@/lib/services/stats";
 import SetDetailPage from "@/components/sets/SetDetailPage";
 import { getTranslations } from "@/lib/i18n/ui";
 import type { SupportedLocale } from "@/lib/i18n/constants";
@@ -11,6 +12,9 @@ const t = getTranslations(locale as SupportedLocale);
 
 const { data, error: fetchError } =
   user && supabase ? await getSetWithFlashcards(supabase, user.id, id) : { data: null, error: null };
+
+const { data: activityData } =
+  data && user && supabase && id ? await getSetActivity(supabase, user.id, id) : { data: null };
 
 const isServerError = !!fetchError && !data;
 
@@ -67,7 +71,12 @@ if (!isServerError && !data) {
 {
   data && (
     <Layout title={data.set.name}>
-      <SetDetailPage initialData={JSON.stringify(data)} locale={locale as SupportedLocale} client:only="react" />
+      <SetDetailPage
+        initialData={JSON.stringify(data)}
+        activity={JSON.stringify(activityData ?? [])}
+        locale={locale as SupportedLocale}
+        client:only="react"
+      />
     </Layout>
   )
 }

@@ -33,6 +33,43 @@ export async function logSession(
   return { error: null };
 }
 
+export async function getSetActivity(
+  client: SupabaseClient,
+  userId: string,
+  setId: string,
+): Promise<{ data: DailyStats[] | null; error: string | null }> {
+  const cutoff = new Date();
+  cutoff.setUTCDate(cutoff.getUTCDate() - 13);
+  cutoff.setUTCHours(0, 0, 0, 0);
+
+  const { data: rawSessions, error: sessionsError } = await client
+    .from("session_log")
+    .select("started_at, ended_at")
+    .eq("user_id", userId)
+    .eq("set_id", setId)
+    .gte("started_at", cutoff.toISOString());
+
+  if (sessionsError) return { data: null, error: sessionsError.message };
+
+  const sessions = (Array.isArray(rawSessions) ? rawSessions : []) as SessionRow[];
+  const minutesByDay = new Map<string, number>();
+  for (const s of sessions) {
+    const day = s.started_at.slice(0, 10);
+    const mins = Math.ceil((new Date(s.ended_at).getTime() - new Date(s.started_at).getTime()) / 60000);
+    minutesByDay.set(day, (minutesByDay.get(day) ?? 0) + mins);
+  }
+
+  const dailyMinutes: DailyStats[] = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - i);
+    const day = d.toISOString().slice(0, 10);
+    dailyMinutes.push({ day, minutes: minutesByDay.get(day) ?? 0 });
+  }
+
+  return { data: dailyMinutes, error: null };
+}
+
 export async function getLearningStats(
   client: SupabaseClient,
   userId: string,
