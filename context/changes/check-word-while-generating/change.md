@@ -1,7 +1,7 @@
 ---
 change_id: check-word-while-generating
 title: Add Check button on /generate that opens /lookup_word prefilled with a pasted word/phrase
-status: implementing
+status: implemented
 created: 2026-06-20
 updated: 2026-06-20
 archived_at: null

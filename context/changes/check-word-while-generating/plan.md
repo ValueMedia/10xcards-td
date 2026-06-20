@@ -259,13 +259,13 @@ On arrival, fill the search field from the handoff and auto-run the search; clea
 
 #### Automated
 
-- [x] 3.1 Build passes: `npm run build`
-- [x] 3.2 Lint passes on changed files
+- [x] 3.1 Build passes: `npm run build` — c09d78e
+- [x] 3.2 Lint passes on changed files — c09d78e
 
 #### Manual
 
-- [x] 3.3 Arriving from Check fills field + auto-searches; URL has no `word` param
-- [x] 3.4 Refresh of `/lookup_word` does not re-run the prefilled search
-- [x] 3.5 "Back to generate" returns to `/generate` with state restored
-- [x] 3.6 "Back to set" from a Check-originated lookup leaves no stale restore
-- [x] 3.7 New button label renders correctly in PL and EN
+- [x] 3.3 Arriving from Check fills field + auto-searches; URL has no `word` param — c09d78e
+- [x] 3.4 Refresh of `/lookup_word` does not re-run the prefilled search — c09d78e
+- [x] 3.5 "Back to generate" returns to `/generate` with state restored — c09d78e
+- [x] 3.6 "Back to set" from a Check-originated lookup leaves no stale restore — c09d78e
+- [x] 3.7 New button label renders correctly in PL and EN — c09d78e
