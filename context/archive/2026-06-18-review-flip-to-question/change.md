@@ -1,10 +1,10 @@
 ---
 change_id: review-flip-to-question
 title: Flip flashcard back to the question side after revealing the answer during review
-status: implemented
+status: archived
 created: 2026-06-18
-updated: 2026-06-18
-archived_at: null
+updated: 2026-06-20
+archived_at: 2026-06-20T05:55:43Z
 ---
 
 ## Notes
