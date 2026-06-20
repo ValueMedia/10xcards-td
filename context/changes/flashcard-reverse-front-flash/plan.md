@@ -166,13 +166,13 @@ None. No data, schema, or API changes.
 
 #### Automated
 
-- [x] 1.1 Type checking passes (build): `npm run build`
-- [x] 1.2 Linting passes on changed TS/TSX files
+- [x] 1.1 Type checking passes (build): `npm run build` — 14a0207
+- [x] 1.2 Linting passes on changed TS/TSX files — 14a0207
 
 #### Manual
 
-- [x] 1.3 Reverse ON `/browse`: Next/Prev/Shuffle show Back immediately — no Front flash
-- [x] 1.4 Reverse ON `/review`: grade-and-advance shows Back immediately — no Front flash
-- [x] 1.5 Manual flip still animates the 0.6s rotation (both screens, both modes)
-- [x] 1.6 Reverse OFF: both screens behave exactly as before — no regressions
-- [x] 1.7 With reduce-motion enabled: flips switch instantly, content correct
+- [x] 1.3 Reverse ON `/browse`: Next/Prev/Shuffle show Back immediately — no Front flash — 14a0207
+- [x] 1.4 Reverse ON `/review`: grade-and-advance shows Back immediately — no Front flash — 14a0207
+- [x] 1.5 Manual flip still animates the 0.6s rotation (both screens, both modes) — 14a0207
+- [x] 1.6 Reverse OFF: both screens behave exactly as before — no regressions — 14a0207
+- [x] 1.7 With reduce-motion enabled: flips switch instantly, content correct — 14a0207
