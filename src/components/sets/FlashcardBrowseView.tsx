@@ -1,17 +1,30 @@
 import { useState, useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { FlashcardBrowseCard } from "@/components/sets/FlashcardBrowseCard";
 import { Button } from "@/components/ui/button";
 import { useReverseMode } from "@/components/hooks/useReverseMode";
+import { I18nProvider } from "@/components/I18nProvider";
 import { cn } from "@/lib/utils";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 import type { Flashcard } from "@/types";
 
 interface Props {
   setId: string;
   setName: string;
   flashcards: Flashcard[];
+  locale: SupportedLocale;
 }
 
-export default function FlashcardBrowseView({ setId, setName, flashcards }: Props) {
+export default function FlashcardBrowseView({ locale, ...props }: Props) {
+  return (
+    <I18nProvider locale={locale}>
+      <FlashcardBrowseViewInner {...props} />
+    </I18nProvider>
+  );
+}
+
+function FlashcardBrowseViewInner({ setId, setName, flashcards }: Omit<Props, "locale">) {
+  const { t } = useTranslation("common");
   const [reverse] = useReverseMode(setId);
   const [order, setOrder] = useState<number[]>(() => flashcards.map((_, i) => i));
   const [position, setPosition] = useState(0);
@@ -91,7 +104,7 @@ export default function FlashcardBrowseView({ setId, setName, flashcards }: Prop
             onClick={shuffle}
           >
             <ShuffleIcon />
-            Shuffle
+            {t("browse.shuffle")}
           </Button>
         </div>
 
@@ -107,13 +120,13 @@ export default function FlashcardBrowseView({ setId, setName, flashcards }: Prop
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              size="icon"
-              className={cn("text-white hover:bg-white/10", isFirst && "cursor-not-allowed opacity-30")}
+              className={cn("gap-1 text-white hover:bg-white/10", isFirst && "cursor-not-allowed opacity-30")}
               onClick={goPrev}
               disabled={isFirst}
-              aria-label="Previous card"
+              aria-label={t("browse.previous")}
             >
               <ChevronLeftIcon />
+              {t("browse.previous")}
             </Button>
 
             <p className="min-w-[4rem] text-center text-sm text-blue-100/40">
@@ -122,12 +135,12 @@ export default function FlashcardBrowseView({ setId, setName, flashcards }: Prop
 
             <Button
               variant="ghost"
-              size="icon"
-              className={cn("text-white hover:bg-white/10", isLast && "cursor-not-allowed opacity-30")}
+              className={cn("gap-1 text-white hover:bg-white/10", isLast && "cursor-not-allowed opacity-30")}
               onClick={goNext}
               disabled={isLast}
-              aria-label="Next card"
+              aria-label={t("browse.next")}
             >
+              {t("browse.next")}
               <ChevronRightIcon />
             </Button>
           </div>

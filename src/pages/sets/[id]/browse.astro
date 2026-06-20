@@ -4,10 +4,11 @@ export const prerender = false;
 import Layout from "@/layouts/Layout.astro";
 import { getSetWithFlashcards } from "@/lib/services/sets";
 import FlashcardBrowseView from "@/components/sets/FlashcardBrowseView";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 import type { Flashcard } from "@/types";
 
 const { id } = Astro.params;
-const { user, supabase } = Astro.locals;
+const { user, supabase, locale } = Astro.locals;
 
 let setName = "";
 let flashcards: Flashcard[] = [];
@@ -30,5 +31,11 @@ if (!found || !id) {
 ---
 
 <Layout title={`Browse — ${setName}`}>
-  <FlashcardBrowseView client:only="react" setId={id} setName={setName} flashcards={flashcards} />
+  <FlashcardBrowseView
+    client:only="react"
+    setId={id}
+    setName={setName}
+    flashcards={flashcards}
+    locale={locale as SupportedLocale}
+  />
 </Layout>

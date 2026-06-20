@@ -20,5 +20,8 @@
   "errors.invalidCredentials": "Nieprawidłowy email lub hasło",
   "errors.emailAlreadyRegistered": "Ten email jest już zarejestrowany",
   "config.supabaseNotConfigured": "Supabase nie jest skonfigurowany — funkcje uwierzytelniania są wyłączone.",
-  "config.setupInstructions": "Zobacz instrukcję konfiguracji"
+  "config.setupInstructions": "Zobacz instrukcję konfiguracji",
+  "browse.next": "Następny",
+  "browse.previous": "Poprzedni",
+  "browse.shuffle": "Tasuj"
 }

@@ -20,5 +20,8 @@
   "errors.invalidCredentials": "Invalid email or password",
   "errors.emailAlreadyRegistered": "This email is already registered",
   "config.supabaseNotConfigured": "Supabase is not configured — authentication features are disabled.",
-  "config.setupInstructions": "Setup instructions"
+  "config.setupInstructions": "Setup instructions",
+  "browse.next": "Next",
+  "browse.previous": "Previous",
+  "browse.shuffle": "Shuffle"
 }
