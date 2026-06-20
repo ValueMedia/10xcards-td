@@ -2,10 +2,11 @@
 import Layout from "@/layouts/Layout.astro";
 import GenerateFlashcardsPage from "@/components/ai/GenerateFlashcardsPage";
 import { getSetByIdForUser } from "@/lib/services/sets";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 export const prerender = false;
 
-const { user, supabase } = Astro.locals;
+const { user, supabase, locale } = Astro.locals;
 const setId = Astro.url.searchParams.get("setId");
 
 let setName: string | null = null;
@@ -26,6 +27,6 @@ if (!isOwner || !setId) {
 }
 ---
 
-<Layout title={`Generate flashcards · ${setName}`}>
-  <GenerateFlashcardsPage setId={setId} setName={setName} client:load />
+<Layout title={`Generate flashcards · ${setName}`} locale={locale as SupportedLocale}>
+  <GenerateFlashcardsPage setId={setId} setName={setName} locale={locale as SupportedLocale} client:load />
 </Layout>

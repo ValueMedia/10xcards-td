@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { I18nProvider } from "@/components/I18nProvider";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,10 +9,12 @@ import { cn } from "@/lib/utils";
 import FlashcardProposalCard from "@/components/ai/FlashcardProposalCard";
 import type { FlashcardProposal } from "@/lib/services/ai";
 import { flashcardContentSchema } from "@/lib/services/flashcards";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 
 interface Props {
   setId: string;
   setName: string;
+  locale: SupportedLocale;
 }
 
 interface GenerateResponse {
@@ -27,29 +31,32 @@ interface SaveResponse {
 const MIN_INPUT_LENGTH = 10;
 const MAX_INPUT_LENGTH = 8000;
 
-const FRIENDLY_ERROR_MESSAGES: Record<string, string> = {
-  timeout: "AI generation timed out. Please try again with a shorter text.",
-  apiError: "AI service temporarily unavailable. Please try again in a moment.",
-  unconfigured: "AI generation is not configured. Contact support.",
-  parseError: "AI returned an unexpected response. Try a different text.",
-  noProposals: "No flashcards could be generated. Try a longer or clearer text.",
-  rateLimit: "Too many AI requests. Please wait an hour before trying again.",
-};
+const FRIENDLY_ERROR_KINDS = ["timeout", "apiError", "unconfigured", "parseError", "noProposals", "rateLimit"];
 
-function friendlyErrorMessage(error: string | undefined, kind: string | undefined): string {
-  if (kind && kind in FRIENDLY_ERROR_MESSAGES) {
-    return FRIENDLY_ERROR_MESSAGES[kind];
-  }
-  return error ?? "Something went wrong";
+export default function GenerateFlashcardsPage(props: Props) {
+  return (
+    <I18nProvider locale={props.locale}>
+      <GenerateFlashcardsPageInner {...props} />
+    </I18nProvider>
+  );
 }
 
-export default function GenerateFlashcardsPage({ setId, setName }: Props) {
+function GenerateFlashcardsPageInner({ setId, setName }: Props) {
+  const { t } = useTranslation("generate");
+
   const [text, setText] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [proposals, setProposals] = useState<FlashcardProposal[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const proposalsRef = useRef<HTMLDivElement>(null);
+
+  const friendlyErrorMessage = (error: string | undefined, kind: string | undefined): string => {
+    if (kind && FRIENDLY_ERROR_KINDS.includes(kind)) {
+      return t(`generate.error.${kind}`);
+    }
+    return error ?? t("generate.somethingWrong");
+  };
 
   useEffect(() => {
     if (proposals.length > 0 && proposalsRef.current) {
@@ -66,7 +73,7 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
 
     setIsGenerating(true);
     setErrorMessage(null);
-    toast.info("Generation may take a few seconds");
+    toast.info(t("generate.toastGenerating"));
 
     try {
       const response = await fetch(`/api/sets/${setId}/generate`, {
@@ -84,16 +91,16 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
 
       const cards = result.flashcards;
       if (cards.length === 0) {
-        setErrorMessage("No flashcards were generated. Try a longer or clearer text.");
+        setErrorMessage(t("generate.noProposalsInline"));
         return;
       }
 
       setProposals(cards);
-      toast.success(`${cards.length} flashcard proposals ready`);
+      toast.success(t("generate.toastProposalsReady", { n: cards.length }));
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Generation failed";
+      const message = error instanceof Error ? error.message : t("generate.genericGenerateFail");
       setErrorMessage(message);
-      toast.error(`Generation failed: ${message}`);
+      toast.error(t("generate.toastGenerateFailed", { message }));
     } finally {
       setIsGenerating(false);
     }
@@ -114,7 +121,7 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
 
   const handleSave = async () => {
     if (validProposals.length === 0) {
-      toast.error("No valid flashcards to save");
+      toast.error(t("generate.noValidToSave"));
       return;
     }
 
@@ -131,16 +138,16 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
       const result: SaveResponse = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error ?? `Save failed (${response.status})`);
+        throw new Error(result.error ?? t("generate.saveFailedStatus", { status: response.status }));
       }
 
       const count = result.count;
-      toast.success(`${count} flashcard${count === 1 ? "" : "s"} saved to ${setName}`);
+      toast.success(t("generate.toastSaved", { count, name: setName }));
       window.location.href = `/sets/${setId}`;
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Save failed";
+      const message = error instanceof Error ? error.message : t("generate.genericSaveFail");
       setErrorMessage(message);
-      toast.error(`Save failed: ${message}`);
+      toast.error(t("generate.toastSaveFailed", { message }));
     } finally {
       setIsSaving(false);
     }
@@ -154,21 +161,18 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
           className="mb-6 inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
         >
           <BackIcon />
-          Back to {setName}
+          {t("generate.backToSet", { name: setName })}
         </a>
 
         <h1 className="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-          Generate with AI
+          {t("generate.heading")}
         </h1>
-        <p className="mt-2 text-sm text-blue-100/50">
-          Paste source text and let AI create flashcard proposals for{" "}
-          <span className="font-medium text-blue-100">{setName}</span>.
-        </p>
+        <p className="mt-2 text-sm text-blue-100/50">{t("generate.intro", { name: setName })}</p>
 
         <Card className="mt-6 border-white/10 bg-white/5">
           <CardContent className="space-y-4">
             <label htmlFor="source-text" className="block text-sm font-medium text-blue-100/80">
-              Source text
+              {t("generate.sourceLabel")}
             </label>
             <Textarea
               id="source-text"
@@ -188,7 +192,7 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
                 setText(updated);
                 if (errorMessage) setErrorMessage(null);
               }}
-              placeholder="Paste up to ~1000 words of educational text..."
+              placeholder={t("generate.sourcePlaceholder")}
               rows={8}
               disabled={isGenerating}
               className="bg-white/5 text-white placeholder:text-blue-100/30"
@@ -196,8 +200,8 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
             />
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className={cn("text-xs", inputTooLong ? "text-red-400" : "text-blue-100/40")}>
-                {text.length}/{MAX_INPUT_LENGTH} characters
-                {inputTooShort && text.length > 0 && " · at least 10 characters required"}
+                {t("generate.charCount", { len: text.length, max: MAX_INPUT_LENGTH })}
+                {inputTooShort && text.length > 0 && ` · ${t("generate.tooShort", { min: MIN_INPUT_LENGTH })}`}
               </p>
               <Button
                 type="button"
@@ -208,12 +212,12 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
                 {isGenerating ? (
                   <>
                     <Spinner />
-                    Generating...
+                    {t("generate.generating")}
                   </>
                 ) : (
                   <>
                     <SparklesIcon />
-                    Generate
+                    {t("generate.generateButton")}
                   </>
                 )}
               </Button>
@@ -226,7 +230,7 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
             {errorMessage}
             {proposals.length === 0 && (
               <button type="button" onClick={handleGenerate} className="ml-2 underline hover:text-white">
-                Retry
+                {t("generate.retry")}
               </button>
             )}
           </div>
@@ -256,10 +260,13 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
           <div ref={proposalsRef} className="mt-6 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-lg font-semibold text-white">
-                {proposals.length} proposal{proposals.length === 1 ? "" : "s"}
+                {t("generate.proposalsHeading", { count: proposals.length })}
               </h2>
               <p className="text-xs text-blue-100/40">
-                {validProposals.length} ready to save · {proposals.length - validProposals.length} invalid
+                {t("generate.proposalsSummary", {
+                  ready: validProposals.length,
+                  invalid: proposals.length - validProposals.length,
+                })}
               </p>
             </div>
 
@@ -287,7 +294,7 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
                 disabled={isSaving}
                 className="border-white/10 bg-transparent text-white hover:bg-white/10"
               >
-                Discard all
+                {t("generate.discardAll")}
               </Button>
               <Button
                 type="button"
@@ -298,12 +305,10 @@ export default function GenerateFlashcardsPage({ setId, setName }: Props) {
                 {isSaving ? (
                   <>
                     <Spinner />
-                    Saving...
+                    {t("generate.saving")}
                   </>
                 ) : (
-                  <>
-                    Save {validProposals.length} flashcard{validProposals.length === 1 ? "" : "s"}
-                  </>
+                  <>{t("generate.saveButton", { count: validProposals.length })}</>
                 )}
               </Button>
             </div>
