@@ -159,7 +159,7 @@ function SettingsPageInner({ email, initialPrompt, initialFlashcardCount, locale
                 <Textarea
                   value={DEFAULT_SYSTEM_PROMPT}
                   disabled
-                  className="min-h-40 border-white/10 bg-white/5 text-blue-100/50"
+                  className="max-h-[600px] min-h-40 overflow-y-auto border-white/10 bg-white/5 text-blue-100/50"
                 />
                 <div className="flex items-center gap-3">
                   <label className="text-sm text-blue-100/70">{t("settings.flashcardsPerGeneration")}</label>
@@ -179,7 +179,7 @@ function SettingsPageInner({ email, initialPrompt, initialFlashcardCount, locale
                     setCustomPrompt(e.target.value);
                   }}
                   placeholder={t("settings.promptPlaceholder")}
-                  className="min-h-40 border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
+                  className="max-h-[600px] min-h-40 overflow-y-auto border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
                 />
                 <div className="flex items-center gap-3">
                   <label htmlFor="flashcard-count" className="text-sm text-blue-100/70">
