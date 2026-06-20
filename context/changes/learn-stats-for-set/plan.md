@@ -308,14 +308,14 @@ Add i18n to the island, a header reset button with a responsive label, a confirm
 
 #### Automated
 
-- [x] 3.1 Type checking + build passes: `npm run build`
-- [x] 3.2 Lint passes on changed files
-- [x] 3.3 en/pl common.json have identical new key sets
+- [x] 3.1 Type checking + build passes: `npm run build` — d2395fd
+- [x] 3.2 Lint passes on changed files — d2395fd
+- [x] 3.3 en/pl common.json have identical new key sets — d2395fd
 
 #### Manual
 
-- [x] 3.4 Responsive label: full on desktop, short on mobile; EN/PL correct
-- [x] 3.5 Dialog opens; Cancel is a no-op
-- [x] 3.6 Confirm resets progress and restarts session from first card + success toast
-- [x] 3.7 Network failure shows error toast, session unchanged
-- [x] 3.8 Rest of review UI visually unchanged
+- [x] 3.4 Responsive label: full on desktop, short on mobile; EN/PL correct — d2395fd
+- [x] 3.5 Dialog opens; Cancel is a no-op — d2395fd
+- [x] 3.6 Confirm resets progress and restarts session from first card + success toast — d2395fd
+- [x] 3.7 Network failure shows error toast, session unchanged — d2395fd
+- [x] 3.8 Rest of review UI visually unchanged — d2395fd
