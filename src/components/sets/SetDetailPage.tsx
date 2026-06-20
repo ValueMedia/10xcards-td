@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { State } from "@/types";
 import type { Flashcard, FlashcardSet } from "@/types";
@@ -11,6 +12,8 @@ import { ShareSetModal } from "@/components/sets/ShareSetModal";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useReverseMode } from "@/components/hooks/useReverseMode";
+import { I18nProvider } from "@/components/I18nProvider";
+import type { SupportedLocale } from "@/lib/i18n/constants";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -20,6 +23,7 @@ import {
 
 interface Props {
   initialData: string;
+  locale: SupportedLocale;
 }
 
 interface ParsedData {
@@ -27,7 +31,16 @@ interface ParsedData {
   flashcards: Flashcard[];
 }
 
-export default function SetDetailPage({ initialData }: Props) {
+export default function SetDetailPage({ locale, ...props }: Props) {
+  return (
+    <I18nProvider locale={locale}>
+      <SetDetailPageInner {...props} />
+    </I18nProvider>
+  );
+}
+
+function SetDetailPageInner({ initialData }: Omit<Props, "locale">) {
+  const { t } = useTranslation("common");
   const [state, setState] = useState<ParsedData>(() => {
     try {
       const parsed = JSON.parse(initialData) as ParsedData;
@@ -48,51 +61,63 @@ export default function SetDetailPage({ initialData }: Props) {
   const [deleteTarget, setDeleteTarget] = useState<Flashcard | null>(null);
   const [reverseMode, setReverseMode] = useReverseMode(set?.id ?? "");
 
-  const handleCreate = useCallback((flashcard: Flashcard) => {
-    setState((prev) => ({
-      ...prev,
-      flashcards: [flashcard, ...prev.flashcards],
-    }));
-    setCreateOpen(false);
-    toast.success("Flashcard created");
-  }, []);
+  const handleCreate = useCallback(
+    (flashcard: Flashcard) => {
+      setState((prev) => ({
+        ...prev,
+        flashcards: [flashcard, ...prev.flashcards],
+      }));
+      setCreateOpen(false);
+      toast.success(t("set.flashcardCreated"));
+    },
+    [t],
+  );
 
-  const handleUpdate = useCallback((flashcard: Flashcard) => {
-    setState((prev) => ({
-      ...prev,
-      flashcards: prev.flashcards.map((f) => (f.id === flashcard.id ? flashcard : f)),
-    }));
-    setEditTarget(null);
-    toast.success("Flashcard updated");
-  }, []);
+  const handleUpdate = useCallback(
+    (flashcard: Flashcard) => {
+      setState((prev) => ({
+        ...prev,
+        flashcards: prev.flashcards.map((f) => (f.id === flashcard.id ? flashcard : f)),
+      }));
+      setEditTarget(null);
+      toast.success(t("set.flashcardUpdated"));
+    },
+    [t],
+  );
 
-  const handleDelete = useCallback((flashcardId: string) => {
-    setState((prev) => ({
-      ...prev,
-      flashcards: prev.flashcards.filter((f) => f.id !== flashcardId),
-    }));
-    setDeleteTarget(null);
-    toast.success("Flashcard deleted");
-  }, []);
+  const handleDelete = useCallback(
+    (flashcardId: string) => {
+      setState((prev) => ({
+        ...prev,
+        flashcards: prev.flashcards.filter((f) => f.id !== flashcardId),
+      }));
+      setDeleteTarget(null);
+      toast.success(t("set.flashcardDeleted"));
+    },
+    [t],
+  );
 
-  const handleImport = useCallback((imported: Flashcard[], skippedCount: number) => {
-    setState((prev) => ({ ...prev, flashcards: [...imported, ...prev.flashcards] }));
-    setImportOpen(false);
-    const skippedNote = skippedCount > 0 ? ` · ${skippedCount} lines skipped` : "";
-    toast.success(`Imported ${imported.length} flashcard${imported.length !== 1 ? "s" : ""}${skippedNote}`);
-  }, []);
+  const handleImport = useCallback(
+    (imported: Flashcard[], skippedCount: number) => {
+      setState((prev) => ({ ...prev, flashcards: [...imported, ...prev.flashcards] }));
+      setImportOpen(false);
+      const skippedNote = skippedCount > 0 ? t("set.linesSkipped", { count: skippedCount }) : "";
+      toast.success(`${t("set.imported", { count: imported.length })}${skippedNote}`);
+    },
+    [t],
+  );
 
   if (!set) {
     return (
       <div className="bg-cosmic min-h-screen p-4 text-white">
         <div className="mx-auto max-w-3xl">
-          <h1 className="text-xl font-semibold text-red-300">Failed to load set</h1>
-          <p className="mt-2 text-sm text-blue-100/60">The set data is missing or invalid.</p>
+          <h1 className="text-xl font-semibold text-red-300">{t("set.failedToLoadTitle")}</h1>
+          <p className="mt-2 text-sm text-blue-100/60">{t("set.dataInvalid")}</p>
           <a
             href="/dashboard"
             className="mt-4 inline-flex items-center gap-1 text-sm text-blue-100/50 hover:text-blue-100/80"
           >
-            <BackIcon /> Back to dashboard
+            <BackIcon /> {t("set.backToDashboard")}
           </a>
         </div>
       </div>
@@ -107,7 +132,7 @@ export default function SetDetailPage({ initialData }: Props) {
           className="mb-6 inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
         >
           <BackIcon />
-          Back to dashboard
+          {t("set.backToDashboard")}
         </a>
 
         <div className="mb-8 flex flex-col gap-3">
@@ -116,8 +141,8 @@ export default function SetDetailPage({ initialData }: Props) {
               {set.name}
             </h1>
             <p className="mt-2 text-sm text-blue-100/50">
-              {flashcards.length}&nbsp;{flashcards.length === 1 ? "card" : "cards"}
-              &nbsp;·&nbsp;{flashcards.filter((f) => f.state === State.Review).length}&nbsp;learned
+              {flashcards.length}&nbsp;{flashcards.length === 1 ? t("set.card") : t("set.cards")}
+              &nbsp;·&nbsp;{flashcards.filter((f) => f.state === State.Review).length}&nbsp;{t("set.learned")}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -125,30 +150,30 @@ export default function SetDetailPage({ initialData }: Props) {
               <Button asChild className="h-11 bg-teal-700 text-white shadow-xs hover:bg-teal-600 sm:h-9">
                 <a href={`/sets/${set.id}/browse`}>
                   <EyeIcon />
-                  Browse
+                  {t("set.browse")}
                 </a>
               </Button>
             ) : (
               <Button
                 disabled
-                title="Add flashcards first"
+                title={t("set.addFlashcardsFirst")}
                 className="h-11 cursor-not-allowed bg-teal-700 text-white opacity-50 shadow-xs sm:h-9"
               >
                 <EyeIcon />
-                Browse
+                {t("set.browse")}
               </Button>
             )}
             <Button asChild className="h-11 bg-purple-700 text-white shadow-xs hover:bg-purple-600 sm:h-9">
               <a href={`/sets/${set.id}/review`}>
-                <span className="sm:hidden">Learn</span>
-                <span className="hidden sm:inline">Start learn session</span>
+                <span className="sm:hidden">{t("set.learn")}</span>
+                <span className="hidden sm:inline">{t("set.startLearnSession")}</span>
               </a>
             </Button>
             <Button asChild className="h-11 bg-blue-600 text-white shadow-xs hover:bg-blue-500 sm:h-9">
               <a href={`/generate?setId=${set.id}`}>
                 <SparklesIcon />
-                <span className="sm:hidden">Build with AI</span>
-                <span className="hidden sm:inline">Generate with AI</span>
+                <span className="sm:hidden">{t("set.buildWithAI")}</span>
+                <span className="hidden sm:inline">{t("set.generateWithAI")}</span>
               </a>
             </Button>
             <Button
@@ -160,7 +185,7 @@ export default function SetDetailPage({ initialData }: Props) {
               className="h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white sm:h-9"
             >
               <ShareIcon />
-              Share
+              {t("set.share")}
             </Button>
             <Button
               type="button"
@@ -171,15 +196,15 @@ export default function SetDetailPage({ initialData }: Props) {
               className="h-11 w-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white sm:h-9"
             >
               <UploadIcon />
-              <span className="sm:hidden">Import</span>
-              <span className="hidden sm:inline">Import CSV</span>
+              <span className="sm:hidden">{t("set.import")}</span>
+              <span className="hidden sm:inline">{t("set.importCsv")}</span>
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button type="button" className="h-11 w-full bg-purple-600 hover:bg-purple-500 sm:h-9">
                   <PlusIcon />
-                  <span className="sm:hidden">Add</span>
-                  <span className="hidden sm:inline">New flashcard</span>
+                  <span className="sm:hidden">{t("set.add")}</span>
+                  <span className="hidden sm:inline">{t("set.newFlashcard")}</span>
                   <ChevronDownIcon />
                 </Button>
               </DropdownMenuTrigger>
@@ -189,14 +214,14 @@ export default function SetDetailPage({ initialData }: Props) {
                     setCreateOpen(true);
                   }}
                 >
-                  Manually
+                  {t("set.manually")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={() => {
                     window.location.assign(`/lookup_word?setId=${set.id}`);
                   }}
                 >
-                  Lookup Word
+                  {t("set.lookupWord")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -206,7 +231,7 @@ export default function SetDetailPage({ initialData }: Props) {
         {flashcards.length > 0 && (
           <div className="mb-4 flex items-center justify-end gap-3">
             <label htmlFor="reverse-mode" className="text-sm text-blue-100/60">
-              Reverse mode (Back first)
+              {t("set.reverseMode")}
             </label>
             <Switch id="reverse-mode" checked={reverseMode} onCheckedChange={setReverseMode} />
           </div>
