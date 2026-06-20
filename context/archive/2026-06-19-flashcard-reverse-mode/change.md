@@ -1,10 +1,10 @@
 ---
 change_id: flashcard-reverse-mode
 title: Reverse mode on browse and review pages (Back-first, per-set toggle in localStorage)
-status: impl_reviewed
+status: archived
 created: 2026-06-19
-updated: 2026-06-19
-archived_at: null
+updated: 2026-06-20
+archived_at: 2026-06-20T05:55:43Z
 ---
 
 ## Notes
