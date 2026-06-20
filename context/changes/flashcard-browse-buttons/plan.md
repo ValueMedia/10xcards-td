@@ -193,14 +193,14 @@ Wire `SetDetailPage` into i18n and localize all its strings, then wire `index.as
 
 #### Automated
 
-- [x] 2.1 Build passes: `npm run build`
-- [x] 2.2 Lint passes on changed TS/TSX: `npx eslint src/components/sets/SetDetailPage.tsx`
-- [x] 2.3 Translation key-parity test passes: `npm run test -- translations`
+- [x] 2.1 Build passes: `npm run build` — 3351737
+- [x] 2.2 Lint passes on changed TS/TSX: `npx eslint src/components/sets/SetDetailPage.tsx` — 3351737
+- [x] 2.3 Translation key-parity test passes: `npm run test -- translations` — 3351737
 
 #### Manual
 
-- [x] 2.4 PL set-detail strings (buttons, counters, reverse-mode label) render in Polish
-- [x] 2.5 EN set-detail strings render in English
-- [x] 2.6 Create/edit/delete/import toasts render localized
-- [x] 2.7 Error/not-found fallback routes render localized text
-- [x] 2.8 No regressions: buttons navigate/open dialogs as before
+- [x] 2.4 PL set-detail strings (buttons, counters, reverse-mode label) render in Polish — 3351737
+- [x] 2.5 EN set-detail strings render in English — 3351737
+- [x] 2.6 Create/edit/delete/import toasts render localized — 3351737
+- [x] 2.7 Error/not-found fallback routes render localized text — 3351737
+- [x] 2.8 No regressions: buttons navigate/open dialogs as before — 3351737

@@ -1,7 +1,7 @@
 ---
 change_id: flashcard-browse-buttons
 title: Add Next/Previous text labels alongside arrow buttons in the browse view
-status: implementing
+status: implemented
 created: 2026-06-20
 updated: 2026-06-20
 archived_at: null
