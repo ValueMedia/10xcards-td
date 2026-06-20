@@ -116,3 +116,20 @@ export async function submitCardReview(
 
   return { error: null };
 }
+
+export async function resetSetProgress(
+  client: SupabaseClient | null,
+  userId: string,
+  setId: string,
+): Promise<{ error: ServiceError | null }> {
+  if (!client) return { error: { kind: "clientUnavailable", message: "Supabase client not available" } };
+
+  const rpcResult = await client.rpc("reset_set_progress", {
+    p_set_id: setId,
+    p_user_id: userId,
+  });
+
+  if (rpcResult.error) return { error: { kind: "dbError", message: rpcResult.error.message } };
+
+  return { error: null };
+}

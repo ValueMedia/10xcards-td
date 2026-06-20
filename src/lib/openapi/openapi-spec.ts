@@ -1350,6 +1350,70 @@ export const openApiSpec = {
         },
       },
     },
+    "/api/sets/{id}/reset-progress": {
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: { type: "string", format: "uuid" },
+          description: "Set UUID",
+        },
+      ],
+      post: {
+        summary: "Reset all learning progress for a set",
+        description:
+          "Atomically resets FSRS state on every flashcard in the set to defaults (all cards become due) and deletes the set's review history. Session activity logs are preserved. Ownership-guarded — only the set owner can reset.",
+        tags: ["Reviews"],
+        security: [{ cookieAuth: [] }],
+        responses: {
+          "200": {
+            description: "Progress reset",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: { success: { type: "boolean" } },
+                  required: ["success"],
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Invalid set ID",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "404": {
+            description: "Set not found or not owned by user",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "500": {
+            description: "Server error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
     "/api/share/claim": {
       post: {
         summary: "Claim a shared set by token",

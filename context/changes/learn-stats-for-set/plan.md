@@ -279,30 +279,30 @@ Add i18n to the island, a header reset button with a responsive label, a confirm
 
 #### Automated
 
-- [x] 1.1 Type checking + Astro check passes: `npm run build`
-- [x] 1.2 Lint passes on changed TS/TSX files
+- [x] 1.1 Type checking + Astro check passes: `npm run build` — 7e8bf3c
+- [x] 1.2 Lint passes on changed TS/TSX files — 7e8bf3c
 
 #### Manual
 
-- [x] 1.3 Set page shows bar chart with non-zero bars after reviewing
-- [x] 1.4 Never-reviewed set shows the "no activity" message
-- [x] 1.5 Dashboard chart visually unchanged after refactor
-- [x] 1.6 Chart reflects only the current set
+- [x] 1.3 Set page shows bar chart with non-zero bars after reviewing — 7e8bf3c
+- [x] 1.4 Never-reviewed set shows the "no activity" message — 7e8bf3c
+- [x] 1.5 Dashboard chart visually unchanged after refactor — 7e8bf3c
+- [x] 1.6 Chart reflects only the current set — 7e8bf3c
 
 ### Phase 2: Reset-progress backend (RPC + service + endpoint)
 
 #### Automated
 
-- [ ] 2.1 Migration applies cleanly to local Supabase
-- [ ] 2.2 Type checking + build passes: `npm run build`
-- [ ] 2.3 Lint passes on changed files
+- [x] 2.1 Migration applies cleanly to local Supabase
+- [x] 2.2 Type checking + build passes: `npm run build`
+- [x] 2.3 Lint passes on changed files
 
 #### Manual
 
-- [ ] 2.4 POST reset on owned set returns success; flashcards reset + reviews deleted
-- [ ] 2.5 Reset on non-owned set errors and changes nothing
-- [ ] 2.6 session_log rows for the set untouched
-- [ ] 2.7 New endpoint appears in Scalar at `/docs/api`
+- [x] 2.4 POST reset on owned set returns success; flashcards reset + reviews deleted
+- [x] 2.5 Reset on non-owned set errors and changes nothing
+- [x] 2.6 session_log rows for the set untouched
+- [x] 2.7 New endpoint appears in Scalar at `/docs/api`
 
 ### Phase 3: Reset-progress UI in ReviewSession
 
