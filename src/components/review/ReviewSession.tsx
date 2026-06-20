@@ -262,7 +262,13 @@ export default function ReviewSession({ setId, setName }: Props) {
         </div>
 
         <div className="flex flex-col items-center gap-6">
-          <FlashcardBrowseCard front={card.front} back={card.back} flipped={showingBack} onFlip={flipCard} />
+          <FlashcardBrowseCard
+            key={card.id}
+            front={card.front}
+            back={card.back}
+            flipped={showingBack}
+            onFlip={flipCard}
+          />
 
           <div className="flex w-full gap-2">
             {!revealed ? (

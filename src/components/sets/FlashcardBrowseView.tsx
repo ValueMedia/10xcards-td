@@ -96,7 +96,13 @@ export default function FlashcardBrowseView({ setId, setName, flashcards }: Prop
         </div>
 
         <div className="flex flex-col items-center gap-6">
-          <FlashcardBrowseCard front={currentCard.front} back={currentCard.back} flipped={flipped} onFlip={flip} />
+          <FlashcardBrowseCard
+            key={currentCard.id}
+            front={currentCard.front}
+            back={currentCard.back}
+            flipped={flipped}
+            onFlip={flip}
+          />
 
           <div className="flex items-center gap-4">
             <Button
