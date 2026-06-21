@@ -111,6 +111,7 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
     const CHUNK_SIZE = 50;
     const allCreated: Flashcard[] = [];
     let chunkIndex = 0;
+    let dbSkippedCount = 0;
 
     while (chunkIndex * CHUNK_SIZE < proposals.length) {
       const chunk = proposals.slice(chunkIndex * CHUNK_SIZE, (chunkIndex + 1) * CHUNK_SIZE);
@@ -142,7 +143,7 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
         return;
       }
 
-      let data: { data: Flashcard[] };
+      let data: { data: Flashcard[]; skippedCount?: number };
       try {
         data = await res.json();
       } catch {
@@ -155,11 +156,12 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
         return;
       }
       allCreated.push(...data.data);
+      dbSkippedCount += data.skippedCount ?? 0;
       chunkIndex++;
     }
 
     if (!mountedRef.current) return;
-    onImport(allCreated, parseSkippedCount);
+    onImport(allCreated, parseSkippedCount + dbSkippedCount);
   }
 
   const isImporting = step === "importing";

@@ -325,8 +325,8 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Automated
 
-- [x] 2.1 TypeScript compiles on changed API files (no new errors vs. main baseline)
-- [x] 2.2 Lint passes on `src/pages/api/sets/[id]/flashcards/batch.ts` and `src/pages/api/sets/[id]/generate.ts`
+- [x] 2.1 TypeScript compiles on changed API files (no new errors vs. main baseline) — 56dc92b
+- [x] 2.2 Lint passes on `src/pages/api/sets/[id]/flashcards/batch.ts` and `src/pages/api/sets/[id]/generate.ts` — 56dc92b
 
 #### Manual
 
@@ -341,8 +341,8 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Automated
 
-- [ ] 3.1 TypeScript compiles on `src/components/ai/GenerateFlashcardsPage.tsx`
-- [ ] 3.2 Lint passes on `src/components/ai/GenerateFlashcardsPage.tsx`
+- [x] 3.1 TypeScript compiles on `src/components/ai/GenerateFlashcardsPage.tsx` (no new errors vs. main baseline)
+- [x] 3.2 Lint passes on `src/components/ai/GenerateFlashcardsPage.tsx`
 
 #### Manual
 

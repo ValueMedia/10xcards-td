@@ -34,6 +34,8 @@
   "generate.saveFailedStatus": "Zapis nie powiódł się ({{status}})",
   "generate.genericSaveFail": "Zapis nie powiódł się",
   "generate.toastSaveFailed": "Zapis nie powiódł się: {{message}}",
+  "generate.removedBanner": "Pominięto {{count}} propozycji — już istnieją w tym zestawie: {{fronts}}",
+  "generate.toastSavedSkipped": "Pominięto {{count}} już istniejących fiszek: {{fronts}}",
   "generate.error.timeout": "Przekroczono czas generowania przez AI. Spróbuj ponownie z krótszym tekstem.",
   "generate.error.apiError": "Usługa AI jest chwilowo niedostępna. Spróbuj ponownie za chwilę.",
   "generate.error.unconfigured": "Generowanie AI nie jest skonfigurowane. Skontaktuj się z pomocą techniczną.",

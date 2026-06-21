@@ -29,12 +29,16 @@ interface Props {
 
 interface GenerateResponse {
   flashcards: FlashcardProposal[];
+  removedCount?: number;
+  removedFronts?: string[];
   error?: string;
   kind?: string;
 }
 
 interface SaveResponse {
   count: number;
+  skippedCount?: number;
+  skippedFronts?: string[];
   error?: string;
 }
 
@@ -62,6 +66,7 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [checkOpen, setCheckOpen] = useState(false);
   const [checkWord, setCheckWord] = useState("");
+  const [removedInfo, setRemovedInfo] = useState<{ count: number; fronts: string[] } | null>(null);
   const proposalsRef = useRef<HTMLDivElement>(null);
 
   // Restore a saved page snapshot when returning from /lookup_word. Runs
@@ -119,6 +124,15 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
       }
 
       const cards = result.flashcards;
+      const removedCount = result.removedCount ?? 0;
+      const removedFronts = result.removedFronts ?? [];
+
+      if (removedCount > 0) {
+        setRemovedInfo({ count: removedCount, fronts: removedFronts });
+      } else {
+        setRemovedInfo(null);
+      }
+
       if (cards.length === 0) {
         setErrorMessage(t("generate.noProposalsInline"));
         return;
@@ -171,6 +185,11 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
       }
 
       const count = result.count;
+      const dbSkippedCount = result.skippedCount ?? 0;
+      const dbSkippedFronts = result.skippedFronts ?? [];
+      if (dbSkippedCount > 0) {
+        toast.warning(t("generate.toastSavedSkipped", { count: dbSkippedCount, fronts: dbSkippedFronts.join(", ") }));
+      }
       toast.success(t("generate.toastSaved", { count, name: setName }));
       window.location.href = `/sets/${setId}`;
     } catch (error) {
@@ -310,6 +329,15 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
           </div>
         )}
 
+        {removedInfo && !isGenerating && (
+          <div className="mt-4 rounded-md border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-200">
+            {t("generate.removedBanner", {
+              count: removedInfo.count,
+              fronts: removedInfo.fronts.join(", "),
+            })}
+          </div>
+        )}
+
         {proposals.length > 0 && !isGenerating && (
           <div ref={proposalsRef} className="mt-6 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -343,6 +371,7 @@ function GenerateFlashcardsPageInner({ setId, setName }: Props) {
                 variant="outline"
                 onClick={() => {
                   setProposals([]);
+                  setRemovedInfo(null);
                   setErrorMessage(null);
                 }}
                 disabled={isSaving}

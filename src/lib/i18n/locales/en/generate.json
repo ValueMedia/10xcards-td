@@ -28,6 +28,8 @@
   "generate.saveFailedStatus": "Save failed ({{status}})",
   "generate.genericSaveFail": "Save failed",
   "generate.toastSaveFailed": "Save failed: {{message}}",
+  "generate.removedBanner": "{{count}} proposal(s) skipped — already exist in this set: {{fronts}}",
+  "generate.toastSavedSkipped": "Skipped {{count}} existing flashcards: {{fronts}}",
   "generate.error.timeout": "AI generation timed out. Please try again with a shorter text.",
   "generate.error.apiError": "AI service temporarily unavailable. Please try again in a moment.",
   "generate.error.unconfigured": "AI generation is not configured. Contact support.",
