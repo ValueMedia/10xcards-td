@@ -2,6 +2,8 @@ import type { APIRoute } from "astro";
 import { createFlashcard, flashcardContentSchema, errorMessage, isNotFound } from "@/lib/services/flashcards";
 import { z } from "zod";
 
+export const prerender = false;
+
 const createFlashcardBodySchema = z.object({
   set_id: z.string().min(1, "Set ID is required"),
   front: flashcardContentSchema.shape.front,

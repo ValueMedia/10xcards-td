@@ -292,7 +292,7 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 ## Performance Considerations
 
-- `checkDuplicateFronts` fetches all `front` columns for a set. For sets with thousands of cards, this could be a large payload. Mitigation: `front` is capped at 1000 chars, and typical sets have < 500 cards. If this becomes a bottleneck, add a database index on `(set_id, front)` and use a targeted query with normalized comparison.
+- `checkDuplicateFronts` fetches all `front` columns for a set. For sets with thousands of cards, this could be a large payload. Mitigation: `front` is capped at 1000 chars, and typical sets have < 500 cards. If this becomes a bottleneck, add a database index on `(set_id, front)` and use a targeted query with normalized comparison. This is a known trade-off documented in the plan; no code change needed at this scale.
 - The generate endpoint now makes one extra DB query (after the LLM call). This is negligible compared to the LLM call latency (~5-40s).
 
 ## References
