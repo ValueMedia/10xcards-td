@@ -330,12 +330,12 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Manual
 
-- [ ] 2.3 Single create: duplicate front → 400 with correct message
-- [ ] 2.4 Single create: case-different duplicate → 400
-- [ ] 2.5 Batch create: mixed new + duplicate → 201 with skipped info
-- [ ] 2.6 Batch create: all duplicates → 201 with empty data + skipped info
-- [ ] 2.7 AI generate: duplicates removed → 200 with removedCount/removedFronts
-- [ ] 2.8 AI generate: all duplicates → 200 with empty flashcards + removed info
+- [x] 2.3 Single create: duplicate front → 400 with correct message
+- [x] 2.4 Single create: case-different duplicate → 400
+- [x] 2.5 Batch create: mixed new + duplicate → 201 with skipped info
+- [x] 2.6 Batch create: all duplicates → 201 with empty data + skipped info
+- [x] 2.7 AI generate: duplicates removed → 200 with removedCount/removedFronts
+- [x] 2.8 AI generate: all duplicates → 200 with empty flashcards + removed info
 
 ### Phase 3: Frontend — Display Duplicate Information
 
@@ -346,11 +346,11 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Manual
 
-- [ ] 3.3 Manual create: duplicate shows inline error + toast
-- [ ] 3.4 Lookup create: duplicate shows inline error + toast
-- [ ] 3.5 AI generate: amber banner with removed count + fronts
-- [ ] 3.6 AI generate: no duplicates → no banner
-- [ ] 3.7 AI generate: all duplicates → banner + empty proposals
+- [x] 3.3 Manual create: duplicate shows inline error + toast
+- [x] 3.4 Lookup create: duplicate shows inline error + toast
+- [x] 3.5 AI generate: amber banner with removed count + fronts
+- [x] 3.6 AI generate: no duplicates → no banner
+- [x] 3.7 AI generate: all duplicates → banner + empty proposals
 
 ### Phase 4: OpenAPI Specification
 
@@ -361,4 +361,4 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Manual
 
-- [ ] 4.3 `/docs/api` shows updated schemas for all three endpoints
+- [x] 4.3 `/docs/api` shows updated schemas for all three endpoints
