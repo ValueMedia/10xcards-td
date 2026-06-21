@@ -356,8 +356,8 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Automated
 
-- [x] 4.1 TypeScript compiles on `src/lib/openapi/openapi-spec.ts` (no new errors vs. main baseline)
-- [x] 4.2 Lint passes on `src/lib/openapi/openapi-spec.ts`
+- [x] 4.1 TypeScript compiles on `src/lib/openapi/openapi-spec.ts` (no new errors vs. main baseline) — bd7791b
+- [x] 4.2 Lint passes on `src/lib/openapi/openapi-spec.ts` — bd7791b
 
 #### Manual
 
