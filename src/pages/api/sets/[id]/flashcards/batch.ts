@@ -50,7 +50,12 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
-  const { data, error } = await createFlashcardsBulk(supabase, user.id, id, parsed.data.flashcards);
+  const { data, skippedCount, skippedFronts, error } = await createFlashcardsBulk(
+    supabase,
+    user.id,
+    id,
+    parsed.data.flashcards,
+  );
 
   if (error) {
     const status = error.kind === "notFound" ? 404 : error.kind === "validationError" ? 400 : 500;
@@ -60,7 +65,13 @@ export const POST: APIRoute = async (context) => {
     });
   }
 
-  return new Response(JSON.stringify({ data, count: data?.length ?? 0 }), {
+  const responseBody: Record<string, unknown> = { data, count: data?.length ?? 0 };
+  if (skippedCount > 0) {
+    responseBody.skippedCount = skippedCount;
+    responseBody.skippedFronts = skippedFronts;
+  }
+
+  return new Response(JSON.stringify(responseBody), {
     status: 201,
     headers: { "Content-Type": "application/json" },
   });

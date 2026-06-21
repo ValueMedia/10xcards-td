@@ -7,6 +7,7 @@ import {
   errorMessage,
   type ToolDefinition,
 } from "@/lib/services/ai";
+import { checkDuplicateFronts } from "@/lib/services/flashcards";
 import { checkRateLimit } from "@/lib/services/ai-rate-limit";
 import { getUserPrompt } from "@/lib/services/user-settings";
 import { lookupWord } from "@/lib/services/dictionary";
@@ -148,7 +149,25 @@ export const POST: APIRoute = async (context) => {
     });
   }
 
-  return new Response(JSON.stringify({ flashcards: data }), {
+  const { normalizedFronts, error: duplicateError } = await checkDuplicateFronts(supabase, setId);
+
+  let uniqueProposals = data;
+  let removedCount = 0;
+  let removedFronts: string[] = [];
+
+  if (!duplicateError) {
+    removedFronts = [];
+    uniqueProposals = data.filter((proposal) => {
+      if (normalizedFronts.has(proposal.front.trim().toLowerCase())) {
+        removedFronts.push(proposal.front);
+        return false;
+      }
+      return true;
+    });
+    removedCount = data.length - uniqueProposals.length;
+  }
+
+  return new Response(JSON.stringify({ flashcards: uniqueProposals, removedCount, removedFronts }), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });

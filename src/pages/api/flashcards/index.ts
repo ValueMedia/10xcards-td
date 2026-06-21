@@ -45,7 +45,7 @@ export const POST: APIRoute = async (context) => {
   });
 
   if (error) {
-    const status = isNotFound(error) ? 404 : 500;
+    const status = isNotFound(error) ? 404 : error.kind === "validationError" ? 400 : 500;
     return new Response(JSON.stringify({ error: errorMessage(error) }), {
       status,
       headers: { "Content-Type": "application/json" },

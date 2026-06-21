@@ -314,19 +314,19 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Automated
 
-- [x] 1.1 TypeScript compiles on `src/lib/services/flashcards.ts` (no new errors vs. main baseline)
-- [x] 1.2 Lint passes on `src/lib/services/flashcards.ts`
+- [x] 1.1 TypeScript compiles on `src/lib/services/flashcards.ts` (no new errors vs. main baseline) — f30750f
+- [x] 1.2 Lint passes on `src/lib/services/flashcards.ts` — f30750f
 
 #### Manual
 
-- [x] 1.3 Manual verification deferred to Phase 2 (API endpoints)
+- [x] 1.3 Manual verification deferred to Phase 2 (API endpoints) — f30750f
 
 ### Phase 2: API Endpoints — Wire Up Duplicate Handling
 
 #### Automated
 
-- [ ] 2.1 TypeScript compiles on changed API files
-- [ ] 2.2 Lint passes on `src/pages/api/sets/[id]/flashcards/batch.ts` and `src/pages/api/sets/[id]/generate.ts`
+- [x] 2.1 TypeScript compiles on changed API files (no new errors vs. main baseline)
+- [x] 2.2 Lint passes on `src/pages/api/sets/[id]/flashcards/batch.ts` and `src/pages/api/sets/[id]/generate.ts`
 
 #### Manual
 
