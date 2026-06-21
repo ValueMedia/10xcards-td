@@ -341,8 +341,8 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Automated
 
-- [x] 3.1 TypeScript compiles on `src/components/ai/GenerateFlashcardsPage.tsx` (no new errors vs. main baseline)
-- [x] 3.2 Lint passes on `src/components/ai/GenerateFlashcardsPage.tsx`
+- [x] 3.1 TypeScript compiles on `src/components/ai/GenerateFlashcardsPage.tsx` (no new errors vs. main baseline) — b7f16e3
+- [x] 3.2 Lint passes on `src/components/ai/GenerateFlashcardsPage.tsx` — b7f16e3
 
 #### Manual
 
@@ -356,8 +356,8 @@ Document the new response fields and error scenarios in the OpenAPI spec so the 
 
 #### Automated
 
-- [ ] 4.1 TypeScript compiles on `src/lib/openapi/openapi-spec.ts`
-- [ ] 4.2 Lint passes on `src/lib/openapi/openapi-spec.ts`
+- [x] 4.1 TypeScript compiles on `src/lib/openapi/openapi-spec.ts` (no new errors vs. main baseline)
+- [x] 4.2 Lint passes on `src/lib/openapi/openapi-spec.ts`
 
 #### Manual
 

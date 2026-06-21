@@ -699,7 +699,8 @@ export const openApiSpec = {
         },
         responses: {
           "201": {
-            description: "Flashcards created",
+            description:
+              "Flashcards created. Duplicates whose front already exists in the set are silently skipped and reported in skippedCount/skippedFronts.",
             content: {
               "application/json": {
                 schema: {
@@ -710,6 +711,15 @@ export const openApiSpec = {
                       items: { $ref: "#/components/schemas/Flashcard" },
                     },
                     count: { type: "integer" },
+                    skippedCount: {
+                      type: "integer",
+                      description: "Number of flashcards skipped because their front already exists in the set",
+                    },
+                    skippedFronts: {
+                      type: "array",
+                      items: { type: "string" },
+                      description: "Front texts that were skipped due to duplication",
+                    },
                   },
                   required: ["data", "count"],
                 },
@@ -866,7 +876,8 @@ export const openApiSpec = {
         },
         responses: {
           "200": {
-            description: "Generated flashcard proposals",
+            description:
+              "Generated flashcard proposals. Proposals whose front already exists in the set are removed and reported in removedCount/removedFronts.",
             content: {
               "application/json": {
                 schema: {
@@ -883,8 +894,17 @@ export const openApiSpec = {
                         required: ["front", "back"],
                       },
                     },
+                    removedCount: {
+                      type: "integer",
+                      description: "Number of proposals removed because their front already exists in the set",
+                    },
+                    removedFronts: {
+                      type: "array",
+                      items: { type: "string" },
+                      description: "Front texts that were removed due to duplication",
+                    },
                   },
-                  required: ["flashcards"],
+                  required: ["flashcards", "removedCount", "removedFronts"],
                 },
               },
             },
@@ -1131,7 +1151,7 @@ export const openApiSpec = {
             },
           },
           "400": {
-            description: "Validation failed or invalid JSON",
+            description: "Validation failed, invalid JSON, or duplicate front in the set",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ValidationError" },
