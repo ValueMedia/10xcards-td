@@ -417,12 +417,12 @@ The only schema change is `revoke select on public.sets, public.flashcards from 
 
 #### Automated
 
-- [x] 4.1 Migration applies cleanly: `npx supabase migration up --local`
-- [x] 4.2 `npm run test:integration` passes with Phase 4 suites; direct-select regression confirms anon reads nothing
-- [x] 4.3 RPC-shape assertion fails if `share_token` ever appears in output (negative check)
-- [x] 4.4 Type-check passes: `npm run build`
+- [x] 4.1 Migration applies cleanly: `npx supabase migration up --local` — 75b9c44
+- [x] 4.2 `npm run test:integration` passes with Phase 4 suites; direct-select regression confirms anon reads nothing — 75b9c44
+- [x] 4.3 RPC-shape assertion fails if `share_token` ever appears in output (negative check) — 75b9c44
+- [x] 4.4 Type-check passes: `npm run build` — 75b9c44
 
 #### Manual
 
-- [x] 4.5 Anon `/share/[token]` renders metadata only; no `share_token` in any response
-- [x] 4.6 Logged-in user can still claim the shared set after the migration
+- [x] 4.5 Anon `/share/[token]` renders metadata only; no `share_token` in any response — 75b9c44
+- [x] 4.6 Logged-in user can still claim the shared set after the migration — 75b9c44
