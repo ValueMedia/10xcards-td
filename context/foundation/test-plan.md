@@ -80,7 +80,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|------------|-----------------|---------------|------------|--------|---------------|
-| 1 | Authorization & data-isolation | Prove a user cannot reach another user's data (PRD critical guardrail); bootstrap the API integration harness. | #1, #2 | integration (multi-user + anon/token), contract | researched | context/changes/testing-authorization-data-isolation/ |
+| 1 | Authorization & data-isolation | Prove a user cannot reach another user's data (PRD critical guardrail); bootstrap the API integration harness. | #1, #2 | integration (multi-user + anon/token), contract | complete | context/changes/testing-authorization-data-isolation/ |
 | 2 | SR state & flashcard persistence | Prove study history and flashcards neither vanish nor corrupt. | #3, #4 | integration (submit→re-fetch, batch) | not started | — |
 | 3 | External integration failure paths | Prove AI and dictionary failures surface cleanly, with no silent data loss. | #5, #6 | integration with mocked boundary + contract | not started | — |
 | 4 | i18n reactivity | Prove a language switch immediately refreshes the UI. | #7 | component (RTL) | not started | — |

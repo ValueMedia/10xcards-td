@@ -403,26 +403,26 @@ The only schema change is `revoke select on public.sets, public.flashcards from 
 
 #### Automated
 
-- [x] 3.1 New sessions test fails before the fix and passes after
-- [x] 3.2 `npm run test:integration` passes (all suites)
-- [x] 3.3 `npm test` (node+workers) still green
-- [x] 3.4 Type-check + lint changed files pass (`npm run build`; `npx eslint` on the 3 changed files)
+- [x] 3.1 New sessions test fails before the fix and passes after — 73c8bf6
+- [x] 3.2 `npm run test:integration` passes (all suites) — 73c8bf6
+- [x] 3.3 `npm test` (node+workers) still green — 73c8bf6
+- [x] 3.4 Type-check + lint changed files pass (`npm run build`; `npx eslint` on the 3 changed files) — 73c8bf6
 
 #### Manual
 
-- [x] 3.5 Owner can still log a session after the fix
-- [x] 3.6 Scalar `/docs/api` shows the 404 on POST /api/sessions
+- [x] 3.5 Owner can still log a session after the fix — 73c8bf6
+- [x] 3.6 Scalar `/docs/api` shows the 404 on POST /api/sessions — 73c8bf6
 
 ### Phase 4: Risk #2 — anon share exposure tests + hardening migration
 
 #### Automated
 
-- [ ] 4.1 Migration applies cleanly: `npx supabase migration up --local`
-- [ ] 4.2 `npm run test:integration` passes with Phase 4 suites; direct-select regression confirms anon reads nothing
-- [ ] 4.3 RPC-shape assertion fails if `share_token` ever appears in output (negative check)
-- [ ] 4.4 Type-check passes: `npm run build`
+- [x] 4.1 Migration applies cleanly: `npx supabase migration up --local`
+- [x] 4.2 `npm run test:integration` passes with Phase 4 suites; direct-select regression confirms anon reads nothing
+- [x] 4.3 RPC-shape assertion fails if `share_token` ever appears in output (negative check)
+- [x] 4.4 Type-check passes: `npm run build`
 
 #### Manual
 
-- [ ] 4.5 Anon `/share/[token]` renders metadata only; no `share_token` in any response
-- [ ] 4.6 Logged-in user can still claim the shared set after the migration
+- [x] 4.5 Anon `/share/[token]` renders metadata only; no `share_token` in any response
+- [x] 4.6 Logged-in user can still claim the shared set after the migration
