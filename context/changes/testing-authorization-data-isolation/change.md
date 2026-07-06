@@ -1,7 +1,7 @@
 ---
 change_id: testing-authorization-data-isolation
 title: Test rollout Phase 1 — authorization and data-isolation coverage
-status: implemented
+status: impl_reviewed
 created: 2026-07-06
 updated: 2026-07-07
 archived_at: null

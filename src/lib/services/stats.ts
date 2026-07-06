@@ -18,12 +18,14 @@ interface FlashcardRow {
 }
 
 export async function logSession(
-  client: SupabaseClient,
+  client: SupabaseClient | null,
   userId: string,
   setId: string,
   startedAt: Date,
   endedAt: Date,
 ): Promise<{ error: ServiceError | null }> {
+  if (!client) return { error: { kind: "clientUnavailable", message: "Supabase client not available" } };
+
   // Ownership gate: session_log's RLS only checks auth.uid() = user_id, so
   // without this check a caller could log a session against another user's
   // set_id (a cross-user reference RLS never catches). Mirror the sibling

@@ -5,6 +5,12 @@
 // their correctness leans on both the explicit ownership gate and RLS. Every
 // cross-user write must return 404, and a service-client cross-check must prove
 // A's card is untouched after each rejected mutation.
+//
+// NOTE on what this proves: RLS is the PRIMARY enforcer for these writes — it
+// alone blocks the cross-user mutation, so these assertions would still hold even
+// if the service-layer ownership gate were removed. They are behavioral/regression
+// guards for the 404 contract, not proof of the service check in isolation. The
+// genuinely RLS-uncatchable gap is covered by sessions.idor.test.ts.
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { hasSupabaseEnv } from "../helpers/env";
 import { createTestUser, userClient, deleteTestUser, type TestUser } from "../helpers/supabase";

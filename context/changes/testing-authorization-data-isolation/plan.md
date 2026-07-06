@@ -46,6 +46,12 @@ Grounded in `context/changes/testing-authorization-data-isolation/research.md`:
 - **Not trimming `owner_id` from `get_shared_set_info`** — it is required for SSR self-link detection; accepted and documented (it is a UUID, not the token, not PII).
 - **Not adding tests for every endpoint** — core + extensible pattern (per decision); `generate` and other set/flashcard routes are left as documented extension points.
 
+> **Addendum (2026-07-07, impl-review):** Phase 2 also shipped two small, disclosed production error-mapping fixes required to make its planned 404s real, which correct the "no product code changes" (Phase 2 overview) and "only two production changes" statements above:
+> - `renameSet` (`src/lib/services/sets.ts`): `.single()` → `.maybeSingle()` + "Set not found", so a non-owner `PATCH /api/sets/[id]` returns 404 instead of a PGRST116-driven 500.
+> - `resetSetProgress` (`src/lib/services/reviews.ts`): map the SECURITY DEFINER guard's "not found / access denied" message to a `notFound` signal (→ 404) instead of `dbError` (→ 500).
+>
+> Both are low-risk, mirror the existing check-then-act / not-found→404 service pattern, and were disclosed in commit `c5af5ef` as "Product fixes." The production-change surface for this change is therefore: `/api/sessions` ownership check, the anon-grant revoke migration, and these two Phase 2 error-mapping corrections.
+
 ## Implementation Approach
 
 Build the harness once (Phase 1) as reusable helpers under `tests/integration/`, then add thin per-risk test files that consume them. Each test creates uniquely-named throwaway users via the service-role Admin API, seeds data through authenticated per-user clients, invokes the real exported route handlers with a synthetic `APIContext`, asserts on the `Response`, and tears down by deleting the users (FK cascade). A single env-guard helper makes every suite `describe.skipIf(!hasSupabaseEnv)` so the harness is inert without a local DB.

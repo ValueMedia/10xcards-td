@@ -73,6 +73,11 @@ describe.skipIf(!hasSupabaseEnv)("IDOR: review + reset-progress RPC paths", () =
     return count ?? -1;
   }
 
+  // NOTE: on the INVOKER path, RLS is the PRIMARY enforcer — it alone hides A's
+  // card from B, so this 404 would hold even without the service-layer gate. It is
+  // a behavioral/regression guard, not proof of the service check in isolation.
+  // (The DEFINER reset-progress test below IS load-bearing: it bypasses RLS, so
+  // only the RPC's own ownership guard can produce the 404 + untouched state.)
   it("B → 404 on POST /api/reviews (A's flashcardId) [INVOKER path]", async () => {
     const res = await POST_REVIEW(asAttacker({ body: { flashcardId: cardId, grade: Rating.Good } }));
     expect(res.status).toBe(404);
