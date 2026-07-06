@@ -60,6 +60,9 @@ export default defineConfig({
             ...alias,
             "cloudflare:workers": path.resolve(__dirname, "./src/test/cloudflare-workers.stub.ts"),
             "astro:env/server": path.resolve(__dirname, "./src/test/astro-env-server.stub.ts"),
+            // `@/middleware` imports `astro:middleware`; stub it so the auth-gate
+            // test can import the real middleware and invoke onRequest directly.
+            "astro:middleware": path.resolve(__dirname, "./src/test/astro-middleware.stub.ts"),
           },
         },
         test: {

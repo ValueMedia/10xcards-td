@@ -72,9 +72,14 @@ export async function renameSet(
     .eq("id", setId)
     .eq("user_id", userId)
     .select()
-    .single();
+    // maybeSingle (not single): a non-owner / missing set matches 0 rows, and
+    // .single() would surface that as a PGRST116 coercion error → 500. Treat the
+    // empty result as not-found so the endpoint hides the resource with 404,
+    // consistent with deleteSet and the documented OpenAPI contract.
+    .maybeSingle();
 
   if (result.error) return { data: null, error: result.error.message };
+  if (!result.data) return { data: null, error: "Set not found" };
   return { data: result.data as FlashcardSet, error: null };
 }
 

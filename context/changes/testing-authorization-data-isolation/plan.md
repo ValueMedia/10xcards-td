@@ -376,28 +376,28 @@ The only schema change is `revoke select on public.sets, public.flashcards from 
 
 #### Automated
 
-- [x] 1.1 Integration project recognized: `npm run test:integration` runs (0 failures) with local Supabase
-- [x] 1.2 Auto-skip works: suite skips (not fails) when Supabase stopped / env unset
-- [x] 1.3 Default run unaffected: `npm test` runs only node+workers and stays green
-- [x] 1.4 Type-check passes: `npm run build`
+- [x] 1.1 Integration project recognized: `npm run test:integration` runs (0 failures) with local Supabase — fbe56ed
+- [x] 1.2 Auto-skip works: suite skips (not fails) when Supabase stopped / env unset — fbe56ed
+- [x] 1.3 Default run unaffected: `npm test` runs only node+workers and stays green — fbe56ed
+- [x] 1.4 Type-check passes: `npm run build` — fbe56ed
 
 #### Manual
 
-- [x] 1.5 `supabase start` + `test:integration`: smoke test creates user, reads its set, cleans up (no leftovers)
-- [x] 1.6 Stopped Supabase: suite skips cleanly with a clear message
+- [x] 1.5 `supabase start` + `test:integration`: smoke test creates user, reads its set, cleans up (no leftovers) — fbe56ed
+- [x] 1.6 Stopped Supabase: suite skips cleanly with a clear message — fbe56ed
 
 ### Phase 2: Risk #1 — cross-user IDOR authorization suite
 
 #### Automated
 
-- [ ] 2.1 `npm run test:integration` passes with all Phase 2 suites green
-- [ ] 2.2 Cross-user assertions expect 404; the 401-gate test expects 401
-- [ ] 2.3 Type-check passes: `npm run build`
+- [x] 2.1 `npm run test:integration` passes with all Phase 2 suites green
+- [x] 2.2 Cross-user assertions expect 404; the 401-gate test expects 401
+- [x] 2.3 Type-check passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.4 Temporarily weakening an ownership check turns a test red (test has teeth), then revert
-- [ ] 2.5 No test users remain after the run
+- [x] 2.4 Temporarily weakening an ownership check turns a test red (test has teeth), then revert
+- [x] 2.5 No test users remain after the run
 
 ### Phase 3: Close the POST /api/sessions IDOR gap (reveal → fix)
 

@@ -129,7 +129,17 @@ export async function resetSetProgress(
     p_user_id: userId,
   });
 
-  if (rpcResult.error) return { error: { kind: "dbError", message: rpcResult.error.message } };
+  if (rpcResult.error) {
+    // reset_set_progress is SECURITY DEFINER and raises
+    // 'Set not found or access denied' when the caller does not own the set
+    // (the guard bypasses RLS). Map that ownership rejection to a not-found
+    // signal so the endpoint hides the resource with 404 — consistent with the
+    // sibling endpoints and the documented OpenAPI contract — rather than 500.
+    if (/not found|access denied/i.test(rpcResult.error.message)) {
+      return { error: { kind: "notFound", message: "Set not found" } };
+    }
+    return { error: { kind: "dbError", message: rpcResult.error.message } };
+  }
 
   return { error: null };
 }
