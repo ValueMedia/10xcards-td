@@ -48,6 +48,30 @@ export default defineConfig({
           },
         },
       }),
+      {
+        // "integration": API authorization tests against a real local Supabase.
+        // Kept OUT of the default `npm test` run (see package.json scripts) and
+        // self-skipping when no Supabase env is present, so it never breaks CI
+        // before the quality-gate wiring lands (test-plan §3 Phase 5).
+        // Run on demand: `npm run test:integration` (requires `npx supabase start`).
+        plugins: [react()],
+        resolve: {
+          alias: {
+            ...alias,
+            "cloudflare:workers": path.resolve(__dirname, "./src/test/cloudflare-workers.stub.ts"),
+            "astro:env/server": path.resolve(__dirname, "./src/test/astro-env-server.stub.ts"),
+          },
+        },
+        test: {
+          name: "integration",
+          environment: "node",
+          globals: true,
+          include: ["tests/integration/**/*.test.ts"],
+          setupFiles: ["tests/integration/helpers/env.ts"],
+          testTimeout: 30000,
+          hookTimeout: 30000,
+        },
+      },
     ],
   },
 });
