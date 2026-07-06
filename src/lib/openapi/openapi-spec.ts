@@ -1554,6 +1554,14 @@ export const openApiSpec = {
               },
             },
           },
+          "404": {
+            description: "Set not found (or not owned by the caller)",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
           "500": {
             description: "Server error",
             content: {

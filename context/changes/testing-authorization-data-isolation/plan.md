@@ -390,28 +390,28 @@ The only schema change is `revoke select on public.sets, public.flashcards from 
 
 #### Automated
 
-- [x] 2.1 `npm run test:integration` passes with all Phase 2 suites green
-- [x] 2.2 Cross-user assertions expect 404; the 401-gate test expects 401
-- [x] 2.3 Type-check passes: `npm run build`
+- [x] 2.1 `npm run test:integration` passes with all Phase 2 suites green — c5af5ef
+- [x] 2.2 Cross-user assertions expect 404; the 401-gate test expects 401 — c5af5ef
+- [x] 2.3 Type-check passes: `npm run build` — c5af5ef
 
 #### Manual
 
-- [x] 2.4 Temporarily weakening an ownership check turns a test red (test has teeth), then revert
-- [x] 2.5 No test users remain after the run
+- [x] 2.4 Temporarily weakening an ownership check turns a test red (test has teeth), then revert — c5af5ef
+- [x] 2.5 No test users remain after the run — c5af5ef
 
 ### Phase 3: Close the POST /api/sessions IDOR gap (reveal → fix)
 
 #### Automated
 
-- [ ] 3.1 New sessions test fails before the fix and passes after
-- [ ] 3.2 `npm run test:integration` passes (all suites)
-- [ ] 3.3 `npm test` (node+workers) still green
-- [ ] 3.4 Type-check + lint changed files pass (`npm run build`; `npx eslint` on the 3 changed files)
+- [x] 3.1 New sessions test fails before the fix and passes after
+- [x] 3.2 `npm run test:integration` passes (all suites)
+- [x] 3.3 `npm test` (node+workers) still green
+- [x] 3.4 Type-check + lint changed files pass (`npm run build`; `npx eslint` on the 3 changed files)
 
 #### Manual
 
-- [ ] 3.5 Owner can still log a session after the fix
-- [ ] 3.6 Scalar `/docs/api` shows the 404 on POST /api/sessions
+- [x] 3.5 Owner can still log a session after the fix
+- [x] 3.6 Scalar `/docs/api` shows the 404 on POST /api/sessions
 
 ### Phase 4: Risk #2 — anon share exposure tests + hardening migration
 

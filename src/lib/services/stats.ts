@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { DailyStats, LearningStats, RecentSetStats } from "@/types";
+import type { ServiceError } from "./flashcards";
 
 interface SetRow {
   id: string;
@@ -22,14 +23,22 @@ export async function logSession(
   setId: string,
   startedAt: Date,
   endedAt: Date,
-): Promise<{ error: string | null }> {
+): Promise<{ error: ServiceError | null }> {
+  // Ownership gate: session_log's RLS only checks auth.uid() = user_id, so
+  // without this check a caller could log a session against another user's
+  // set_id (a cross-user reference RLS never catches). Mirror the sibling
+  // services (reviews/flashcards) and hide non-owned sets as not-found.
+  const ownership = await client.from("sets").select("id").eq("id", setId).eq("user_id", userId).maybeSingle();
+  if (ownership.error) return { error: { kind: "dbError", message: ownership.error.message } };
+  if (!ownership.data) return { error: { kind: "notFound", message: "Set not found" } };
+
   const { error } = await client.from("session_log").insert({
     user_id: userId,
     set_id: setId,
     started_at: startedAt.toISOString(),
     ended_at: endedAt.toISOString(),
   });
-  if (error) return { error: error.message };
+  if (error) return { error: { kind: "dbError", message: error.message } };
   return { error: null };
 }
 

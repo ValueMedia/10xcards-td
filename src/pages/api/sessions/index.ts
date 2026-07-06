@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { logSession } from "@/lib/services/stats";
+import { errorMessage, isNotFound } from "@/lib/services/flashcards";
 
 export const prerender = false;
 
@@ -53,8 +54,9 @@ export const POST: APIRoute = async (context) => {
   const { error } = await logSession(supabase, user.id, setId, new Date(startedAt), new Date(endedAt));
 
   if (error) {
-    return new Response(JSON.stringify({ error }), {
-      status: 500,
+    const status = isNotFound(error) ? 404 : 500;
+    return new Response(JSON.stringify({ error: errorMessage(error) }), {
+      status,
       headers: { "Content-Type": "application/json" },
     });
   }
