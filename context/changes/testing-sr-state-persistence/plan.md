@@ -222,31 +222,31 @@ None — no schema or product-code changes.
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `npm run build`
-- [x] 1.2 Selective lint passes on new `.ts` files
-- [x] 1.3 SR suite passes: `npm run test:integration`
-- [x] 1.4 Suite auto-skips cleanly when Supabase env absent
+- [x] 1.1 Type checking passes: `npm run build` — f46d230
+- [x] 1.2 Selective lint passes on new `.ts` files — f46d230
+- [x] 1.3 SR suite passes: `npm run test:integration` — f46d230
+- [x] 1.4 Suite auto-skips cleanly when Supabase env absent — f46d230
 
 #### Manual
 
-- [x] 1.5 Test-has-teeth check: break `learning_steps` persistence → test red → restore
-- [x] 1.6 Repeated-submit documented behavior matches running system
-- [x] 1.7 No orphaned rows after teardown
+- [x] 1.5 Test-has-teeth check: break `learning_steps` persistence → test red → restore — f46d230
+- [x] 1.6 Repeated-submit documented behavior matches running system — f46d230
+- [x] 1.7 No orphaned rows after teardown — f46d230
 
 ### Phase 2: Flashcard batch-save tests (Risk #4)
 
 #### Automated
 
-- [ ] 2.1 Type checking passes: `npm run build`
-- [ ] 2.2 Selective lint passes on new test file
-- [ ] 2.3 Batch suite passes: `npm run test:integration`
-- [ ] 2.4 Suite auto-skips cleanly when Supabase env absent
+- [x] 2.1 Type checking passes: `npm run build`
+- [x] 2.2 Selective lint passes on new test file
+- [x] 2.3 Batch suite passes: `npm run test:integration`
+- [x] 2.4 Suite auto-skips cleanly when Supabase env absent
 
 #### Manual
 
-- [ ] 2.5 Test-has-teeth check: break duplicate filter / cap → test red → restore
-- [ ] 2.6 Duplicate-skip and all-duplicate assertions match actual responses
-- [ ] 2.7 No orphaned rows after teardown
+- [x] 2.5 Test-has-teeth check: break duplicate filter / cap → test red → restore
+- [x] 2.6 Duplicate-skip and all-duplicate assertions match actual responses
+- [x] 2.7 No orphaned rows after teardown
 
 ### Phase 3: Cookbook & rollout wrap-up
 
