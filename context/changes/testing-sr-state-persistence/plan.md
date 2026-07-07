@@ -252,10 +252,10 @@ None — no schema or product-code changes.
 
 #### Automated
 
-- [x] 3.1 Both new suites still green in one run: `npm run test:integration`
-- [x] 3.2 No remaining "TBD — see §3 Phase 2" in §6.3
+- [x] 3.1 Both new suites still green in one run: `npm run test:integration` — a81941e
+- [x] 3.2 No remaining "TBD — see §3 Phase 2" in §6.3 — a81941e
 
 #### Manual
 
-- [x] 3.3 §6.3/§6.6 read clearly for a future contributor
-- [x] 3.4 Phase 2 status and change-folder link correct in §3
+- [x] 3.3 §6.3/§6.6 read clearly for a future contributor — a81941e
+- [x] 3.4 Phase 2 status and change-folder link correct in §3 — a81941e

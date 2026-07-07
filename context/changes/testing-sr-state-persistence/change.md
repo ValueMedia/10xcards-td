@@ -1,7 +1,7 @@
 ---
 change_id: testing-sr-state-persistence
 title: Testing SR state persistence
-status: implementing
+status: implemented
 created: 2026-07-07
 updated: 2026-07-07
 archived_at: null
