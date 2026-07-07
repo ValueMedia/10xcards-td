@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-07-06 (Phase 1 change opened)
+> Last updated: 2026-07-07 (Phase 2 complete)
 
 ## 1. Strategy
 
@@ -81,7 +81,7 @@ orchestrator updates Status as artifacts appear on disk.
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|------------|-----------------|---------------|------------|--------|---------------|
 | 1 | Authorization & data-isolation | Prove a user cannot reach another user's data (PRD critical guardrail); bootstrap the API integration harness. | #1, #2 | integration (multi-user + anon/token), contract | complete | context/changes/testing-authorization-data-isolation/ |
-| 2 | SR state & flashcard persistence | Prove study history and flashcards neither vanish nor corrupt. | #3, #4 | integration (submit→re-fetch, batch) | not started | — |
+| 2 | SR state & flashcard persistence | Prove study history and flashcards neither vanish nor corrupt. | #3, #4 | integration (submit→re-fetch, batch) | complete | context/changes/testing-sr-state-persistence/ |
 | 3 | External integration failure paths | Prove AI and dictionary failures surface cleanly, with no silent data loss. | #5, #6 | integration with mocked boundary + contract | not started | — |
 | 4 | i18n reactivity | Prove a language switch immediately refreshes the UI. | #7 | component (RTL) | not started | — |
 | 5 | Quality-gate wiring | Lock the floor: CI blocks merge on red tests. | cross-cutting | gates (`vitest run` in CI) | not started | — |
@@ -104,7 +104,7 @@ The classic test base for this project. AI-native tools (if any) carry a
 | accessibility | none | — | Out of scope for this rollout. |
 
 **Stack grounding tools (current session):**
-- Docs: none — Context7 not available in current session; recommend installing before §3 Phase 1 `/10x-research` for `workerd` + Vitest / `vitest-pool-workers` setup details; checked: 2026-07-06
+- Docs: Context7 MCP available (installed for the project, scope local) — use during `/10x-research` for `workerd` + Vitest / `vitest-pool-workers` setup and mocking-boundary details; checked: 2026-07-07
 - Search: WebSearch available — not yet used; use to verify current `@cloudflare/vitest-pool-workers` and mocking-boundary guidance during research; checked: 2026-07-06
 - Runtime/browser: none — no Playwright MCP; no browser-level tests planned; checked: 2026-07-06
 - Provider/platform: Supabase MCP present but interactive-auth only — read-only DB inspection could support integration-test fixtures; not used yet; checked: 2026-07-06
@@ -152,7 +152,49 @@ API authorization tests run against a **real local Supabase** (not workerd/`SELF
 
 ### 6.3 Adding a test for SR state / persistence
 
-- TBD — see §3 Phase 2. Will cover the submit → re-fetch → assert-state pattern that guards against oracle-problem assertions.
+Persistence tests prove that a write actually landed correctly — they never
+trust an HTTP 200. They live under `tests/integration/persistence/` and reuse
+the §6.2 harness verbatim (`createTestUser` / `userClient` / `seedSet` /
+`makeApiContext` / `deleteTestUser`, auto-skip via `describe.skipIf`).
+
+- **Reference tests**: `tests/integration/persistence/sr-state.test.ts` (SR
+  review state), `tests/integration/persistence/flashcard-batch.test.ts`
+  (batch save). Shared readers: `tests/integration/helpers/sr.ts`.
+- **The pattern — submit → re-fetch → assert-state**:
+  1. Seed owned data (`seedSet`), then drive the **real** write path — call the
+     exported handler (`POST /api/reviews`, `POST /api/sets/[id]/reset-progress`,
+     the batch endpoint) via `makeApiContext`. Assert on the `Response` first.
+  2. Re-fetch the persisted row through an owner RLS client and assert the
+     state is correct — do **not** infer it from the response body alone.
+- **Drive SR state through the API, never the DB.** All FSRS state is produced
+  by repeated `POST /api/reviews` calls — there is deliberately no
+  `setCardDue` / column-manipulation helper. `submitCardReview` reads the card
+  and applies `fsrs().next()` regardless of due-ness, so a card can be advanced
+  to `State.Review` (learned) by looping `Good` grades without waiting for `due`
+  to elapse. Freshly seeded cards default to `due = now()`, so they are already
+  in `GET /api/sets/[id]/due-cards`.
+- **Oracle-problem avoidance (the core rule).** Assert **invariants and
+  relations**, never a value recomputed by the same logic as the code. Good:
+  `reps` incremented by exactly 1, `due` moved into the future, `last_review`
+  stamped at review time, `state` advanced past `New`, `learning_steps`
+  persisted (non-null). Bad: calling `fsrs().next()` in the test and comparing
+  intervals — that asserts the code agrees with itself.
+- **Check history directly.** Column-state assertions miss double-counting.
+  `countReviews(client, cardId)` reads the `reviews` log directly to catch a
+  repeated/concurrent submit inserting a second row. `countLearned(setId)`
+  counts `state == 2` flashcards (the learned metric — see §6.6).
+- **Helpers** (`helpers/sr.ts`, all read-only via an owner client):
+  `readCardState` (the FSRS columns of one card), `countReviews`,
+  `latestReviewLearningSteps` (flashcard-row vs review-log consistency guard),
+  `countLearned`.
+- **Batch semantics** (`flashcard-batch.test.ts`): the batch endpoint is a
+  single atomic `insert([...])` — one invalid element rejects the whole batch
+  (400, zero rows), and the 1–50 cap is enforced. It silently skips duplicate
+  fronts and returns `201` with `count < submitted` plus `skippedCount` /
+  `skippedFronts`, so assert on `count`/`skippedCount`, **not** just HTTP
+  status — a status-only caller would lose cards silently. (The multi-chunk CSV
+  import is intentionally *non*-atomic, but that is a client-component concern,
+  not the batch-endpoint contract, so it is not tested here.)
 
 ### 6.4 Adding a test for an external integration failure path
 
@@ -167,6 +209,30 @@ API authorization tests run against a **real local Supabase** (not workerd/`SELF
 (Optional. After each phase lands, `/10x-implement` appends a 2–3 line note
 here capturing anything surprising the rollout phase taught.)
 
+**Phase 2 (SR state & flashcard persistence, `context/changes/testing-sr-state-persistence/`)**
+
+- **Repeated submit is not idempotent.** `reviews` has no unique constraint and
+  the read-compute in `submitCardReview` runs outside the RPC transaction, so a
+  repeated (or concurrent) `POST /api/reviews` inserts a second row and advances
+  FSRS twice. Documented as a known, unfixed gap — the test asserts the *current*
+  behavior so a future guard trips it deliberately.
+- **"Learned" = `state == 2` in three independent places** (the flashcard
+  column, `stats.ts`, and the teacher RPC). The learned-count test asserts they
+  stay consistent; if you add a fourth counter, keep it on `state == 2`.
+- **`learning_steps` is a known regression site** (dropped once from the
+  flashcard UPDATE, silently corrupting scheduling). The happy-path test asserts
+  the flashcard row and the latest review-log row agree on it — the "test has
+  teeth" check reverts that line to confirm the test goes red.
+- **The integration suite is flaky under parallel file execution.** With
+  Vitest's default per-file parallelism, running all 10 integration files at
+  once intermittently produced a spurious `500` on a 50-card batch and, on
+  another run, an `ERR_IPC_CHANNEL_CLOSED` worker crash — both load artifacts
+  against local Supabase (the CLI's connection pooler is not always up), not
+  code defects (the code path is deterministically correct in isolation).
+  `npm run test:integration -- --no-file-parallelism` is reliably green. Phase 5
+  (CI gate) should serialize these files (e.g. `poolOptions` / `--no-file-parallelism`)
+  before enforcing them on PRs.
+
 ## 7. What We Deliberately Don't Test
 
 Exclusions agreed during the rollout (Phase 2 interview, Q5). Future
@@ -179,7 +245,7 @@ contributors should respect these unless the underlying assumption changes.
 
 - Strategy (§1–§5) last reviewed: 2026-07-06
 - Stack versions last verified: 2026-07-06
-- AI-native tool references last verified: 2026-07-06
+- AI-native tool references last verified: 2026-07-07
 
 Refresh (`/10x-test-plan --refresh`) when:
 

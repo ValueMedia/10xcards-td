@@ -237,25 +237,25 @@ None — no schema or product-code changes.
 
 #### Automated
 
-- [x] 2.1 Type checking passes: `npm run build`
-- [x] 2.2 Selective lint passes on new test file
-- [x] 2.3 Batch suite passes: `npm run test:integration`
-- [x] 2.4 Suite auto-skips cleanly when Supabase env absent
+- [x] 2.1 Type checking passes: `npm run build` — 32c6a20
+- [x] 2.2 Selective lint passes on new test file — 32c6a20
+- [x] 2.3 Batch suite passes: `npm run test:integration` — 32c6a20
+- [x] 2.4 Suite auto-skips cleanly when Supabase env absent — 32c6a20
 
 #### Manual
 
-- [x] 2.5 Test-has-teeth check: break duplicate filter / cap → test red → restore
-- [x] 2.6 Duplicate-skip and all-duplicate assertions match actual responses
-- [x] 2.7 No orphaned rows after teardown
+- [x] 2.5 Test-has-teeth check: break duplicate filter / cap → test red → restore — 32c6a20
+- [x] 2.6 Duplicate-skip and all-duplicate assertions match actual responses — 32c6a20
+- [x] 2.7 No orphaned rows after teardown — 32c6a20
 
 ### Phase 3: Cookbook & rollout wrap-up
 
 #### Automated
 
-- [ ] 3.1 Both new suites still green in one run: `npm run test:integration`
-- [ ] 3.2 No remaining "TBD — see §3 Phase 2" in §6.3
+- [x] 3.1 Both new suites still green in one run: `npm run test:integration`
+- [x] 3.2 No remaining "TBD — see §3 Phase 2" in §6.3
 
 #### Manual
 
-- [ ] 3.3 §6.3/§6.6 read clearly for a future contributor
-- [ ] 3.4 Phase 2 status and change-folder link correct in §3
+- [x] 3.3 §6.3/§6.6 read clearly for a future contributor
+- [x] 3.4 Phase 2 status and change-folder link correct in §3
