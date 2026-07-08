@@ -463,29 +463,29 @@ of 40s. Both are surfaced as clean errors the UI already handles (502 / 504).
 
 #### Automated
 
-- [x] 3.1 `npm test` passes
-- [x] 3.2 Route maps `apiError→502`, `timeout→504`, `parseError→422`, `noProposals→422` via real `getAiErrorHttpStatus`
-- [x] 3.3 Unconfigured key → 500; invalid input → 400; rate-limited → 429 (`Retry-After: 3600`) with no provider call
-- [x] 3.4 On failure, response contains no `flashcards` and `checkDuplicateFronts` is never invoked
-- [x] 3.5 Typecheck passes: `npm run build`
+- [x] 3.1 `npm test` passes — 4a162bb
+- [x] 3.2 Route maps `apiError→502`, `timeout→504`, `parseError→422`, `noProposals→422` via real `getAiErrorHttpStatus` — 4a162bb
+- [x] 3.3 Unconfigured key → 500; invalid input → 400; rate-limited → 429 (`Retry-After: 3600`) with no provider call — 4a162bb
+- [x] 3.4 On failure, response contains no `flashcards` and `checkDuplicateFronts` is never invoked — 4a162bb
+- [x] 3.5 Typecheck passes: `npm run build` — 4a162bb
 
 #### Manual
 
-- [x] 3.6 Partial-mock keeps the REAL error→status mapping (teeth check)
+- [x] 3.6 Partial-mock keeps the REAL error→status mapping (teeth check) — 4a162bb
 
 ### Phase 4: ai-rate-limit gate unit test (#5)
 
 #### Automated
 
-- [ ] 4.1 `npm test` passes
-- [ ] 4.2 Under-limit allows and increments; at-limit denies without writing
-- [ ] 4.3 Null KV fails closed for both hourly and dict variants
-- [ ] 4.4 Key formats and TTLs (3600 / 60) asserted
-- [ ] 4.5 Typecheck passes: `npm run build`
+- [x] 4.1 `npm test` passes
+- [x] 4.2 Under-limit allows and increments; at-limit denies without writing
+- [x] 4.3 Null KV fails closed for both hourly and dict variants
+- [x] 4.4 Key formats and TTLs (3600 / 60) asserted
+- [x] 4.5 Typecheck passes: `npm run build`
 
 #### Manual
 
-- [ ] 4.6 Fake KV mirrors the real KV get/put contract (string values, `expirationTtl`)
+- [x] 4.6 Fake KV mirrors the real KV get/put contract (string values, `expirationTtl`)
 
 ### Phase 5: Rollout wrap-up
 
