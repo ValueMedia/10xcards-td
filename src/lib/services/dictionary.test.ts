@@ -67,7 +67,9 @@ describe("lookupWord", () => {
       new Response("<html><body>503 Service Unavailable</body></html>", { status: 503 }),
     );
 
-    await expect(lookupWord("cat")).rejects.toThrow();
+    // Assert the message carries the status, not just that it throws — the value
+    // of the fix is a *distinguishable* error, so lock that property in.
+    await expect(lookupWord("cat")).rejects.toThrow(/status 503/);
   });
 
   it("normalizes word: trims, replaces spaces with hyphens, lowercases", async () => {
