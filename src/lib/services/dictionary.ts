@@ -31,6 +31,16 @@ export async function lookupWord(word: string): Promise<DictionaryEntry[]> {
     return [];
   }
 
+  // A non-200 upstream (Cambridge down / error page) must surface as an error,
+  // not a silent empty result. Without this guard the error-page body flows into
+  // HTMLRewriter, matches no selectors, and returns [] — making "dictionary
+  // down" indistinguishable from "unknown word". This throw lets the endpoint
+  // return a clean 502. Placed AFTER the redirect short-circuit so an unknown
+  // word (302 -> 200 at the base URL) still returns [] rather than throwing.
+  if (!response.ok) {
+    throw new Error(`Dictionary request failed with status ${response.status}`);
+  }
+
   const entries: DictionaryEntry[] = [];
   let currentRegion = "";
   let parentDpos = "";

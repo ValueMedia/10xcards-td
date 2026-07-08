@@ -50,6 +50,26 @@ describe("lookupWord", () => {
     );
   });
 
+  it("throws when fetch rejects (network / DNS failure)", async () => {
+    // A hard transport failure must propagate so the endpoint can return 502.
+    // This is the precondition the endpoint's 502 catch relies on.
+    const fetchMock = vi.mocked(globalThis.fetch);
+    fetchMock.mockRejectedValueOnce(new TypeError("network failure"));
+
+    await expect(lookupWord("cat")).rejects.toThrow();
+  });
+
+  it("throws on a non-200 upstream response (dictionary down) instead of returning []", async () => {
+    // A 503 error page must NOT be silently parsed into an empty result — that
+    // would make "dictionary down" indistinguishable from "unknown word".
+    const fetchMock = vi.mocked(globalThis.fetch);
+    fetchMock.mockResolvedValueOnce(
+      new Response("<html><body>503 Service Unavailable</body></html>", { status: 503 }),
+    );
+
+    await expect(lookupWord("cat")).rejects.toThrow();
+  });
+
   it("normalizes word: trims, replaces spaces with hyphens, lowercases", async () => {
     stubFetchHtml(makeHtmlFixture(""), `${BASE_URL}light-year`);
 
