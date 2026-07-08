@@ -491,11 +491,11 @@ of 40s. Both are surfaced as clean errors the UI already handles (502 / 504).
 
 #### Automated
 
-- [x] 5.1 Full suite green: `npm test`
-- [x] 5.2 `context/foundation/test-plan.md` §3 Phase 3 row reads `complete`
-- [x] 5.3 §6.4 no longer contains "TBD"
+- [x] 5.1 Full suite green: `npm test` — 145c9e9
+- [x] 5.2 `context/foundation/test-plan.md` §3 Phase 3 row reads `complete` — 145c9e9
+- [x] 5.3 §6.4 no longer contains "TBD" — 145c9e9
 
 #### Manual
 
-- [x] 5.4 Re-read test-plan §6.4 + §6.6 for accuracy against what shipped
-- [x] 5.5 Lessons entries are specific and actionable
+- [x] 5.4 Re-read test-plan §6.4 + §6.6 for accuracy against what shipped — 145c9e9
+- [x] 5.5 Lessons entries are specific and actionable — 145c9e9

@@ -1,9 +1,9 @@
 ---
 change_id: testing-external-integrations
 title: Test external integration failure paths (AI generation + Cambridge Dictionary)
-status: implementing
+status: implemented
 created: 2026-07-08
-updated: 2026-07-08
+updated: 2026-07-09
 archived_at: null
 ---
 
