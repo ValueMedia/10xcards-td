@@ -7,7 +7,7 @@ const DEFAULT_COUNT = 5;
 const MAX_COUNT = 20;
 const DEFAULT_MODEL = "google/gemini-flash-1.5";
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const REQUEST_TIMEOUT_MS = 40_000;
+export const REQUEST_TIMEOUT_MS = 10_000;
 const MAX_TOOL_TURNS = 8;
 
 export type AiServiceError =

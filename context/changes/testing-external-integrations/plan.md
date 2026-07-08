@@ -435,29 +435,29 @@ of 40s. Both are surfaced as clean errors the UI already handles (502 / 504).
 
 #### Automated
 
-- [x] 1.1 `npm test` passes (node + workers projects)
-- [x] 1.2 The two new dictionary failure cases pass in the `workers` project
-- [x] 1.3 Existing dictionary happy-path + redirect tests still pass unchanged
-- [x] 1.4 Existing `dict/[word].test.ts` "lookup throws → 502" still passes
-- [x] 1.5 Typecheck passes: `npm run build`
+- [x] 1.1 `npm test` passes (node + workers projects) — 4586f7b
+- [x] 1.2 The two new dictionary failure cases pass in the `workers` project — 4586f7b
+- [x] 1.3 Existing dictionary happy-path + redirect tests still pass unchanged — 4586f7b
+- [x] 1.4 Existing `dict/[word].test.ts` "lookup throws → 502" still passes — 4586f7b
+- [x] 1.5 Typecheck passes: `npm run build` — 4586f7b
 
 #### Manual
 
-- [x] 1.6 Simulated dictionary-down (non-200) surfaces as endpoint 502, not `200 {entries:[]}`
-- [x] 1.7 A genuinely unknown word still returns `200 {entries:[]}`
+- [x] 1.6 Simulated dictionary-down (non-200) surfaces as endpoint 502, not `200 {entries:[]}` — 4586f7b
+- [x] 1.7 A genuinely unknown word still returns `200 {entries:[]}` — 4586f7b
 
 ### Phase 2: AI provider timeout NFR (#5)
 
 #### Automated
 
-- [ ] 2.1 `npm test` passes
-- [ ] 2.2 Contract test asserts `REQUEST_TIMEOUT_MS ≤ 10_000`
-- [ ] 2.3 Existing AbortError → `timeout` (kind) test still passes
-- [ ] 2.4 Typecheck passes: `npm run build`
+- [x] 2.1 `npm test` passes
+- [x] 2.2 Contract test asserts `REQUEST_TIMEOUT_MS ≤ 10_000`
+- [x] 2.3 Existing AbortError → `timeout` (kind) test still passes
+- [x] 2.4 Typecheck passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.5 No legitimate generation path silently depends on the old 40s budget (tradeoff noted)
+- [x] 2.5 No legitimate generation path silently depends on the old 40s budget (tradeoff noted)
 
 ### Phase 3: Generate-route orchestration (#5)
 

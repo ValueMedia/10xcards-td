@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { generateFlashcardProposals, parseProposals, getAiErrorHttpStatus } from "./ai";
+import { generateFlashcardProposals, parseProposals, getAiErrorHttpStatus, REQUEST_TIMEOUT_MS } from "./ai";
 
 function makeOpenRouterResponse(content: string) {
   return {
@@ -316,6 +316,12 @@ describe("generateFlashcardProposals — function calling", () => {
     expect(data).toHaveLength(1);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(bodyOf(fetchMock, 0).tools).toBeUndefined();
+  });
+});
+
+describe("REQUEST_TIMEOUT_MS (NFR contract)", () => {
+  it("keeps the whole-request generation deadline within the <10s NFR", () => {
+    expect(REQUEST_TIMEOUT_MS).toBeLessThanOrEqual(10_000);
   });
 });
 
