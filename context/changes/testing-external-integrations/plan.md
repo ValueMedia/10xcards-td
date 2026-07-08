@@ -477,25 +477,25 @@ of 40s. Both are surfaced as clean errors the UI already handles (502 / 504).
 
 #### Automated
 
-- [x] 4.1 `npm test` passes
-- [x] 4.2 Under-limit allows and increments; at-limit denies without writing
-- [x] 4.3 Null KV fails closed for both hourly and dict variants
-- [x] 4.4 Key formats and TTLs (3600 / 60) asserted
-- [x] 4.5 Typecheck passes: `npm run build`
+- [x] 4.1 `npm test` passes — f0d85c7
+- [x] 4.2 Under-limit allows and increments; at-limit denies without writing — f0d85c7
+- [x] 4.3 Null KV fails closed for both hourly and dict variants — f0d85c7
+- [x] 4.4 Key formats and TTLs (3600 / 60) asserted — f0d85c7
+- [x] 4.5 Typecheck passes: `npm run build` — f0d85c7
 
 #### Manual
 
-- [x] 4.6 Fake KV mirrors the real KV get/put contract (string values, `expirationTtl`)
+- [x] 4.6 Fake KV mirrors the real KV get/put contract (string values, `expirationTtl`) — f0d85c7
 
 ### Phase 5: Rollout wrap-up
 
 #### Automated
 
-- [ ] 5.1 Full suite green: `npm test`
-- [ ] 5.2 `context/foundation/test-plan.md` §3 Phase 3 row reads `complete`
-- [ ] 5.3 §6.4 no longer contains "TBD"
+- [x] 5.1 Full suite green: `npm test`
+- [x] 5.2 `context/foundation/test-plan.md` §3 Phase 3 row reads `complete`
+- [x] 5.3 §6.4 no longer contains "TBD"
 
 #### Manual
 
-- [ ] 5.4 Re-read test-plan §6.4 + §6.6 for accuracy against what shipped
-- [ ] 5.5 Lessons entries are specific and actionable
+- [x] 5.4 Re-read test-plan §6.4 + §6.6 for accuracy against what shipped
+- [x] 5.5 Lessons entries are specific and actionable

@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-07-07 (Phase 2 complete)
+> Last updated: 2026-07-08 (Phase 3 complete)
 
 ## 1. Strategy
 
@@ -82,7 +82,7 @@ orchestrator updates Status as artifacts appear on disk.
 |---|------------|-----------------|---------------|------------|--------|---------------|
 | 1 | Authorization & data-isolation | Prove a user cannot reach another user's data (PRD critical guardrail); bootstrap the API integration harness. | #1, #2 | integration (multi-user + anon/token), contract | complete | context/changes/testing-authorization-data-isolation/ |
 | 2 | SR state & flashcard persistence | Prove study history and flashcards neither vanish nor corrupt. | #3, #4 | integration (submit→re-fetch, batch) | complete | context/changes/testing-sr-state-persistence/ |
-| 3 | External integration failure paths | Prove AI and dictionary failures surface cleanly, with no silent data loss. | #5, #6 | integration with mocked boundary + contract | not started | — |
+| 3 | External integration failure paths | Prove AI and dictionary failures surface cleanly, with no silent data loss. | #5, #6 | integration with mocked boundary + contract | complete | context/changes/testing-external-integrations/ |
 | 4 | i18n reactivity | Prove a language switch immediately refreshes the UI. | #7 | component (RTL) | not started | — |
 | 5 | Quality-gate wiring | Lock the floor: CI blocks merge on red tests. | cross-cutting | gates (`vitest run` in CI) | not started | — |
 
@@ -198,7 +198,45 @@ the §6.2 harness verbatim (`createTestUser` / `userClient` / `seedSet` /
 
 ### 6.4 Adding a test for an external integration failure path
 
-- TBD — see §3 Phase 3. Will cover mocking the provider boundary (OpenRouter / dictionary) and the clean-failure / no-partial-save contract.
+External-integration failure tests prove the boundary surfaces a **clean,
+typed error** — never a silent blank or a partial save. Place the test by the
+seam it exercises, and mock only the network edge, never the mapping logic.
+
+- **Pick the project by boundary:**
+  - **Scraper (Cambridge Dictionary) → `workers` project.** The parser uses the
+    real `HTMLRewriter`/`fetch` from `workerd`, so only stub the network:
+    `vi.stubGlobal("fetch", vi.fn())` + `mockResolvedValueOnce(new Response(...))`
+    / `mockRejectedValueOnce(...)`. Reference: `src/lib/services/dictionary.test.ts`.
+  - **Route + gate (AI generate) → `node` project.** Module-mock the collaborators
+    and drive the handler directly. Reference:
+    `src/pages/api/sets/[id]/generate.test.ts`, `src/lib/services/ai-rate-limit.test.ts`.
+- **Partial-mock to keep the REAL mapping.** When the value under test is the
+  route's error→status mapping, do NOT stub the mapping table. Partial-mock the
+  service so the real `getAiErrorHttpStatus`/`errorMessage`/schema still run and
+  override only the boundary call:
+  `vi.mock("@/lib/services/ai", async (orig) => ({ ...(await orig()), generateFlashcardProposals: vi.fn() }))`.
+  Then drive `generateFlashcardProposals` to return `{data, error:{kind}}` and
+  assert the resulting HTTP status. The test has teeth: change the mapping and it
+  goes red.
+- **Node-project seam for routes importing `astro:env/server`.** The generate
+  route imports `astro:env/server`; the `node` project must alias it to
+  `src/test/astro-env-server.stub.ts` (same as the `integration` project). The
+  stub reads `process.env`, so set `process.env.OPENROUTER_API_KEY` to select the
+  configured/unconfigured branch. Because the rate-limit gate **fails closed** on
+  a null KV (`env={}` under the stub), also `vi.mock` `checkRateLimit` to default
+  `{allowed:true}` — otherwise every request 429s.
+- **Two contracts to assert:**
+  1. **Non-200 upstream throws** (scraper): `lookupWord` must `throw` on a
+     non-`ok` response so the endpoint returns a clean 502, instead of feeding an
+     error page to `HTMLRewriter` and returning `200 {entries:[]}`. Keep the
+     redirect short-circuit ahead of the `response.ok` check so a valid-but-unknown
+     word (302→200 at base) still returns `[]`.
+  2. **Zero partial save on failure** (route): on any AI error the response
+     carries `error`+`kind` and no `flashcards`, and the persistence path is never
+     reached (`checkDuplicateFronts` never called). The generate route has no save
+     path at all, so this is a structural guarantee the test locks in.
+- **Do not** re-test provider/dictionary uptime (untestable) or recompute the
+  parser's card values (oracle problem) — assert `error.kind` + status only.
 
 ### 6.5 Adding a component test (i18n reactivity)
 
@@ -232,6 +270,26 @@ here capturing anything surprising the rollout phase taught.)
   `npm run test:integration -- --no-file-parallelism` is reliably green. Phase 5
   (CI gate) should serialize these files (e.g. `poolOptions` / `--no-file-parallelism`)
   before enforcing them on PRs.
+
+**Phase 3 (External integration failure paths, `context/changes/testing-external-integrations/`)**
+
+- **Two production fixes shipped with their tests, not just documentation.** The
+  scraper now throws on a non-200 upstream (`dictionary.ts` — was silently
+  returning `[]`, making "dictionary down" indistinguishable from "unknown word"),
+  and the AI generation deadline dropped from 40s to 10s
+  (`REQUEST_TIMEOUT_MS`, exported so a contract test asserts `≤ 10_000`) to meet
+  the `<10s` NFR. Accepted tradeoff: heavy multi-lookup tool loops now share a 10s
+  wall-clock.
+- **Node-project `astro:env/server` seam.** Testing the generate route in the
+  `node` project required aliasing `astro:env/server` to `src/test/astro-env-server.stub.ts`
+  (previously only the `integration` project did). The stub's `getSecret` reads
+  `process.env`. Watch the fail-closed rate-limit trap: `env={}` → null KV →
+  `checkRateLimit` returns `{allowed:false}`, so a route test MUST mock it or every
+  request 429s.
+- **Partial-mock keeps the mapping honest.** The route test partial-mocks `ai`
+  (overriding only `generateFlashcardProposals`) so the REAL `getAiErrorHttpStatus`
+  runs — `apiError→502`, `timeout→504`, `parseError/noProposals→422`. Stubbing the
+  table would have removed the test's teeth.
 
 ## 7. What We Deliberately Don't Test
 
