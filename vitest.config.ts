@@ -22,6 +22,10 @@ export default defineConfig({
             // `cloudflare:workers` is a virtual module supplied at build/runtime
             // by @astrojs/cloudflare; stub it so endpoint modules load under Node.
             "cloudflare:workers": path.resolve(__dirname, "./src/test/cloudflare-workers.stub.ts"),
+            // `astro:env/server` is likewise virtual; alias it to the stub
+            // (getSecret → process.env) so endpoint modules that read server
+            // secrets — e.g. the generate route — can load under Node.
+            "astro:env/server": path.resolve(__dirname, "./src/test/astro-env-server.stub.ts"),
           },
         },
         test: {

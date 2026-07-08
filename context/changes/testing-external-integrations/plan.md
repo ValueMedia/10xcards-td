@@ -450,28 +450,28 @@ of 40s. Both are surfaced as clean errors the UI already handles (502 / 504).
 
 #### Automated
 
-- [x] 2.1 `npm test` passes
-- [x] 2.2 Contract test asserts `REQUEST_TIMEOUT_MS ≤ 10_000`
-- [x] 2.3 Existing AbortError → `timeout` (kind) test still passes
-- [x] 2.4 Typecheck passes: `npm run build`
+- [x] 2.1 `npm test` passes — 628af5f
+- [x] 2.2 Contract test asserts `REQUEST_TIMEOUT_MS ≤ 10_000` — 628af5f
+- [x] 2.3 Existing AbortError → `timeout` (kind) test still passes — 628af5f
+- [x] 2.4 Typecheck passes: `npm run build` — 628af5f
 
 #### Manual
 
-- [x] 2.5 No legitimate generation path silently depends on the old 40s budget (tradeoff noted)
+- [x] 2.5 No legitimate generation path silently depends on the old 40s budget (tradeoff noted) — 628af5f
 
 ### Phase 3: Generate-route orchestration (#5)
 
 #### Automated
 
-- [ ] 3.1 `npm test` passes
-- [ ] 3.2 Route maps `apiError→502`, `timeout→504`, `parseError→422`, `noProposals→422` via real `getAiErrorHttpStatus`
-- [ ] 3.3 Unconfigured key → 500; invalid input → 400; rate-limited → 429 (`Retry-After: 3600`) with no provider call
-- [ ] 3.4 On failure, response contains no `flashcards` and `checkDuplicateFronts` is never invoked
-- [ ] 3.5 Typecheck passes: `npm run build`
+- [x] 3.1 `npm test` passes
+- [x] 3.2 Route maps `apiError→502`, `timeout→504`, `parseError→422`, `noProposals→422` via real `getAiErrorHttpStatus`
+- [x] 3.3 Unconfigured key → 500; invalid input → 400; rate-limited → 429 (`Retry-After: 3600`) with no provider call
+- [x] 3.4 On failure, response contains no `flashcards` and `checkDuplicateFronts` is never invoked
+- [x] 3.5 Typecheck passes: `npm run build`
 
 #### Manual
 
-- [ ] 3.6 Partial-mock keeps the REAL error→status mapping (teeth check)
+- [x] 3.6 Partial-mock keeps the REAL error→status mapping (teeth check)
 
 ### Phase 4: ai-rate-limit gate unit test (#5)
 
