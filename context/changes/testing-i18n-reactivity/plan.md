@@ -281,10 +281,10 @@ None. No production code or schema changes; the test locks in already-correct be
 
 #### Automated
 
-- [x] 2.1 plan.md and plan-brief.md present; test file referenced in §6.5 exists
-- [x] 2.2 No literal "TBD — see §3 Phase 4" remains in §6.5
+- [x] 2.1 plan.md and plan-brief.md present; test file referenced in §6.5 exists — d27920d
+- [x] 2.2 No literal "TBD — see §3 Phase 4" remains in §6.5 — d27920d
 
 #### Manual
 
-- [x] 2.3 §3 Phase 4 status reads `complete`; §6.5 accurately describes the shipped test; §6.6 note (if added) matches reality
-- [x] 2.4 Markdown renders cleanly (tables intact, no broken headings)
+- [x] 2.3 §3 Phase 4 status reads `complete`; §6.5 accurately describes the shipped test; §6.6 note (if added) matches reality — d27920d
+- [x] 2.4 Markdown renders cleanly (tables intact, no broken headings) — d27920d
