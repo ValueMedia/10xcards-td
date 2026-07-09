@@ -1,10 +1,10 @@
 ---
 change_id: testing-i18n-reactivity
 title: Test i18n reactivity — UI text updates on language switch (rollout Phase 4)
-status: implemented
+status: archived
 created: 2026-07-09
 updated: 2026-07-09
-archived_at: null
+archived_at: 2026-07-09T19:45:27Z
 ---
 
 ## Notes
