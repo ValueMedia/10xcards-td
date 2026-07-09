@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-07-08 (Phase 3 complete)
+> Last updated: 2026-07-09 (Phase 4 complete)
 
 ## 1. Strategy
 
@@ -83,7 +83,7 @@ orchestrator updates Status as artifacts appear on disk.
 | 1 | Authorization & data-isolation | Prove a user cannot reach another user's data (PRD critical guardrail); bootstrap the API integration harness. | #1, #2 | integration (multi-user + anon/token), contract | complete | context/changes/testing-authorization-data-isolation/ |
 | 2 | SR state & flashcard persistence | Prove study history and flashcards neither vanish nor corrupt. | #3, #4 | integration (submit→re-fetch, batch) | complete | context/changes/testing-sr-state-persistence/ |
 | 3 | External integration failure paths | Prove AI and dictionary failures surface cleanly, with no silent data loss. | #5, #6 | integration with mocked boundary + contract | complete | context/changes/testing-external-integrations/ |
-| 4 | i18n reactivity | Prove a language switch immediately refreshes the UI. | #7 | component (RTL) | not started | — |
+| 4 | i18n reactivity | Prove a language switch immediately refreshes the UI. | #7 | component (RTL) | complete | context/changes/testing-i18n-reactivity/ |
 | 5 | Quality-gate wiring | Lock the floor: CI blocks merge on red tests. | cross-cutting | gates (`vitest run` in CI) | not started | — |
 
 **Status vocabulary** (fixed — parser literals): `not started` →
@@ -240,7 +240,45 @@ seam it exercises, and mock only the network edge, never the mapping logic.
 
 ### 6.5 Adding a component test (i18n reactivity)
 
-- TBD — see §3 Phase 4. Will cover the language-switch reactivity pattern; reference the existing `src/components/settings/__tests__/LanguageSwitcher.test.tsx`.
+Reactivity tests prove the UI text **changes** when the locale changes — not merely
+that some text exists. The failure mode (Risk #7) is stale text lingering in a mounted
+island after a switch, so the load-bearing assertion is that the *old-locale* string is
+**gone**, not just that the new one appeared.
+
+- **Location**: `src/components/__tests__/I18nProvider.test.tsx`. Co-locate future
+  React component tests under a `src/components/**/__tests__/` folder.
+- **Environment**: opt into jsdom per file with `// @vitest-environment jsdom` as the
+  **first line** (the `node` project defaults to the Node environment). RTL + jsdom are
+  installed; the test runs in the `node` Vitest project.
+- **Subject**: render the **production `I18nProvider`** (`@/components/I18nProvider`),
+  not the raw `I18nextProvider`. `I18nProvider` owns the reactive path under test — a
+  `useState(() => i18n.cloneInstance({ lng: locale }))` plus a
+  `useEffect(() => { if (instance.language !== locale) void instance.changeLanguage(locale); }, [instance, locale])`.
+  Testing the raw `I18nextProvider` would bypass exactly the code that broke before.
+- **Drive the same signal production uses.** In production the locale reaches a mounted
+  island as a serializable `locale` **prop** (the server round-trips through
+  `/api/locale-switch` and re-renders each island). Reproduce that with RTL's `rerender`
+  on a changed `locale` prop — do **not** call `i18n.changeLanguage` directly, and do
+  **not** remount between locales (`useState`'s initializer runs once, so `rerender`
+  keeps the same cloned instance and exercises the `useEffect` path rather than a fresh
+  mount).
+- **Core assertion shape**: mount `locale="en"` around a minimal consumer
+  (`useTranslation("settings")` rendering `t("settings.title")`); assert `"Settings"`
+  visible → `rerender` with `locale="pl"` → new text present **AND** old text absent.
+  Oracle key: `settings.title` = "Settings" (en) / "Ustawienia" (pl).
+- **Async gotcha**: `changeLanguage` resolves asynchronously and re-renders on the
+  `languageChanged` event, so a synchronous `getByText` immediately after `rerender`
+  will flake/fail. Await it — `await screen.findByText("Ustawienia")` (or wrap in
+  `waitFor`) — then assert `screen.queryByText("Settings")` is `null` (the stale-text
+  guard). Cover reversibility with an en→pl→en round-trip on the same instance.
+- **"Has teeth" check**: temporarily neuter `I18nProvider`'s `useEffect` (comment its
+  body) and confirm the test goes **red on the stale-text assertion**, then revert.
+- **Anti-pattern (existence, not change)**:
+  `src/components/settings/__tests__/LanguageSwitcher.test.tsx` renders the raw
+  `I18nextProvider`, sets the locale once in `beforeEach`, and only asserts that
+  text/links *exist*. That is a valid existence test for the switcher UI, but it is the
+  wrong shape for Risk #7 — it never drives a switch to prove the text *changes*. Do not
+  copy it as a reactivity test.
 
 ### 6.6 Per-rollout-phase notes
 
@@ -290,6 +328,20 @@ here capturing anything surprising the rollout phase taught.)
   (overriding only `generateFlashcardProposals`) so the REAL `getAiErrorHttpStatus`
   runs — `apiError→502`, `timeout→504`, `parseError/noProposals→422`. Stubbing the
   table would have removed the test's teeth.
+
+**Phase 4 (i18n reactivity, `context/changes/testing-i18n-reactivity/`)**
+
+- **`changeLanguage` is async — await the re-render.** The `useEffect`-driven
+  `instance.changeLanguage(locale)` resolves on the `languageChanged` event, so a
+  synchronous `getByText` right after `rerender` sees stale text and flakes. Assert with
+  `await findByText` / `waitFor`, then `queryByText(old)` is `null` for the stale-text
+  guard.
+- **A component test can't see the `.astro` slot boundary.** The original Risk #7
+  incident (lessons.md #66) had two layers: a `.astro` slot/hydration bug (provider
+  mounted *over* the island, so Context/hydration never crossed the slot) **and** the
+  React-side `changeLanguage` reactivity. jsdom doesn't run Astro, so RTL covers only the
+  React-side path of `I18nProvider`. The slot-boundary wiring is an accepted layer
+  limitation here, not a gap to close with a heavier test.
 
 ## 7. What We Deliberately Don't Test
 

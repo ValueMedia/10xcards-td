@@ -268,23 +268,23 @@ None. No production code or schema changes; the test locks in already-correct be
 
 #### Automated
 
-- [x] 1.1 New test file passes: `npm run test` includes `src/components/__tests__/I18nProvider.test.tsx` green
-- [x] 1.2 No regression: `npm run test` overall stays green
-- [x] 1.3 Type checking passes: `npm run build` (lint changed `.tsx` selectively if `npm run lint` crashes on `.astro`)
+- [x] 1.1 New test file passes: `npm run test` includes `src/components/__tests__/I18nProvider.test.tsx` green — 26cc963
+- [x] 1.2 No regression: `npm run test` overall stays green — 26cc963
+- [x] 1.3 Type checking passes: `npm run build` (lint changed `.tsx` selectively if `npm run lint` crashes on `.astro`) — 26cc963
 
 #### Manual
 
-- [x] 1.4 Test has teeth: neutering `I18nProvider` reactivity turns the test red on the stale-text assertion, then reverted
-- [x] 1.5 Assertion messages readable; test name states the risk it protects
+- [x] 1.4 Test has teeth: neutering `I18nProvider` reactivity turns the test red on the stale-text assertion, then reverted — 26cc963
+- [x] 1.5 Assertion messages readable; test name states the risk it protects — 26cc963
 
 ### Phase 2: Docs & rollout status
 
 #### Automated
 
-- [ ] 2.1 plan.md and plan-brief.md present; test file referenced in §6.5 exists
-- [ ] 2.2 No literal "TBD — see §3 Phase 4" remains in §6.5
+- [x] 2.1 plan.md and plan-brief.md present; test file referenced in §6.5 exists
+- [x] 2.2 No literal "TBD — see §3 Phase 4" remains in §6.5
 
 #### Manual
 
-- [ ] 2.3 §3 Phase 4 status reads `complete`; §6.5 accurately describes the shipped test; §6.6 note (if added) matches reality
-- [ ] 2.4 Markdown renders cleanly (tables intact, no broken headings)
+- [x] 2.3 §3 Phase 4 status reads `complete`; §6.5 accurately describes the shipped test; §6.6 note (if added) matches reality
+- [x] 2.4 Markdown renders cleanly (tables intact, no broken headings)
