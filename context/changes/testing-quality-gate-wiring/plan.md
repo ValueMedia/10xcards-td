@@ -442,22 +442,22 @@ revert is copy-paste: restore the recorded previous command in the dashboard.
 - [x] 1.1 `npm run lint` exits 0 locally (no crash) — 980d87f
 - [x] 1.2 `npm test` exits 0 locally (87 tests green) — 980d87f
 - [x] 1.3 `npm run build` exits 0 locally — 980d87f
-- [ ] 1.4 Pushed workflow run on `main` completes green in GitHub Actions
+- [x] 1.4 Pushed workflow run on `main` completes green in GitHub Actions — 980d87f
 
 #### Manual
 
-- [ ] 1.5 GitHub Actions run triggered by the push to `main` (not inert)
-- [ ] 1.6 Run log shows lint, test (87), and build steps executing
+- [x] 1.5 GitHub Actions run triggered by the push to `main` (not inert) — 980d87f
+- [x] 1.6 Run log shows lint, test (87), and build steps executing — 980d87f
 
 ### Phase 2: Cloudflare Production Gate (Option B)
 
 #### Automated
 
-- [ ] 2.1 `CLAUDE.md` "## CI" describes the CF build gate and `main` (no `master`)
+- [x] 2.1 `CLAUDE.md` "## CI" describes the CF build gate and `main` (no `master`)
 
 #### Manual
 
-- [ ] 2.2 Cloudflare build command reads `npm ci && npm test && npm run build`
+- [x] 2.2 Cloudflare build command reads `npm ci && npm test && npm run build`
 - [ ] 2.3 Next deploy build log shows `npm test` executing before `npm run build`
 - [ ] 2.4 (Optional, non-prod) Failing test on a preview/branch build blocks the build
 

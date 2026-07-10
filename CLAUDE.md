@@ -51,7 +51,12 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 
 ## CI
 
-GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint + build on every push and PR to master. Requires `SUPABASE_URL` and `SUPABASE_KEY` repository secrets for the build step.
+Two independent mechanisms gate this repo. They are separate — a GitHub Actions status check does **not** gate the Cloudflare deploy (see below).
+
+- **GitHub Actions floor (pre-push feedback).** The workflow (`.github/workflows/ci.yml`) runs `npm run lint`, `npm test` (the deterministic node+workers floor, 87 tests, no external services), and `npm run build` on every push and PR to `main`. Requires `SUPABASE_URL` and `SUPABASE_KEY` repository secrets for the build step. A red unit/component/worker test turns the workflow red. This is fast feedback; it does **not** deploy and does **not** gate the Cloudflare deploy.
+- **Cloudflare production gate (blocks a red deploy).** Cloudflare auto-deploys whatever lands on `main` via its own dashboard↔GitHub Git integration (production branch `main`). Under this repo's direct-push flow, the real production gate is the Cloudflare build command, set in the dashboard (Workers → `10xcards-td` → Settings → Build) to **`npm test && npm run build`**. A red `npm test` fails the build, so no new version ships (the deploy command `npx wrangler deploy` never runs). No `npm ci` prefix because Workers Builds auto-installs dependencies before the build command. The command lives in the dashboard (outside version control); it is recorded here so it is a known fact. `SUPABASE_URL`/`SUPABASE_KEY` build env is already wired for `npm run build`; node+workers tests need no extra secrets. (Previous build command, for rollback: `npm run build`.)
+
+The integration suite (`npm run test:integration -- --no-file-parallelism`) is a deliberate **local-only** gate (requires local Supabase + service-role key) and runs in neither mechanism by decision — see `context/foundation/test-plan.md` §5/§6.6.
 
 <!-- BEGIN @przeprogramowani/10x-cli -->
 
