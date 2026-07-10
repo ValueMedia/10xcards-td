@@ -1,10 +1,10 @@
 ---
 change_id: testing-quality-gate-wiring
 title: Quality-gate wiring — run the test suites in CI (GitHub Actions) and block the Cloudflare deploy on red under direct-push
-status: impl_reviewed
+status: archived
 created: 2026-07-09
 updated: 2026-07-10
-archived_at: null
+archived_at: 2026-07-10T21:35:12Z
 ---
 
 ## Notes
