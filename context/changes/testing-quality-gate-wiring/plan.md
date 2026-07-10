@@ -453,11 +453,11 @@ revert is copy-paste: restore the recorded previous command in the dashboard.
 
 #### Automated
 
-- [x] 2.1 `CLAUDE.md` "## CI" describes the CF build gate and `main` (no `master`)
+- [x] 2.1 `CLAUDE.md` "## CI" describes the CF build gate and `main` (no `master`) — 8b56166
 
 #### Manual
 
-- [x] 2.2 Cloudflare build command reads `npm ci && npm test && npm run build`
+- [x] 2.2 Cloudflare build command reads `npm ci && npm test && npm run build` — 8b56166
 - [ ] 2.3 Next deploy build log shows `npm test` executing before `npm run build`
 - [ ] 2.4 (Optional, non-prod) Failing test on a preview/branch build blocks the build
 
