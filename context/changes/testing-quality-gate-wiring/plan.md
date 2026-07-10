@@ -112,6 +112,16 @@ executing; the test-plan reads as described above.
 - **Not changing what `npm test` covers** (node+workers stays the floor;
   integration stays excluded from it).
 
+**Addendum (Phase 1 implementation, commit 980d87f).** Fixing the `.astro` lint
+crash (the planned `eslint.config.js` scope edit) unmasked ~116 pre-existing lint
+errors that then blocked `npm run lint` (criterion 1.1). Phase 1 therefore applied
+the minimal cleanup needed to make the gate green: `prettier --fix` formatting,
+line-ending normalization, and removing non-null assertions / type-casts across
+the Phase 1–4 suites (type/format only — **no test-logic change**), plus a
+`user.email` guard in `change-password.ts` / `delete-account.ts` (a safety
+improvement). This narrows the two guardrails above: those suites were touched for
+lint-conformance, not modified in behavior, and `npm test`'s coverage is unchanged.
+
 ## Implementation Approach
 
 Deterministic floor first (cheapest, highest-confidence, entirely in-repo and
@@ -457,7 +467,7 @@ revert is copy-paste: restore the recorded previous command in the dashboard.
 
 #### Manual
 
-- [x] 2.2 Cloudflare build command reads `npm ci && npm test && npm run build` — 8b56166
+- [x] 2.2 Cloudflare build command reads `npm test && npm run build` — 8b56166
 - [x] 2.3 Next deploy build log shows `npm test` executing before `npm run build` — 8b56166
 - [ ] 2.4 (Optional, non-prod) Failing test on a preview/branch build blocks the build
 
