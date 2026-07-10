@@ -84,7 +84,7 @@ orchestrator updates Status as artifacts appear on disk.
 | 2 | SR state & flashcard persistence | Prove study history and flashcards neither vanish nor corrupt. | #3, #4 | integration (submit→re-fetch, batch) | complete | context/changes/testing-sr-state-persistence/ |
 | 3 | External integration failure paths | Prove AI and dictionary failures surface cleanly, with no silent data loss. | #5, #6 | integration with mocked boundary + contract | complete | context/changes/testing-external-integrations/ |
 | 4 | i18n reactivity | Prove a language switch immediately refreshes the UI. | #7 | component (RTL) | complete | context/changes/testing-i18n-reactivity/ |
-| 5 | Quality-gate wiring | Lock the floor: CI blocks merge on red tests. | cross-cutting | gates (`vitest run` in CI) | not started | — |
+| 5 | Quality-gate wiring | Lock the floor: CI blocks merge on red tests. | cross-cutting | gates (`vitest run` in CI) | change opened | context/changes/testing-quality-gate-wiring/ |
 
 **Status vocabulary** (fixed — parser literals): `not started` →
 `change opened` → `researched` → `planned` → `implementing` → `complete`.

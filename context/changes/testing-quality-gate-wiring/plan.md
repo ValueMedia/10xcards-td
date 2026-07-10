@@ -439,9 +439,9 @@ revert is copy-paste: restore the recorded previous command in the dashboard.
 
 #### Automated
 
-- [x] 1.1 `npm run lint` exits 0 locally (no crash)
-- [x] 1.2 `npm test` exits 0 locally (87 tests green)
-- [x] 1.3 `npm run build` exits 0 locally
+- [x] 1.1 `npm run lint` exits 0 locally (no crash) — 980d87f
+- [x] 1.2 `npm test` exits 0 locally (87 tests green) — 980d87f
+- [x] 1.3 `npm run build` exits 0 locally — 980d87f
 - [ ] 1.4 Pushed workflow run on `main` completes green in GitHub Actions
 
 #### Manual

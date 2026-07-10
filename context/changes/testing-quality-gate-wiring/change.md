@@ -3,7 +3,7 @@ change_id: testing-quality-gate-wiring
 title: Quality-gate wiring — run the test suites in CI and block merge on red
 status: implementing
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 archived_at: null
 ---
 
