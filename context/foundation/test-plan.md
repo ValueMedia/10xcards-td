@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-07-09 (Phase 4 complete)
+> Last updated: 2026-07-10 (Phase 5 complete — quality-gate wiring)
 
 ## 1. Strategy
 
@@ -84,7 +84,7 @@ orchestrator updates Status as artifacts appear on disk.
 | 2 | SR state & flashcard persistence | Prove study history and flashcards neither vanish nor corrupt. | #3, #4 | integration (submit→re-fetch, batch) | complete | context/changes/testing-sr-state-persistence/ |
 | 3 | External integration failure paths | Prove AI and dictionary failures surface cleanly, with no silent data loss. | #5, #6 | integration with mocked boundary + contract | complete | context/changes/testing-external-integrations/ |
 | 4 | i18n reactivity | Prove a language switch immediately refreshes the UI. | #7 | component (RTL) | complete | context/changes/testing-i18n-reactivity/ |
-| 5 | Quality-gate wiring | Lock the floor: CI blocks merge on red tests. | cross-cutting | gates (`vitest run` in CI) | change opened | context/changes/testing-quality-gate-wiring/ |
+| 5 | Quality-gate wiring | Lock the floor: a red test blocks the Cloudflare deploy (direct-push), with GitHub Actions as pre-push feedback. | cross-cutting | gates (`npm test` node+workers) | complete | context/changes/testing-quality-gate-wiring/ |
 
 **Status vocabulary** (fixed — parser literals): `not started` →
 `change opened` → `researched` → `planned` → `implementing` → `complete`.
@@ -117,10 +117,11 @@ phase lands; before that, the gate is `planned`.
 
 | Gate | Where | Required? | Catches |
 |------|-------|-----------|---------|
-| lint + typecheck | local + CI | required | syntactic / type drift (note: `npm run lint` may crash on `.astro`; `npm run build` type-checks Astro — see lessons) |
-| unit + integration | local + CI | required after §3 Phase 1 | authorization, data-loss, and integration-failure regressions |
-| component (i18n reactivity) | local + CI | required after §3 Phase 4 | stale UI on locale change |
-| CI test gate (`vitest run`) | CI on PR | required after §3 Phase 5 | any red test reaching `main` |
+| lint + typecheck | local + CI | required | syntactic / type drift (`npm run lint` scoped to `**/*.{js,jsx,ts,tsx}`; `.astro` is type-checked by `npm run build` / `@astrojs/check`, not ESLint — see §6.6) |
+| unit + worker (`npm test`, node+workers) | local + CI | required after §3 Phase 1 | AI/dictionary failure paths (Risks #5/#6), service + parser contracts — the deterministic floor |
+| component (i18n reactivity) | local + CI | required after §3 Phase 4 | stale UI on locale change (Risk #7); runs inside `npm test` (node project) |
+| integration (Risks #1–#4) | **local only** (by decision) | run before pushing auth/persistence changes | cross-user access/IDOR (#1), token leak (#2), SR-state (#3), batch persistence (#4); `npm run test:integration -- --no-file-parallelism`, needs local Supabase (`npx supabase start`) + the 3 keys in `.dev.vars`; **not** in CI/CF by cost×signal (§6.2/§6.3, §6.6) |
+| CI test gate (`npm test` = node+workers) | GitHub Actions (`ci.yml`, push to `main`) + Cloudflare build command (`npm test && npm run build`) | required after §3 Phase 5 | any red node+workers test reaching a `main` push / production build — Actions is pre-push feedback, the Cloudflare build is the prod gate (it gates the *deploy*, not a PR merge) |
 
 ## 6. Cookbook Patterns
 
@@ -342,6 +343,30 @@ here capturing anything surprising the rollout phase taught.)
   React-side `changeLanguage` reactivity. jsdom doesn't run Astro, so RTL covers only the
   React-side path of `I18nProvider`. The slot-boundary wiring is an accepted layer
   limitation here, not a gap to close with a heavier test.
+
+**Phase 5 (Quality-gate wiring, `context/changes/testing-quality-gate-wiring/`)**
+
+- **Deploy ≠ check: a GitHub required status check does NOT gate the Cloudflare
+  deploy.** Cloudflare auto-deploys whatever lands on `main` via its own
+  dashboard↔GitHub Git integration, independent of GitHub Actions. A required
+  status check only gates a *PR merge* — and this repo pushes directly to `main`
+  (solo dev, no merge commits). So the real production gate is the **Cloudflare
+  build command** (`npm test && npm run build`, set in the dashboard): a red test
+  fails the build and the deploy command (`npx wrangler deploy`) never runs.
+  GitHub Actions (`ci.yml`) is separate pre-push feedback. Recorded in `CLAUDE.md`
+  §CI. Do NOT wire a GitHub branch-protection rule and assume prod is protected.
+- **The lint crash was a config-scope bug, not a rule problem.** `baseConfig`
+  (typed strict set, incl. `no-misused-promises`) ran on every file including
+  `.astro`, which crashes `astro-eslint-parser` (lessons.md #59). Fixed by scoping
+  `baseConfig` to `files: ["**/*.{js,jsx,ts,tsx}"]` (mirroring `reactConfig`), so
+  `.astro` keeps only astro-specific rules. Astro types are covered by
+  `npm run build` (`@astrojs/check`), not ESLint — so `npm run lint` now exits 0
+  and runs in the gate.
+- **Integration stays local-only by decision (cost×signal #1).** The node+workers
+  floor (`npm test`) is ~4s/zero-infra and deterministic; the integration suite is
+  real-Supabase, needs `--no-file-parallelism`, a `SUPABASE_SERVICE_ROLE_KEY`
+  secret, and auto-skips green when env is absent (the silent-skip false-green
+  trap). Run it locally before pushing auth/persistence changes (§5, §6.2/§6.3).
 
 ## 7. What We Deliberately Don't Test
 

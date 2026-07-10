@@ -458,17 +458,17 @@ revert is copy-paste: restore the recorded previous command in the dashboard.
 #### Manual
 
 - [x] 2.2 Cloudflare build command reads `npm ci && npm test && npm run build` — 8b56166
-- [ ] 2.3 Next deploy build log shows `npm test` executing before `npm run build`
+- [x] 2.3 Next deploy build log shows `npm test` executing before `npm run build` — 8b56166
 - [ ] 2.4 (Optional, non-prod) Failing test on a preview/branch build blocks the build
 
 ### Phase 3: Documentation & Test-Plan Close-Out
 
 #### Automated
 
-- [ ] 3.1 test-plan §3 Phase 5 Status reads `complete`
-- [ ] 3.2 §5 has the integration local-only entry and the reworded CI test-gate row
-- [ ] 3.3 §6.6 has the Phase 5 note
+- [x] 3.1 test-plan §3 Phase 5 Status reads `complete`
+- [x] 3.2 §5 has the integration local-only entry and the reworded CI test-gate row
+- [x] 3.3 §6.6 has the Phase 5 note
 
 #### Manual
 
-- [ ] 3.4 Test-plan reads coherently (Actions = feedback, CF build = prod gate, integration = local-only)
+- [x] 3.4 Test-plan reads coherently (Actions = feedback, CF build = prod gate, integration = local-only)
