@@ -465,10 +465,10 @@ revert is copy-paste: restore the recorded previous command in the dashboard.
 
 #### Automated
 
-- [x] 3.1 test-plan §3 Phase 5 Status reads `complete`
-- [x] 3.2 §5 has the integration local-only entry and the reworded CI test-gate row
-- [x] 3.3 §6.6 has the Phase 5 note
+- [x] 3.1 test-plan §3 Phase 5 Status reads `complete` — a486aaa
+- [x] 3.2 §5 has the integration local-only entry and the reworded CI test-gate row — a486aaa
+- [x] 3.3 §6.6 has the Phase 5 note — a486aaa
 
 #### Manual
 
-- [x] 3.4 Test-plan reads coherently (Actions = feedback, CF build = prod gate, integration = local-only)
+- [x] 3.4 Test-plan reads coherently (Actions = feedback, CF build = prod gate, integration = local-only) — a486aaa
