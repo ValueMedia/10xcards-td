@@ -13,18 +13,14 @@ interface SeedOpts {
   cards?: { front: string; back: string }[];
 }
 
-export async function seedSet(
-  client: SupabaseClient,
-  userId: string,
-  opts: SeedOpts = {},
-): Promise<SeededSet> {
+export async function seedSet(client: SupabaseClient, userId: string, opts: SeedOpts = {}): Promise<SeededSet> {
   const { data: setRow, error: setError } = await client
     .from("sets")
     .insert({ user_id: userId, name: opts.name ?? "Test Set" })
     .select("id")
     .single();
-  if (setError || !setRow) {
-    throw new Error(`seedSet failed: ${setError?.message ?? "no set returned"}`);
+  if (setError) {
+    throw new Error(`seedSet failed: ${setError.message}`);
   }
   const setId = setRow.id as string;
 
@@ -37,5 +33,5 @@ export async function seedSet(
     throw new Error(`seedSet flashcards failed: ${cardError.message}`);
   }
 
-  return { setId, flashcardIds: (cardRows ?? []).map((r) => r.id as string) };
+  return { setId, flashcardIds: cardRows.map((r) => r.id as string) };
 }

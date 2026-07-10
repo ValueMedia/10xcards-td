@@ -82,7 +82,7 @@ describe.skipIf(!hasSupabaseEnv)("IDOR: set-level cross-user access", () => {
       makeApiContext({ user: { id: owner.id }, supabase: ownerClient, params: { id: setId } }),
     );
     expect(res.status).toBe(200);
-    const body = (await res.json()) as { set: { id: string } };
+    const body = await (res as unknown as { json: () => Promise<{ set: { id: string } }> }).json();
     expect(body.set.id).toBe(setId);
   });
 });

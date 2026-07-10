@@ -14,8 +14,7 @@ interface Props {
 export function ShareSetModal({ setId, shareToken, open, onOpenChange, onTokenGenerated }: Props) {
   const [loading, setLoading] = useState(false);
 
-  const shareUrl =
-    shareToken && typeof window !== "undefined" ? `${window.location.origin}/share/${shareToken}` : null;
+  const shareUrl = shareToken && typeof window !== "undefined" ? `${window.location.origin}/share/${shareToken}` : null;
 
   async function activate() {
     setLoading(true);
@@ -58,7 +57,7 @@ export function ShareSetModal({ setId, shareToken, open, onOpenChange, onTokenGe
               Any logged-in user who opens this link can clone the set into their own account.
             </p>
             <div className="rounded-md border border-white/10 bg-white/5 p-3">
-              <p className="mb-3 break-all text-sm text-blue-100/80">{shareUrl}</p>
+              <p className="mb-3 text-sm break-all text-blue-100/80">{shareUrl}</p>
               <Button
                 type="button"
                 size="sm"

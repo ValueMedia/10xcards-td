@@ -18,7 +18,8 @@ const t = getTranslations(locale);
       </h1>
       <SignUpForm serverError={error} locale={locale} client:load />
       <p class="mt-4 text-center text-sm text-blue-100/60">
-        {t("auth.hasAccount")} <a href="/auth/signin" class="text-purple-300 hover:underline">{t("auth.signIn")}</a>
+        {t("auth.hasAccount")}
+        <a href="/auth/signin" class="text-purple-300 hover:underline">{t("auth.signIn")}</a>
       </p>
     </div>
   </div>

@@ -62,7 +62,7 @@ describe.skipIf(!hasSupabaseEnv)("IDOR: review + reset-progress RPC paths", () =
   // proves the DEFINER reset did not run.
   async function ownerCardReps(): Promise<number> {
     const { data } = await ownerClient.from("flashcards").select("reps").eq("id", cardId).maybeSingle();
-    return (data?.reps as number) ?? -1;
+    return (data?.reps as number | null) ?? -1;
   }
 
   async function ownerReviewCount(): Promise<number> {

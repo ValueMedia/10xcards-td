@@ -63,9 +63,7 @@ describe("lookupWord", () => {
     // A 503 error page must NOT be silently parsed into an empty result — that
     // would make "dictionary down" indistinguishable from "unknown word".
     const fetchMock = vi.mocked(globalThis.fetch);
-    fetchMock.mockResolvedValueOnce(
-      new Response("<html><body>503 Service Unavailable</body></html>", { status: 503 }),
-    );
+    fetchMock.mockResolvedValueOnce(new Response("<html><body>503 Service Unavailable</body></html>", { status: 503 }));
 
     // Assert the message carries the status, not just that it throws — the value
     // of the fix is a *distinguishable* error, so lock that property in.

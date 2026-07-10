@@ -12,7 +12,7 @@ const schema = z.object({
 export const POST: APIRoute = async (context) => {
   const user = context.locals.user;
   const supabase = context.locals.supabase;
-  if (!user?.id || !supabase) {
+  if (!user?.id || !user.email || !supabase) {
     return new Response(JSON.stringify({ error: "UNAUTHORIZED" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -41,7 +41,7 @@ export const POST: APIRoute = async (context) => {
   }
 
   const { error: signInError } = await supabase.auth.signInWithPassword({
-    email: user.email!,
+    email: user.email,
     password: parsed.data.currentPassword,
   });
   if (signInError) {

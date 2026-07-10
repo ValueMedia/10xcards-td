@@ -18,9 +18,7 @@ const noPersist = { auth: { persistSession: false, autoRefreshToken: false } } a
 let cachedServiceClient: SupabaseClient | null = null;
 
 export function serviceClient(): SupabaseClient {
-  if (!cachedServiceClient) {
-    cachedServiceClient = createClient(supabaseUrl, serviceRoleKey, { ...noPersist });
-  }
+  cachedServiceClient ??= createClient(supabaseUrl, serviceRoleKey, { ...noPersist });
   return cachedServiceClient;
 }
 
@@ -38,8 +36,8 @@ export async function createTestUser(): Promise<TestUser> {
     password,
     email_confirm: true,
   });
-  if (error || !data.user) {
-    throw new Error(`createTestUser failed: ${error?.message ?? "no user returned"}`);
+  if (error) {
+    throw new Error(`createTestUser failed: ${error.message}`);
   }
   return { id: data.user.id, email, password };
 }
@@ -50,8 +48,8 @@ export async function userClient(user: TestUser): Promise<SupabaseClient> {
     email: user.email,
     password: user.password,
   });
-  if (error || !data.session) {
-    throw new Error(`userClient signIn failed: ${error?.message ?? "no session returned"}`);
+  if (error) {
+    throw new Error(`userClient signIn failed: ${error.message}`);
   }
   return createClient(supabaseUrl, anonKey, {
     ...noPersist,
@@ -60,6 +58,9 @@ export async function userClient(user: TestUser): Promise<SupabaseClient> {
 }
 
 export function anonClient(): SupabaseClient {
+  // supabase-js infers a narrower schema generic than the bare `SupabaseClient`
+  // alias, a known upstream typing quirk; the runtime value is a plain client.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return createClient(supabaseUrl, anonKey, { ...noPersist });
 }
 

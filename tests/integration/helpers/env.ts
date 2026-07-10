@@ -19,9 +19,7 @@ function loadDevVars(): void {
       const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(line);
       if (!match) continue; // skips blank lines and `#` comments
       const [, key, rawValue] = match;
-      if (process.env[key] === undefined) {
-        process.env[key] = rawValue.replace(/^["']|["']$/g, "");
-      }
+      process.env[key] ??= rawValue.replace(/^["']|["']$/g, "");
     }
   } catch {
     // No `.dev.vars` — rely on whatever is already in process.env.
@@ -38,7 +36,9 @@ async function probeReachable(): Promise<boolean> {
   if (!supabaseUrl || !anonKey || !serviceRoleKey) return false;
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 2000);
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 2000);
     const res = await fetch(`${supabaseUrl}/auth/v1/health`, {
       headers: { apikey: anonKey },
       signal: controller.signal,

@@ -20,19 +20,18 @@ describe.skipIf(!hasSupabaseEnv)("middleware auth gate", () => {
         set: () => undefined,
       },
       locals: {},
-      redirect: (path: string) =>
-        new Response(null, { status: 302, headers: { Location: path } }),
+      redirect: (path: string) => new Response(null, { status: 302, headers: { Location: path } }),
     } as unknown as APIContext;
   }
 
   it("anon → protected API route → 401, handler never reached", async () => {
     const next = vi.fn(() => Promise.resolve(new Response("SHOULD_NOT_REACH", { status: 200 })));
 
-    const res = await onRequest(cookielessContext("/api/sets"), next as never);
+    const res = await onRequest(cookielessContext("/api/sets"), next);
 
     expect(res.status).toBe(401);
     expect(next).not.toHaveBeenCalled();
-    const body = (await res.json()) as { error: string };
+    const body = await (res as unknown as Response).json();
     expect(body.error).toBe("UNAUTHORIZED");
   });
 });

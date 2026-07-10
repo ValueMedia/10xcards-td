@@ -13,16 +13,21 @@ import {
 // records the `expirationTtl` option so the TTL contract can be asserted. The
 // full KVNamespace interface has more methods, but the gate only touches these
 // two — cast through `unknown` to satisfy the parameter type.
-type PutCall = { key: string; value: string; expirationTtl?: number };
+interface PutCall {
+  key: string;
+  value: string;
+  expirationTtl?: number;
+}
 
 function makeKv() {
   const store = new Map<string, string>();
   const puts: PutCall[] = [];
   const kv = {
-    get: async (key: string) => store.get(key) ?? null,
-    put: async (key: string, value: string, opts?: { expirationTtl?: number }) => {
+    get: (key: string) => Promise.resolve(store.get(key) ?? null),
+    put: (key: string, value: string, opts?: { expirationTtl?: number }) => {
       store.set(key, value);
       puts.push({ key, value, expirationTtl: opts?.expirationTtl });
+      return Promise.resolve();
     },
   };
   return { kv: kv as unknown as KVNamespace, store, puts };

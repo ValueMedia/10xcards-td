@@ -24,12 +24,12 @@ describe.skipIf(!hasSupabaseEnv)("integration harness smoke", () => {
       cards: [{ front: "hello", back: "world" }],
     });
 
-    const res = await GET(
-      makeApiContext({ user: { id: owner.id }, supabase: client, params: { id: setId } }),
-    );
+    const res = await GET(makeApiContext({ user: { id: owner.id }, supabase: client, params: { id: setId } }));
 
     expect(res.status).toBe(200);
-    const body = (await res.json()) as { set: { id: string }; flashcards: unknown[] };
+    const body = await (
+      res as unknown as { json: () => Promise<{ set: { id: string }; flashcards: unknown[] }> }
+    ).json();
     expect(body.set.id).toBe(setId);
     expect(body.flashcards).toHaveLength(1);
   });

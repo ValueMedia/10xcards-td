@@ -64,7 +64,7 @@ describe.skipIf(!hasSupabaseEnv)("Risk #2 — anon share-path exposure", () => {
       makeApiContext({ user: { id: ownerA.id }, supabase: clientA, params: { id: setIdA }, body: {} }),
     );
     expect(res.status).toBe(200);
-    shareToken = ((await res.json()) as { share_token: string }).share_token;
+    shareToken = (await (res as unknown as { json: () => Promise<{ share_token: string }> }).json()).share_token;
     expect(shareToken).toBeTruthy();
   });
 
@@ -74,12 +74,15 @@ describe.skipIf(!hasSupabaseEnv)("Risk #2 — anon share-path exposure", () => {
 
   it("anon RPC returns exactly one row with ONLY metadata keys — no share_token, no card content", async () => {
     const anon = anonClient();
-    const { data, error } = await anon.rpc("get_shared_set_info", { p_token: shareToken });
+    const { data, error } = (await anon.rpc("get_shared_set_info", { p_token: shareToken })) as {
+      data: Record<string, unknown>[];
+      error: unknown;
+    };
     expect(error).toBeNull();
     expect(Array.isArray(data)).toBe(true);
     expect(data).toHaveLength(1);
 
-    const row = (data as Record<string, unknown>[])[0];
+    const row = data[0];
     // Exact column set — owner_id is expected (see file header). This assertion
     // fails the moment share_token (or any card column) is added to the output.
     expect(Object.keys(row).sort()).toEqual(["flashcard_count", "owner_id", "set_id", "set_name"]);
@@ -99,15 +102,16 @@ describe.skipIf(!hasSupabaseEnv)("Risk #2 — anon share-path exposure", () => {
 
   it("anon RPC with an unknown token returns zero rows (no enumeration)", async () => {
     const anon = anonClient();
-    const { data, error } = await anon.rpc("get_shared_set_info", { p_token: randomUUID() });
+    const { data, error } = (await anon.rpc("get_shared_set_info", { p_token: randomUUID() })) as {
+      data: unknown[];
+      error: unknown;
+    };
     expect(error).toBeNull();
     expect(data).toHaveLength(0);
   });
 
   it("anon cannot claim a shared set → 401 (no writes as an anon caller)", async () => {
-    const res = await POST_CLAIM(
-      makeApiContext({ user: null, supabase: anonClient(), body: { token: shareToken } }),
-    );
+    const res = await POST_CLAIM(makeApiContext({ user: null, supabase: anonClient(), body: { token: shareToken } }));
     expect(res.status).toBe(401);
   });
 });

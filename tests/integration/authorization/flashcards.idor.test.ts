@@ -85,11 +85,7 @@ describe.skipIf(!hasSupabaseEnv)("IDOR: flashcard-level cross-user writes", () =
     );
     expect(res.status).toBe(404);
 
-    const { data } = await ownerClient
-      .from("flashcards")
-      .select("front, back")
-      .eq("id", cardId)
-      .maybeSingle();
+    const { data } = await ownerClient.from("flashcards").select("front, back").eq("id", cardId).maybeSingle();
     expect(data?.front).toBe("original-front");
     expect(data?.back).toBe("original-back");
   });

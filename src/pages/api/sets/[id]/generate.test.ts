@@ -42,7 +42,7 @@ function makeSupabase(setRow: { id: string } | null) {
   const chain = {
     select: () => chain,
     eq: () => chain,
-    maybeSingle: async () => ({ data: setRow, error: null }),
+    maybeSingle: () => Promise.resolve({ data: setRow, error: null }),
   };
   return { from: () => chain };
 }
@@ -85,10 +85,10 @@ describe("POST /api/sets/[id]/generate — failure paths", () => {
 
   it.each(cases)("maps AI error kind '$kind' to HTTP $status with no flashcards", async ({ kind, status }) => {
     const message = `simulated ${kind}`;
-    generateMock.mockResolvedValue({ data: [], error: { kind, message } as AiServiceError });
+    generateMock.mockResolvedValue({ data: [], error: { kind, message } });
 
     const res = await POST(makeContext());
-    const body = (await res.json()) as Record<string, unknown>;
+    const body = await res.json();
 
     expect(res.status).toBe(status);
     expect(body.kind).toBe(kind);
@@ -102,7 +102,7 @@ describe("POST /api/sets/[id]/generate — failure paths", () => {
     delete process.env.OPENROUTER_API_KEY;
 
     const res = await POST(makeContext());
-    const body = (await res.json()) as Record<string, unknown>;
+    const body = await res.json();
 
     expect(res.status).toBe(500);
     expect(body.error).toBe("AI generation is not configured");
@@ -111,7 +111,7 @@ describe("POST /api/sets/[id]/generate — failure paths", () => {
 
   it("returns 400 for invalid input (text too short) without calling the provider", async () => {
     const res = await POST(makeContext({ body: { text: "short" } }));
-    const body = (await res.json()) as Record<string, unknown>;
+    const body = await res.json();
 
     expect(res.status).toBe(400);
     expect(body.error).toBe("Validation failed");

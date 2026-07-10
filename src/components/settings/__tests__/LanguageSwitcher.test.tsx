@@ -22,27 +22,29 @@ describe("LanguageSwitcher", () => {
 
   it("marks the current locale link as active (en)", () => {
     renderWithI18n(<LanguageSwitcher currentLocale="en" />);
-    const enLink = screen.getByTestId("lang-en") as HTMLAnchorElement;
-    const plLink = screen.getByTestId("lang-pl") as HTMLAnchorElement;
+    const enLink = screen.getByTestId("lang-en");
+    const plLink = screen.getByTestId("lang-pl");
     expect(enLink.className).toContain("bg-purple-600");
     expect(plLink.className).not.toContain("bg-purple-600");
   });
 
   it("marks the current locale link as active (pl)", () => {
     renderWithI18n(<LanguageSwitcher currentLocale="pl" />);
-    const enLink = screen.getByTestId("lang-en") as HTMLAnchorElement;
-    const plLink = screen.getByTestId("lang-pl") as HTMLAnchorElement;
+    const enLink = screen.getByTestId("lang-en");
+    const plLink = screen.getByTestId("lang-pl");
     expect(plLink.className).toContain("bg-purple-600");
     expect(enLink.className).not.toContain("bg-purple-600");
   });
 
   it("submits a POST form to the locale-switch API endpoint", () => {
     renderWithI18n(<LanguageSwitcher currentLocale="en" />);
-    const plButton = screen.getByTestId("lang-pl") as HTMLButtonElement;
-    const form = plButton.closest("form") as HTMLFormElement;
+    const plButton = screen.getByTestId("lang-pl");
+    const form = plButton.closest("form");
+    if (!form) throw new Error("form element not found");
     expect(form.getAttribute("method")).toBe("post");
     expect(form.getAttribute("action")).toBe("/api/locale-switch");
-    const localeInput = form.querySelector('input[name="locale"]') as HTMLInputElement;
+    const localeInput = form.querySelector<HTMLInputElement>('input[name="locale"]');
+    if (!localeInput) throw new Error("locale input not found");
     expect(localeInput.value).toBe("pl");
   });
 });
