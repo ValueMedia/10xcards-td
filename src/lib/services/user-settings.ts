@@ -2,6 +2,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PostgrestError, AuthError } from "@supabase/supabase-js";
 import type { SupportedLocale } from "@/lib/i18n/constants";
 import { DEFAULT_LOCALE } from "@/lib/i18n/constants";
+import type { VoiceId } from "@/lib/tts/voices";
+import { DEFAULT_VOICE, isValidVoice } from "@/lib/tts/voices";
 
 interface UserPromptRow {
   id: string;
@@ -88,7 +90,13 @@ export async function deleteUserAccount(adminClient: SupabaseClient, userId: str
 interface UserPreferencesRow {
   user_id: string;
   locale: string;
+  tts_voice_front: string | null;
+  tts_voice_back: string | null;
   updated_at: string;
+}
+
+function coalesceVoice(value: string | null): VoiceId {
+  return value && isValidVoice(value) ? value : DEFAULT_VOICE;
 }
 
 export async function getUserLocale(
@@ -128,4 +136,62 @@ export async function upsertUserLocale(
   }
 
   return { data: (data?.locale ?? locale) as SupportedLocale, error: null };
+}
+
+export async function getUserVoices(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<{ data: { front: VoiceId; back: VoiceId }; error: PostgrestError | null }> {
+  const {
+    data,
+    error,
+  }: { data: Pick<UserPreferencesRow, "tts_voice_front" | "tts_voice_back"> | null; error: PostgrestError | null } =
+    await supabase
+      .from("user_preferences")
+      .select("tts_voice_front, tts_voice_back")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+  if (error) {
+    return { data: { front: DEFAULT_VOICE, back: DEFAULT_VOICE }, error };
+  }
+
+  return {
+    data: {
+      front: coalesceVoice(data?.tts_voice_front ?? null),
+      back: coalesceVoice(data?.tts_voice_back ?? null),
+    },
+    error: null,
+  };
+}
+
+export async function upsertUserVoices(
+  supabase: SupabaseClient,
+  userId: string,
+  voices: { front: VoiceId; back: VoiceId },
+): Promise<{ data: { front: VoiceId; back: VoiceId }; error: PostgrestError | null }> {
+  const {
+    data,
+    error,
+  }: { data: Pick<UserPreferencesRow, "tts_voice_front" | "tts_voice_back"> | null; error: PostgrestError | null } =
+    await supabase
+      .from("user_preferences")
+      .upsert(
+        { user_id: userId, tts_voice_front: voices.front, tts_voice_back: voices.back },
+        { onConflict: "user_id" },
+      )
+      .select("tts_voice_front, tts_voice_back")
+      .single();
+
+  if (error) {
+    return { data: voices, error };
+  }
+
+  return {
+    data: {
+      front: coalesceVoice(data?.tts_voice_front ?? null),
+      back: coalesceVoice(data?.tts_voice_back ?? null),
+    },
+    error: null,
+  };
 }
