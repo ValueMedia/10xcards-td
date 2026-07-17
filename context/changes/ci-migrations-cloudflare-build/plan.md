@@ -296,26 +296,26 @@ the production branch (`main`), never on the GHA floor. It does not run on the G
 
 #### Automated
 
-- [x] 1.1 Runbook reflects the inline command exactly (`db push --db-url "$SUPABASE_DB_URL" --yes`)
-- [x] 1.2 Runbook has no `--linked` in build-command context and no npm-wrapper script
+- [x] 1.1 Runbook reflects the inline command exactly (`db push --db-url "$SUPABASE_DB_URL" --yes`) — 798e62f
+- [x] 1.2 Runbook has no `--linked` in build-command context and no npm-wrapper script — 798e62f
 
 #### Manual
 
-- [x] 1.3 Session-pooler URI retrieved from dashboard; read-only dry-run connects over IPv4 and reports "up to date" (user runs — needs DB password)
-- [x] 1.4 Prepared CLAUDE.md bullet reads truthfully and matches intended dashboard command exactly
+- [x] 1.3 Session-pooler URI retrieved from dashboard; read-only dry-run connects over IPv4 and reports "up to date" (user runs — needs DB password) — 798e62f
+- [x] 1.4 Prepared CLAUDE.md bullet reads truthfully and matches intended dashboard command exactly — 798e62f
 
 ### Phase 2: Dashboard Cutover & Verification
 
 #### Automated
 
-- [ ] 2.1 CLAUDE.md documents the new command (`grep -q 'supabase db push --db-url' CLAUDE.md`)
-- [ ] 2.2 CLAUDE.md still records rollback command `npm test && npm run build`
-- [ ] 2.3 Local floor still green (`npm test`)
-- [ ] 2.4 `migration list --linked` shows all local migrations in the Remote column
+- [x] 2.1 CLAUDE.md documents the new command (`grep -q 'supabase db push --db-url' CLAUDE.md`)
+- [x] 2.2 CLAUDE.md still records rollback command `npm test && npm run build`
+- [x] 2.3 Local floor still green (`npm test`)
+- [x] 2.4 `migration list --linked` shows all local migrations in the Remote column
 
 #### Manual
 
-- [ ] 2.5 Cloudflare builds confirmed production-branch-only (no preview/branch build pushes to prod), or branch guard in place
+- [x] 2.5 Cloudflare builds confirmed production-branch-only (no preview/branch build pushes to prod), or branch guard in place
 - [ ] 2.6 First post-cutover build log shows test → `supabase db push` → build ordering
 - [ ] 2.7 A new migration merged to `main` applies in the build log and shows in Remote
 - [ ] 2.8 `sets/[id]/review` Reset works in production (incident regression guard)
