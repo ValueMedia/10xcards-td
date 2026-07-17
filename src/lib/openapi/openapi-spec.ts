@@ -1573,6 +1573,138 @@ export const openApiSpec = {
         },
       },
     },
+    "/api/user-voice": {
+      get: {
+        summary: "Get the current user's front/back speech voices",
+        tags: ["User Settings"],
+        security: [{ cookieAuth: [] }],
+        responses: {
+          "200": {
+            description: "The account's voice pair (defaults applied when unset)",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    front: { type: "string", description: "Voice id for the front side" },
+                    back: { type: "string", description: "Voice id for the back side" },
+                  },
+                  required: ["front", "back"],
+                },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+          "500": {
+            description: "Server error",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+        },
+      },
+      put: {
+        summary: "Upsert the user's front/back speech voices",
+        tags: ["User Settings"],
+        security: [{ cookieAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  front: { type: "string", description: "Voice id from the supported voice catalog" },
+                  back: { type: "string", description: "Voice id from the supported voice catalog" },
+                },
+                required: ["front", "back"],
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Voices saved",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: { front: { type: "string" }, back: { type: "string" } },
+                  required: ["front", "back"],
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Validation failed or invalid JSON",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ValidationError" } } },
+          },
+          "401": {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+          "500": {
+            description: "Server error",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+        },
+      },
+    },
+    "/api/tts": {
+      post: {
+        summary: "Synthesize speech for a card side",
+        description:
+          "Synthesizes the given text with the given catalog voice via Google Cloud Text-to-Speech and returns MP3 audio. Responses are edge-cached (keyed on a hash of text+voice) and rate-limited per user; cache hits neither consume quota nor count against the limit. Text is capped at 300 characters.",
+        tags: ["TTS"],
+        security: [{ cookieAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  text: { type: "string", minLength: 1, maxLength: 300 },
+                  voice: { type: "string", description: "Voice id from the supported voice catalog" },
+                },
+                required: ["text", "voice"],
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "MP3 audio",
+            content: { "audio/mpeg": { schema: { type: "string", format: "binary" } } },
+          },
+          "400": {
+            description: "Validation failed (text too long / invalid voice) or invalid JSON",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ValidationError" } } },
+          },
+          "401": {
+            description: "Unauthorized",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+          "429": {
+            description: "Rate limit exceeded",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+          "500": {
+            description: "Text-to-speech is not configured",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+          "502": {
+            description: "Upstream provider error",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+          "504": {
+            description: "Synthesis timed out",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+          },
+        },
+      },
+    },
     "/api/user-prompt": {
       get: {
         summary: "Get the current user's AI prompt settings",

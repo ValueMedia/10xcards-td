@@ -347,30 +347,30 @@ Thread the account's Front/Back voices from the pages into both islands and the 
 
 #### Automated
 
-- [x] 2.1 Build passes (`npm run build`)
-- [x] 2.2 Lint passes on `user-voice.ts` + `VoiceSwitcher.tsx` + `middleware.ts`
-- [x] 2.3 `PUT /api/user-voice` 400 on invalid voice, 200 on valid pair (route test)
+- [x] 2.1 Build passes (`npm run build`) — eb9a4c0
+- [x] 2.2 Lint passes on `user-voice.ts` + `VoiceSwitcher.tsx` + `middleware.ts` — eb9a4c0
+- [x] 2.3 `PUT /api/user-voice` 400 on invalid voice, 200 on valid pair (route test) — eb9a4c0
 
 #### Manual
 
-- [x] 2.4 Settings shows two voice dropdowns; changes persist across reload
-- [x] 2.5 New account shows default en-US voice on both sides
-- [x] 2.6 No dead buttons — island hydrates
+- [x] 2.4 Settings shows two voice dropdowns; changes persist across reload — eb9a4c0
+- [x] 2.5 New account shows default en-US voice on both sides — eb9a4c0
+- [x] 2.6 No dead buttons — island hydrates — eb9a4c0
 
 ### Phase 3: TTS service + endpoint
 
 #### Automated
 
-- [ ] 3.1 Build passes (`npm run build`)
-- [ ] 3.2 Lint passes on `tts.ts` + `ai-rate-limit.ts` + `api/tts.ts`
-- [ ] 3.3 `synthesizeSpeech` returns `apiError` on non-ok, `timeout` on abort (unit test)
-- [ ] 3.4 `POST /api/tts` 400 too-long/invalid voice, 200 audio/mpeg happy path (route test)
+- [x] 3.1 Build passes (`npm run build`)
+- [x] 3.2 Lint passes on `tts.ts` + `ai-rate-limit.ts` + `api/tts.ts`
+- [x] 3.3 `synthesizeSpeech` returns `apiError` on non-ok, `timeout` on abort (unit test)
+- [x] 3.4 `POST /api/tts` 400 too-long/invalid voice, 200 audio/mpeg happy path (route test)
 
 #### Manual
 
-- [ ] 3.5 `POST /api/tts` returns playable MP3 for English and German voices
-- [ ] 3.6 Second identical request served from cache (no new GCP call)
-- [ ] 3.7 `/docs/api` shows the new endpoints
+- [x] 3.5 `POST /api/tts` returns playable MP3 for English and German voices
+- [x] 3.6 Second identical request served from cache (no new GCP call)
+- [x] 3.7 `/docs/api` shows the new endpoints
 
 ### Phase 4: Playback button + prop threading
 

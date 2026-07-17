@@ -70,3 +70,41 @@ export async function checkDictRateLimit(
   await kv.put(key, String(count + 1), { expirationTtl: 60 });
   return { allowed: true, limit, remaining: limit - count - 1 };
 }
+
+// TTS endpoint rate limiting. Same contract as checkDictRateLimit: minute
+// buckets, a `tts:minute:` key prefix, 60s TTL. Reuses the AI_RATE_LIMIT KV
+// namespace — no new binding. Cache hits are checked BEFORE this gate (see
+// api/tts.ts) so replays neither consume quota nor count against the limit.
+const TTS_LIMIT_PER_MINUTE = 60;
+
+export function getTtsLimit(): number {
+  return TTS_LIMIT_PER_MINUTE;
+}
+
+export function ttsRateLimitKey(userId: string, now = new Date()): string {
+  const minute = now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM
+  return `tts:minute:${userId}:${minute}`;
+}
+
+export async function checkTtsRateLimit(
+  kv: KVNamespace | null,
+  userId: string,
+  now = new Date(),
+): Promise<{ allowed: boolean; limit: number; remaining: number }> {
+  const limit = getTtsLimit();
+  if (!kv) {
+    return { allowed: false, limit, remaining: 0 };
+  }
+
+  const key = ttsRateLimitKey(userId, now);
+  const current = await kv.get(key);
+  const parsed = current ? Number.parseInt(current, 10) : 0;
+  const count = Number.isNaN(parsed) ? 0 : parsed;
+
+  if (count >= limit) {
+    return { allowed: false, limit, remaining: 0 };
+  }
+
+  await kv.put(key, String(count + 1), { expirationTtl: 60 });
+  return { allowed: true, limit, remaining: limit - count - 1 };
+}
