@@ -10,7 +10,7 @@ import { env } from "cloudflare:workers";
 export const prerender = false;
 
 const bodySchema = z.object({
-  text: z.string().min(1).max(300),
+  text: z.string().min(1).max(1000),
   voice: z.string().refine(isValidVoice, { message: "Invalid voice" }),
 });
 

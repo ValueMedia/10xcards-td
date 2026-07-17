@@ -51,8 +51,8 @@ describe("POST /api/tts", () => {
     expect(synthesizeMock).not.toHaveBeenCalled();
   });
 
-  it("returns 400 for text longer than 300 chars without calling the provider", async () => {
-    const res = await POST(makeContext({ body: { text: "a".repeat(301), voice: DEFAULT_VOICE } }));
+  it("returns 400 for text longer than 1000 chars without calling the provider", async () => {
+    const res = await POST(makeContext({ body: { text: "a".repeat(1001), voice: DEFAULT_VOICE } }));
     expect(res.status).toBe(400);
     expect(synthesizeMock).not.toHaveBeenCalled();
   });

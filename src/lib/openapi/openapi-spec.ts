@@ -1665,7 +1665,7 @@ export const openApiSpec = {
               schema: {
                 type: "object",
                 properties: {
-                  text: { type: "string", minLength: 1, maxLength: 300 },
+                  text: { type: "string", minLength: 1, maxLength: 1000 },
                   voice: { type: "string", description: "Voice id from the supported voice catalog" },
                 },
                 required: ["text", "voice"],

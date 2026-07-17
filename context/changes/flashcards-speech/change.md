@@ -1,7 +1,7 @@
 ---
 change_id: flashcards-speech
 title: Text-to-speech playback button on flashcards with per-user voice selection
-status: implemented
+status: impl_reviewed
 created: 2026-07-17
 updated: 2026-07-17
 archived_at: null

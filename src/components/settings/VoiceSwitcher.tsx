@@ -14,7 +14,7 @@ export function VoiceSwitcher({ initialFront, initialBack }: Props) {
   const [back, setBack] = useState<VoiceId>(initialBack);
   const [saving, setSaving] = useState(false);
 
-  async function persist(next: { front: VoiceId; back: VoiceId }) {
+  async function persist(next: { front: VoiceId; back: VoiceId }, prev: { front: VoiceId; back: VoiceId }) {
     setSaving(true);
     try {
       const res = await fetch("/api/user-voice", {
@@ -25,9 +25,15 @@ export function VoiceSwitcher({ initialFront, initialBack }: Props) {
       if (res.ok) {
         toast.success(t("settings.voiceSaved"));
       } else {
+        // Roll back the optimistic selection so the dropdowns reflect the
+        // last persisted value rather than an unsaved one.
+        setFront(prev.front);
+        setBack(prev.back);
         toast.error(t("settings.voiceSaveFailed"));
       }
     } catch {
+      setFront(prev.front);
+      setBack(prev.back);
       toast.error(t("errors.networkError"));
     } finally {
       setSaving(false);
@@ -35,13 +41,14 @@ export function VoiceSwitcher({ initialFront, initialBack }: Props) {
   }
 
   function handleChange(side: "front" | "back", value: VoiceId) {
+    const prev = { front, back };
     const next = side === "front" ? { front: value, back } : { front, back: value };
     if (side === "front") {
       setFront(value);
     } else {
       setBack(value);
     }
-    void persist(next);
+    void persist(next, prev);
   }
 
   const selectClass =

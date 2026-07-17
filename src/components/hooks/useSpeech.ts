@@ -64,6 +64,13 @@ export function useSpeech(): { speak: (text: string, voice: VoiceId) => Promise<
         audioRef.current = audio;
         audio.addEventListener("ended", () => {
           setStatus("idle");
+          // Free the object URL as soon as playback finishes naturally, rather
+          // than waiting for the next speak() or unmount to revoke it.
+          if (urlRef.current === url) {
+            URL.revokeObjectURL(url);
+            urlRef.current = null;
+            audioRef.current = null;
+          }
         });
         await audio.play();
         setStatus("idle");
