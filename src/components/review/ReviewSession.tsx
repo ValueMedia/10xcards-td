@@ -9,6 +9,7 @@ import { FlashcardBrowseCard } from "@/components/sets/FlashcardBrowseCard";
 import { useReverseMode } from "@/components/hooks/useReverseMode";
 import { I18nProvider } from "@/components/I18nProvider";
 import type { SupportedLocale } from "@/lib/i18n/constants";
+import type { VoiceId } from "@/lib/tts/voices";
 import { ResetProgressDialog } from "@/components/review/ResetProgressDialog";
 
 type Phase = "loading" | "empty" | "error" | "reviewing" | "summary";
@@ -17,6 +18,8 @@ interface Props {
   setId: string;
   setName: string;
   locale: SupportedLocale;
+  voiceFront: VoiceId;
+  voiceBack: VoiceId;
 }
 
 const GRADE_LABELS: { rating: Rating; label: string; key: keyof SessionSummary["byGrade"] }[] = [
@@ -57,7 +60,7 @@ export default function ReviewSession({ locale, ...props }: Props) {
   );
 }
 
-function ReviewSessionInner({ setId, setName }: Omit<Props, "locale">) {
+function ReviewSessionInner({ setId, setName, voiceFront, voiceBack }: Omit<Props, "locale">) {
   const { t } = useTranslation("common");
   const [reverse] = useReverseMode(setId);
   const [phase, setPhase] = useState<Phase>("loading");
@@ -327,6 +330,8 @@ function ReviewSessionInner({ setId, setName }: Omit<Props, "locale">) {
             back={card.back}
             flipped={showingBack}
             onFlip={flipCard}
+            voiceFront={voiceFront}
+            voiceBack={voiceBack}
           />
 
           <div className="flex w-full gap-2">

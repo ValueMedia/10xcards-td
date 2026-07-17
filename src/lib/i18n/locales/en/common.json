@@ -57,5 +57,7 @@
   "set.resetProgressConfirm": "Reset progress",
   "set.resetting": "Resetting...",
   "set.resetProgressSuccess": "Progress reset",
-  "set.resetProgressError": "Failed to reset progress"
+  "set.resetProgressError": "Failed to reset progress",
+  "speech.play": "Play audio",
+  "speech.playbackFailed": "Could not play audio"
 }

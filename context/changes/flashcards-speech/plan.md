@@ -361,28 +361,28 @@ Thread the account's Front/Back voices from the pages into both islands and the 
 
 #### Automated
 
-- [x] 3.1 Build passes (`npm run build`)
-- [x] 3.2 Lint passes on `tts.ts` + `ai-rate-limit.ts` + `api/tts.ts`
-- [x] 3.3 `synthesizeSpeech` returns `apiError` on non-ok, `timeout` on abort (unit test)
-- [x] 3.4 `POST /api/tts` 400 too-long/invalid voice, 200 audio/mpeg happy path (route test)
+- [x] 3.1 Build passes (`npm run build`) — 3d5e9fb
+- [x] 3.2 Lint passes on `tts.ts` + `ai-rate-limit.ts` + `api/tts.ts` — 3d5e9fb
+- [x] 3.3 `synthesizeSpeech` returns `apiError` on non-ok, `timeout` on abort (unit test) — 3d5e9fb
+- [x] 3.4 `POST /api/tts` 400 too-long/invalid voice, 200 audio/mpeg happy path (route test) — 3d5e9fb
 
 #### Manual
 
-- [x] 3.5 `POST /api/tts` returns playable MP3 for English and German voices
-- [x] 3.6 Second identical request served from cache (no new GCP call)
-- [x] 3.7 `/docs/api` shows the new endpoints
+- [x] 3.5 `POST /api/tts` returns playable MP3 for English and German voices — 3d5e9fb
+- [x] 3.6 Second identical request served from cache (no new GCP call) — 3d5e9fb
+- [x] 3.7 `/docs/api` shows the new endpoints — 3d5e9fb
 
 ### Phase 4: Playback button + prop threading
 
 #### Automated
 
-- [ ] 4.1 Build passes (`npm run build`)
-- [ ] 4.2 Lint passes on card + `useSpeech.ts` + both island views
-- [ ] 4.3 Speaker click calls `/api/tts` with visible side's text+voice and does not flip (component test)
+- [x] 4.1 Build passes (`npm run build`)
+- [x] 4.2 Lint passes on card + `useSpeech.ts` + both island views
+- [x] 4.3 Speaker click calls `/api/tts` with visible side's text+voice and does not flip (component test)
 
 #### Manual
 
-- [ ] 4.4 Review + browse: speaker plays visible side; flip plays other side in its voice
-- [ ] 4.5 Button does not flip card; keyboard flip still works
-- [ ] 4.6 Loading spinner during synthesis; forced failure shows toast, island stays usable
-- [ ] 4.7 Correct per-side voice (e.g. Front de-DE, Back en-US)
+- [x] 4.4 Review + browse: speaker plays visible side; flip plays other side in its voice
+- [x] 4.5 Button does not flip card; keyboard flip still works
+- [x] 4.6 Loading spinner during synthesis; forced failure shows toast, island stays usable
+- [x] 4.7 Correct per-side voice (e.g. Front de-DE, Back en-US)

@@ -6,6 +6,7 @@ import { useReverseMode } from "@/components/hooks/useReverseMode";
 import { I18nProvider } from "@/components/I18nProvider";
 import { cn } from "@/lib/utils";
 import type { SupportedLocale } from "@/lib/i18n/constants";
+import type { VoiceId } from "@/lib/tts/voices";
 import type { Flashcard } from "@/types";
 
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
   setName: string;
   flashcards: Flashcard[];
   locale: SupportedLocale;
+  voiceFront: VoiceId;
+  voiceBack: VoiceId;
 }
 
 export default function FlashcardBrowseView({ locale, ...props }: Props) {
@@ -23,7 +26,7 @@ export default function FlashcardBrowseView({ locale, ...props }: Props) {
   );
 }
 
-function FlashcardBrowseViewInner({ setId, setName, flashcards }: Omit<Props, "locale">) {
+function FlashcardBrowseViewInner({ setId, setName, flashcards, voiceFront, voiceBack }: Omit<Props, "locale">) {
   const { t } = useTranslation("common");
   const [reverse] = useReverseMode(setId);
   const [order, setOrder] = useState<number[]>(() => flashcards.map((_, i) => i));
@@ -115,6 +118,8 @@ function FlashcardBrowseViewInner({ setId, setName, flashcards }: Omit<Props, "l
             back={currentCard.back}
             flipped={flipped}
             onFlip={flip}
+            voiceFront={voiceFront}
+            voiceBack={voiceBack}
           />
 
           <div className="flex items-center gap-4">

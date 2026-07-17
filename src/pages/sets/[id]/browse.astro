@@ -3,8 +3,10 @@ export const prerender = false;
 
 import Layout from "@/layouts/Layout.astro";
 import { getSetWithFlashcards } from "@/lib/services/sets";
+import { getUserVoices } from "@/lib/services/user-settings";
 import FlashcardBrowseView from "@/components/sets/FlashcardBrowseView";
 import type { SupportedLocale } from "@/lib/i18n/constants";
+import { DEFAULT_VOICE, type VoiceId } from "@/lib/tts/voices";
 import type { Flashcard } from "@/types";
 
 const { id } = Astro.params;
@@ -13,6 +15,8 @@ const { user, supabase, locale } = Astro.locals;
 let setName = "";
 let flashcards: Flashcard[] = [];
 let found = false;
+let voiceFront: VoiceId = DEFAULT_VOICE;
+let voiceBack: VoiceId = DEFAULT_VOICE;
 
 if (user && supabase && id) {
   const { data, error } = await getSetWithFlashcards(supabase, user.id, id);
@@ -21,6 +25,9 @@ if (user && supabase && id) {
     flashcards = data.flashcards;
     found = true;
   }
+  const { data: voices } = await getUserVoices(supabase, user.id);
+  voiceFront = voices.front;
+  voiceBack = voices.back;
 }
 
 if (!found || !id) {
@@ -37,5 +44,7 @@ if (!found || !id) {
     setName={setName}
     flashcards={flashcards}
     locale={locale as SupportedLocale}
+    voiceFront={voiceFront}
+    voiceBack={voiceBack}
   />
 </Layout>
