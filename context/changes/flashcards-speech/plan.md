@@ -334,28 +334,28 @@ Thread the account's Front/Back voices from the pages into both islands and the 
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly against local Supabase
-- [x] 1.2 Type checking / build passes (`npm run build`)
-- [x] 1.3 Lint passes on `voices.ts` + `user-settings.ts`
-- [x] 1.4 `DEFAULT_VOICE` is en-US and `isValidVoice(DEFAULT_VOICE)` true (unit test)
+- [x] 1.1 Migration applies cleanly against local Supabase — 02ed7d7
+- [x] 1.2 Type checking / build passes (`npm run build`) — 02ed7d7
+- [x] 1.3 Lint passes on `voices.ts` + `user-settings.ts` — 02ed7d7
+- [x] 1.4 `DEFAULT_VOICE` is en-US and `isValidVoice(DEFAULT_VOICE)` true (unit test) — 02ed7d7
 
 #### Manual
 
-- [x] 1.5 Voice columns exist on `user_preferences` in local DB
+- [x] 1.5 Voice columns exist on `user_preferences` in local DB — 02ed7d7
 
 ### Phase 2: Voice preference API + Settings UI
 
 #### Automated
 
-- [ ] 2.1 Build passes (`npm run build`)
-- [ ] 2.2 Lint passes on `user-voice.ts` + `VoiceSwitcher.tsx` + `middleware.ts`
-- [ ] 2.3 `PUT /api/user-voice` 400 on invalid voice, 200 on valid pair (route test)
+- [x] 2.1 Build passes (`npm run build`)
+- [x] 2.2 Lint passes on `user-voice.ts` + `VoiceSwitcher.tsx` + `middleware.ts`
+- [x] 2.3 `PUT /api/user-voice` 400 on invalid voice, 200 on valid pair (route test)
 
 #### Manual
 
-- [ ] 2.4 Settings shows two voice dropdowns; changes persist across reload
-- [ ] 2.5 New account shows default en-US voice on both sides
-- [ ] 2.6 No dead buttons — island hydrates
+- [x] 2.4 Settings shows two voice dropdowns; changes persist across reload
+- [x] 2.5 New account shows default en-US voice on both sides
+- [x] 2.6 No dead buttons — island hydrates
 
 ### Phase 3: TTS service + endpoint
 

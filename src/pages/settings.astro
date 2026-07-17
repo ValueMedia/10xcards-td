@@ -1,6 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { getUserPrompt } from "@/lib/services/user-settings";
+import { getUserPrompt, getUserVoices } from "@/lib/services/user-settings";
 import { SettingsPage } from "@/components/settings/SettingsPage";
 import { getTranslations } from "@/lib/i18n/ui";
 import type { SupportedLocale } from "@/lib/i18n/constants";
@@ -13,6 +13,7 @@ if (!user || !supabase) {
 }
 
 const { data: promptData } = await getUserPrompt(supabase, user.id);
+const { data: voices } = await getUserVoices(supabase, user.id);
 
 const initialPrompt = promptData?.prompt ?? null;
 const initialFlashcardCount = promptData?.flashcard_count ?? null;
@@ -24,6 +25,8 @@ const initialFlashcardCount = promptData?.flashcard_count ?? null;
     initialPrompt={initialPrompt}
     initialFlashcardCount={initialFlashcardCount}
     locale={locale as SupportedLocale}
+    initialVoiceFront={voices.front}
+    initialVoiceBack={voices.back}
     client:load
   />
 </Layout>

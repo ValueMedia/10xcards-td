@@ -6,6 +6,7 @@ import { DEFAULT_SYSTEM_PROMPT } from "@/lib/services/ai-prompt";
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
 import { LanguageSwitcher } from "@/components/settings/LanguageSwitcher";
+import { VoiceSwitcher } from "@/components/settings/VoiceSwitcher";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,12 +21,15 @@ import {
 } from "@/components/ui/dialog";
 import { I18nProvider } from "@/components/I18nProvider";
 import type { SupportedLocale } from "@/lib/i18n/constants";
+import type { VoiceId } from "@/lib/tts/voices";
 
 interface Props {
   email: string;
   initialPrompt: string | null;
   initialFlashcardCount: number | null;
   locale: SupportedLocale;
+  initialVoiceFront: VoiceId;
+  initialVoiceBack: VoiceId;
 }
 
 type PromptMode = "default" | "custom";
@@ -38,7 +42,14 @@ export function SettingsPage(props: Props) {
   );
 }
 
-function SettingsPageInner({ email, initialPrompt, initialFlashcardCount, locale }: Props) {
+function SettingsPageInner({
+  email,
+  initialPrompt,
+  initialFlashcardCount,
+  locale,
+  initialVoiceFront,
+  initialVoiceBack,
+}: Props) {
   const { t } = useTranslation("settings");
   const initialMode: PromptMode = initialPrompt ? "custom" : "default";
   const [promptMode, setPromptMode] = useState<PromptMode>(initialMode);
@@ -214,6 +225,16 @@ function SettingsPageInner({ email, initialPrompt, initialFlashcardCount, locale
           </CardHeader>
           <CardContent className="space-y-3">
             <LanguageSwitcher currentLocale={locale} />
+          </CardContent>
+        </Card>
+
+        {/* Voice Section */}
+        <Card className="border-white/10 bg-white/10 backdrop-blur-xl">
+          <CardHeader>
+            <CardTitle className="text-white">{t("settings.voiceTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <VoiceSwitcher initialFront={initialVoiceFront} initialBack={initialVoiceBack} />
           </CardContent>
         </Card>
 
