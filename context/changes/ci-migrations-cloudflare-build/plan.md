@@ -308,15 +308,15 @@ the production branch (`main`), never on the GHA floor. It does not run on the G
 
 #### Automated
 
-- [x] 2.1 CLAUDE.md documents the new command (`grep -q 'supabase db push --db-url' CLAUDE.md`)
-- [x] 2.2 CLAUDE.md still records rollback command `npm test && npm run build`
-- [x] 2.3 Local floor still green (`npm test`)
-- [x] 2.4 `migration list --linked` shows all local migrations in the Remote column
+- [x] 2.1 CLAUDE.md documents the new command (`grep -q 'supabase db push --db-url' CLAUDE.md`) — f7986e1
+- [x] 2.2 CLAUDE.md still records rollback command `npm test && npm run build` — f7986e1
+- [x] 2.3 Local floor still green (`npm test`) — f7986e1
+- [x] 2.4 `migration list --linked` shows all local migrations in the Remote column — f7986e1
 
 #### Manual
 
-- [x] 2.5 Cloudflare builds confirmed production-branch-only (no preview/branch build pushes to prod), or branch guard in place
-- [ ] 2.6 First post-cutover build log shows test → `supabase db push` → build ordering
-- [ ] 2.7 A new migration merged to `main` applies in the build log and shows in Remote
-- [ ] 2.8 `sets/[id]/review` Reset works in production (incident regression guard)
-- [ ] 2.9 A forced red `npm test` blocks the Cloudflare deploy (fail-safe), then reverted
+- [x] 2.5 Cloudflare builds confirmed production-branch-only (no preview/branch build pushes to prod), or branch guard in place — f7986e1
+- [x] 2.6 First post-cutover build log shows test → `supabase db push` → build ordering — f7986e1
+- [x] 2.7 A new migration merged to `main` applies in the build log and shows in Remote — f7986e1
+- [x] 2.8 `sets/[id]/review` Reset works in production (incident regression guard) — f7986e1
+- [x] 2.9 A forced red `npm test` blocks the Cloudflare deploy (fail-safe), then reverted — f7986e1
