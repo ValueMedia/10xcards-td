@@ -56,7 +56,7 @@ Get it from: Supabase Dashboard → Project `aoraelgjkiiexwhfotqf` → **Connect
 **Session pooler** → URI. It looks like:
 
 ```
-postgresql://postgres.aoraelgjkiiexwhfotqf:<PASSWORD>@aws-0-<region>.pooler.supabase.com:5432/postgres
+postgresql://postgres.aoraelgjkiiexwhfotqf:<PASSWORD>@aws-1-eu-north-1.pooler.supabase.com:5432/postgres
 ```
 
 - `--db-url` requires the value to be **percent-encoded**. If the DB password contains
