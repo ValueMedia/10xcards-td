@@ -1,10 +1,10 @@
 ---
 change_id: ci-migrations-cloudflare-build
 title: Apply Supabase migrations during the Cloudflare production build
-status: impl_reviewed
+status: archived
 created: 2026-07-17
 updated: 2026-07-17
-archived_at: null
+archived_at: 2026-07-17T09:47:01Z
 ---
 
 ## Notes
