@@ -165,7 +165,8 @@ describe("lookupWordDe", () => {
     // Polish translation present (after stripping inline HTML).
     expect(e.definition.toLowerCase()).toContain("dom");
     expect(e.definition).not.toContain("<");
-    // Pons `depl` has no example sentences; examples is always [].
+    // This fixture has a single headword row and no example rows, so examples
+    // stays empty (example grouping is covered by test 16).
     expect(e.examples).toEqual([]);
     // cleanDefinition capitalizes and appends a period.
     expect(e.definition.endsWith(".")).toBe(true);
@@ -188,7 +189,7 @@ describe("lookupWordDe", () => {
                         translations: [
                           {
                             source: '<strong class="headword">Haus</strong>',
-                            target: '<headword>dom</headword> <srcref>m</srcref> bud.',
+                            target: "<headword>dom</headword> <srcref>m</srcref> bud.",
                           },
                         ],
                       },
@@ -282,6 +283,78 @@ describe("lookupWordDe", () => {
   it("15. secret missing: lookupWordDe throws 'PONS_API_SECRET not configured'", async () => {
     vi.mocked(astroEnvGetSecret).mockReturnValueOnce(undefined);
     await expect(lookupWordDe("Haus", { kv: null })).rejects.toThrow("PONS_API_SECRET not configured");
+  });
+
+  it("16. groups example rows under their sense's primary headword (German + Polish)", async () => {
+    const fetchMock = vi.mocked(globalThis.fetch);
+    // One arab with two headword rows (dom, mieszkanie) followed by example
+    // rows — mirrors the real `Haus` shape (source has class="headword" for
+    // translations, class="example" for phrases; unmarked rows are idioms).
+    const fixture = [
+      {
+        lang: "de",
+        hits: [
+          {
+            roms: [
+              {
+                wordclass: "rzeczownik",
+                arabs: [
+                  {
+                    header: "1. Haus:",
+                    translations: [
+                      {
+                        source: '<strong class="headword">Haus</strong> <span class="sense">(Gebäude)</span>',
+                        target: "dom",
+                      },
+                      {
+                        source: '<strong class="headword">Haus</strong> <span class="sense">(Wohnung)</span>',
+                        target: "mieszkanie",
+                      },
+                      {
+                        source: '<span class="example">ins <strong class="tilde">Haus</strong> gehen</span>',
+                        target: 'wchodzić <span class="genus">do</span> domu',
+                      },
+                      {
+                        source: "Haus und Hof verspielen",
+                        target: "przegrać ostatnią koszulę",
+                      },
+                    ],
+                  },
+                  {
+                    header: '2. Haus <span class="sense">(Familie)</span>:',
+                    translations: [{ source: '<strong class="headword">Haus</strong>', target: "rodzina" }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(fixture), { status: 200 }));
+
+    const entries = await lookupWordDe("Haus", { kv: null });
+
+    // Example rows are NOT promoted to entries: 3 headword rows → 3 entries.
+    expect(entries).toHaveLength(3);
+
+    // Both example rows attach to the sense's first headword (dom), formatted
+    // "<German> — <Polish>" with HTML stripped and nbsp normalized.
+    const dom = entries[0];
+    expect(dom.definition.toLowerCase()).toContain("dom");
+    expect(dom.examples).toEqual([
+      "ins Haus gehen — wchodzić do domu",
+      "Haus und Hof verspielen — przegrać ostatnią koszulę",
+    ]);
+
+    // The secondary headword of the same sense gets none of the examples.
+    expect(entries[1].definition.toLowerCase()).toContain("mieszkanie");
+    expect(entries[1].examples).toEqual([]);
+
+    // A headword row without its own sense span falls back to the arab header
+    // sense for `info`.
+    expect(entries[2].definition.toLowerCase()).toContain("rodzina");
+    expect(entries[2].info).toBe("(Familie)");
   });
 });
 

@@ -238,6 +238,13 @@ function SetDetailPageInner({ initialData, activity }: Omit<Props, "locale">) {
                 >
                   {t("set.lookupWord")}
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => {
+                    window.location.assign(`/lookup_word_de?setId=${set.id}`);
+                  }}
+                >
+                  {t("set.lookupWordDe")}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -516,33 +516,33 @@ Project: `node`. Mocks: `vi.mock("@/lib/services/dictionary-de", () => ({ lookup
 
 #### Automated
 
-- [x] 2.1 `src/pages/api/dict/de/[word].ts` created with the 7-step body order (auth, trim, KV, rate-limit, lookup, 502, 200)
-- [x] 2.2 `src/pages/api/dict/de/[word].test.ts` — all 6 cases pass under `npx vitest run --project node`
-- [x] 2.3 `src/lib/openapi/openapi-spec.ts` updated with `/api/dict/de/{word}` path reusing `DictionaryEntry` schema
-- [x] 2.4 `src/middleware.ts` — `/lookup_word_de` added to `PROTECTED_PAGE_ROUTES`
-- [x] 2.5 `npx vitest run` full suite green (no Cambridge regression)
-- [x] 2.6 `npm run build` succeeds
-- [x] 2.7 `npx eslint src/pages/api/dict/de/\[word\].ts src/lib/openapi/openapi-spec.ts src/middleware.ts` passes
+- [x] 2.1 `src/pages/api/dict/de/[word].ts` created with the 7-step body order (auth, trim, KV, rate-limit, lookup, 502, 200) — 0ea756e
+- [x] 2.2 `src/pages/api/dict/de/[word].test.ts` — all 6 cases pass under `npx vitest run --project node` — 0ea756e
+- [x] 2.3 `src/lib/openapi/openapi-spec.ts` updated with `/api/dict/de/{word}` path reusing `DictionaryEntry` schema — 0ea756e
+- [x] 2.4 `src/middleware.ts` — `/lookup_word_de` added to `PROTECTED_PAGE_ROUTES` — 0ea756e
+- [x] 2.5 `npx vitest run` full suite green (no Cambridge regression) — 0ea756e
+- [x] 2.6 `npm run build` succeeds — 0ea756e
+- [x] 2.7 `npx eslint src/pages/api/dict/de/\[word\].ts src/lib/openapi/openapi-spec.ts src/middleware.ts` passes — 0ea756e
 
 #### Manual
 
-- [x] 2.8 `/docs/api` shows `/api/dict/de/{word}` under "Dictionary" tag
-- [x] 2.9 `curl` authenticated `/api/dict/de/Haus` returns 200 with Polish translations
-- [x] 2.10 `curl` unauthenticated returns 401
-- [x] 2.11 31 rapid requests → 429 with `Retry-After: 60`
-- [x] 2.12 Second lookup of same word is measurably faster (cache hit); `pons:de:haus` visible in local KV
+- [x] 2.8 `/docs/api` shows `/api/dict/de/{word}` under "Dictionary" tag — 0ea756e
+- [x] 2.9 `curl` authenticated `/api/dict/de/Haus` returns 200 with Polish translations — 0ea756e
+- [x] 2.10 `curl` unauthenticated returns 401 — 0ea756e
+- [x] 2.11 31 rapid requests → 429 with `Retry-After: 60` — 0ea756e
+- [x] 2.12 Second lookup of same word is measurably faster (cache hit); `pons:de:haus` visible in local KV — 0ea756e
 
 ### Phase 3: UI — `/lookup_word_de` page + i18n + client wrapper
 
 #### Automated
 
-- [ ] 3.1 `src/lib/dict-de-client.ts` created with `lookupWordDeClient`, `DictionaryLookupError`, `DictionaryLookupResult`
-- [ ] 3.2 `src/components/lookup/LookupWordPageDe.tsx` created; `EntryCard` and `CreateCardForm` extracted to shared files if not already
-- [ ] 3.3 `src/pages/lookup_word_de.astro` created with ownership gate matching `lookup_word.astro`
-- [ ] 3.4 `src/lib/i18n/locales/{pl,en}/lookup.json` and `common.json` updated with `lookup_de.*` and `set.lookupWordDe` keys
-- [ ] 3.5 `src/components/sets/SetDetailPage.tsx` — "Wyszukaj słowo niemieckie" button added linking to `/lookup_word_de?setId=...`
-- [ ] 3.6 `npm run build` succeeds
-- [ ] 3.7 `npx eslint src/lib/dict-de-client.ts src/components/lookup/LookupWordPageDe.tsx src/components/sets/SetDetailPage.tsx` passes
+- [x] 3.1 `src/lib/dict-de-client.ts` created with `lookupWordDeClient`, `DictionaryLookupError`, `DictionaryLookupResult`
+- [x] 3.2 `src/components/lookup/LookupWordPageDe.tsx` created; `EntryCard` and `CreateCardForm` extracted to shared files if not already
+- [x] 3.3 `src/pages/lookup_word_de.astro` created with ownership gate matching `lookup_word.astro`
+- [x] 3.4 `src/lib/i18n/locales/{pl,en}/lookup.json` and `common.json` updated with `lookup_de.*` and `set.lookupWordDe` keys
+- [x] 3.5 `src/components/sets/SetDetailPage.tsx` — "Wyszukaj słowo niemieckie" button added linking to `/lookup_word_de?setId=...`
+- [x] 3.6 `npm run build` succeeds
+- [x] 3.7 `npx eslint src/lib/dict-de-client.ts src/components/lookup/LookupWordPageDe.tsx src/components/sets/SetDetailPage.tsx` passes
 
 #### Manual
 

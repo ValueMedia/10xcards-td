@@ -1,12 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { I18nProvider } from "@/components/I18nProvider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { DictionaryLookupError, lookupWordClient, type DictionaryLookupResult } from "@/lib/dict-client";
-import { clearGenerateSnapshot, consumeLookupPrefill, hasGenerateSnapshot } from "@/lib/handoff";
+import { DictionaryLookupError, lookupWordDeClient, type DictionaryLookupResult } from "@/lib/dict-de-client";
 import { CreateCardForm } from "@/components/lookup/CreateCardForm";
 import { EntryCard } from "@/components/lookup/EntryCard";
 import type { SupportedLocale } from "@/lib/i18n/constants";
@@ -17,15 +16,15 @@ interface Props {
   locale: SupportedLocale;
 }
 
-export function LookupWordPage(props: Props) {
+export function LookupWordPageDe(props: Props) {
   return (
     <I18nProvider locale={props.locale}>
-      <LookupWordPageInner {...props} />
+      <LookupWordPageDeInner {...props} />
     </I18nProvider>
   );
 }
 
-function LookupWordPageInner({ setId, setName }: Props) {
+function LookupWordPageDeInner({ setId, setName }: Props) {
   const { t } = useTranslation("lookup");
 
   const [query, setQuery] = useState("");
@@ -39,9 +38,6 @@ function LookupWordPageInner({ setId, setName }: Props) {
   // latest search's state. The loading guard already prevents UI-triggered
   // overlap; this is the correctness backstop.
   const searchSeqRef = useRef(0);
-  // Whether a /generate snapshot exists for this set (i.e. we arrived from
-  // Check). Read post-mount since sessionStorage is client-only.
-  const [showBackToGenerate, setShowBackToGenerate] = useState(false);
 
   function messageForStatus(status: number): string {
     switch (status) {
@@ -67,7 +63,7 @@ function LookupWordPageInner({ setId, setName }: Props) {
     setResult(null);
 
     try {
-      const data = await lookupWordClient(word);
+      const data = await lookupWordDeClient(word);
       if (seq !== searchSeqRef.current) return; // superseded by a newer search
       setResult(data);
       setSearchCompleted(true);
@@ -89,44 +85,12 @@ function LookupWordPageInner({ setId, setName }: Props) {
     void runSearch();
   }
 
-  // On arrival from Check: prefill the query and auto-run the search, then
-  // remove the prefill key (so a manual refresh does not re-search). Also note
-  // whether a /generate snapshot exists, to conditionally show the Back button.
-  // Runs post-mount (never in a useState initializer) to avoid a hydration
-  // mismatch under client:load — see lessons.md.
-  useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect
-    setShowBackToGenerate(hasGenerateSnapshot(setId));
-    const prefill = consumeLookupPrefill();
-    if (prefill) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect
-      setQuery(prefill);
-      void runSearch(prefill);
-    }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [setId]);
-
   return (
     <div className="bg-cosmic flex min-h-screen items-start justify-center p-4 pt-8">
       <div className="w-full max-w-2xl space-y-6">
         <div className="flex items-center gap-4">
-          {showBackToGenerate && (
-            <button
-              type="button"
-              onClick={() => {
-                window.location.href = `/generate?setId=${setId}`;
-              }}
-              className="inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
-            >
-              <BackIcon />
-              {t("lookup.backToGenerate")}
-            </button>
-          )}
           <a
             href={`/sets/${setId}`}
-            onClick={() => {
-              clearGenerateSnapshot(setId);
-            }}
             className="inline-flex items-center gap-1 text-sm text-blue-100/50 transition-colors hover:text-blue-100/80"
           >
             <BackIcon />
@@ -136,14 +100,14 @@ function LookupWordPageInner({ setId, setName }: Props) {
 
         <div className="space-y-1">
           <h1 className="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
-            {t("lookup.heading")}
+            {t("lookup_de.heading")}
           </h1>
           <p className="text-sm text-blue-100/60">{t("lookup.addingTo", { name: setName })}</p>
         </div>
 
         <Card className="border-white/10 bg-white/10 py-4 backdrop-blur-xl">
           <CardContent>
-            <p className="text-sm text-blue-100/70">{t("lookup.intro")}</p>
+            <p className="text-sm text-blue-100/70">{t("lookup_de.intro")}</p>
           </CardContent>
         </Card>
 
@@ -154,7 +118,7 @@ function LookupWordPageInner({ setId, setName }: Props) {
             onChange={(e) => {
               setQuery(e.target.value);
             }}
-            placeholder={t("lookup.searchPlaceholder")}
+            placeholder={t("lookup_de.searchPlaceholder")}
             disabled={loading}
             className="border-white/10 bg-white/5 text-white placeholder:text-blue-100/30"
           />
@@ -171,8 +135,8 @@ function LookupWordPageInner({ setId, setName }: Props) {
 
         {result && (
           <section className="space-y-3">
-            <h2 className="text-base font-semibold text-blue-100/80">{t("lookup.responseHeading")}</h2>
-            <SearchResults result={result} emptyLabel={t("lookup.noResults", { word: result.word })} />
+            <h2 className="text-base font-semibold text-blue-100/80">{t("lookup_de.responseHeading")}</h2>
+            <SearchResults result={result} emptyLabel={t("lookup_de.noResults", { word: result.word })} />
           </section>
         )}
 
@@ -227,9 +191,11 @@ function ResultsList({ result }: { result: DictionaryLookupResult }) {
   return (
     <div ref={containerRef} className="overflow-y-auto pr-1">
       <div ref={listRef} className="space-y-3">
-        {result.entries.map((entry) => (
+        {result.entries.map((entry, index) => (
+          // Senses can repeat a definition (e.g. Pons returns "dom" for several
+          // senses of "Haus"), so the index disambiguates otherwise-equal keys.
           <EntryCard
-            key={`${entry.type ?? ""}-${entry.dictionaryRegion ?? ""}-${entry.definition}`}
+            key={`${index}-${entry.type ?? ""}-${entry.dictionaryRegion ?? ""}-${entry.definition}`}
             word={result.word}
             entry={entry}
           />

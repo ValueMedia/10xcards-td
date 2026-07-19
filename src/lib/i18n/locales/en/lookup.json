@@ -19,5 +19,11 @@
   "lookup.form.saving": "Saving...",
   "lookup.form.saved": "Flashcard saved",
   "lookup.form.error": "Failed to save the flashcard. Please try again.",
-  "lookup.form.invalid": "Question and answer are required (max 1000 characters each)."
+  "lookup.form.invalid": "Question and answer are required (max 1000 characters each).",
+  "lookup_de.title": "Look up a German word",
+  "lookup_de.heading": "Look up a German word",
+  "lookup_de.intro": "Look up German→Polish translations in the Pons dictionary, then create a flashcard in your set.",
+  "lookup_de.searchPlaceholder": "German word or phrase",
+  "lookup_de.responseHeading": "Response from Pons dictionary",
+  "lookup_de.noResults": "No translation found for \"{{word}}\"."
 }
