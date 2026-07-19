@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Loader2, Volume2 } from "lucide-react";
@@ -25,6 +25,40 @@ export function FlashcardBrowseCard({ front, back, flipped, onFlip, voiceFront, 
   const currentVoice = flipped ? voiceBack : voiceFront;
   const currentText = flipped ? back : front;
 
+  // Hide the speaker button while the card is mid-flip: the button is a static
+  // sibling of the rotating `.card-flip-inner`, so without this it floats over
+  // the spinning card. On a genuine flip we fade it out, then restore it after
+  // the rotation settles.
+  const [isFlipping, setIsFlipping] = useState(false);
+  // Skip the first render: both consumers remount the card per `key={card.id}`,
+  // so a card that mounts already-flipped (reverse mode) must not hide the
+  // button — only a real flip of an already-mounted card should.
+  const mountedRef = useRef(false);
+  const flipTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    // Reduced-motion makes the flip instant (see global.css) — nothing to hide.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    if (flipTimerRef.current) clearTimeout(flipTimerRef.current);
+    // Intentional: enter the transient "flipping" state in response to the
+    // `flipped` prop change, then clear it once the rotation settles.
+    // eslint-disable-next-line @eslint-react/set-state-in-effect
+    setIsFlipping(true);
+    // 600ms mirrors the `.card-flip-inner` transition duration in global.css.
+    flipTimerRef.current = setTimeout(() => {
+      setIsFlipping(false);
+    }, 600);
+    return () => {
+      if (flipTimerRef.current) clearTimeout(flipTimerRef.current);
+    };
+  }, [flipped]);
+
   useEffect(() => {
     if (status === "error") {
       toast.error(t("speech.playbackFailed"));
@@ -50,7 +84,10 @@ export function FlashcardBrowseCard({ front, back, flipped, onFlip, voiceFront, 
           size="icon"
           aria-label={t("speech.play")}
           disabled={status === "loading"}
-          className="absolute top-3 right-3 z-10 h-8 w-8 text-blue-100/50 hover:bg-white/10 hover:text-white"
+          className={cn(
+            "absolute top-3 right-3 z-10 h-8 w-8 text-blue-100/50 transition-opacity hover:bg-white/10 hover:text-white",
+            isFlipping && "pointer-events-none opacity-0",
+          )}
           onClick={(e) => {
             e.stopPropagation();
             void speak(currentText, currentVoice);
