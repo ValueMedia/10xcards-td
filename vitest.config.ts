@@ -37,11 +37,19 @@ export default defineConfig({
         },
       },
       defineWorkersProject({
-        resolve: { alias },
+        resolve: {
+          alias: {
+            ...alias,
+            // `astro:env/server` is virtual under Vitest; alias it to the stub
+            // so the Pons service (which reads `PONS_API_SECRET` via `getSecret`)
+            // can load under workerd. Tests override `getSecret` via `vi.mock`.
+            "astro:env/server": path.resolve(__dirname, "./src/test/astro-env-server.stub.ts"),
+          },
+        },
         test: {
           name: "workers",
           globals: true,
-          include: ["src/lib/services/dictionary.test.ts"],
+          include: ["src/lib/services/dictionary.test.ts", "src/lib/services/dictionary-de.test.ts"],
           poolOptions: {
             workers: {
               miniflare: {

@@ -35,6 +35,7 @@ export default defineConfig({
       OPENROUTER_SYSTEM_PROMPT: envField.string({ context: "server", access: "secret", optional: true }),
       AI_RATE_LIMIT_HOURLY: envField.number({ context: "server", access: "secret", optional: true }),
       GOOGLE_TTS_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+      PONS_API_SECRET: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });
