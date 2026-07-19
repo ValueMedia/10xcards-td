@@ -536,13 +536,14 @@ Project: `node`. Mocks: `vi.mock("@/lib/services/dictionary-de", () => ({ lookup
 
 #### Automated
 
-- [x] 3.1 `src/lib/dict-de-client.ts` created with `lookupWordDeClient`, `DictionaryLookupError`, `DictionaryLookupResult`
-- [x] 3.2 `src/components/lookup/LookupWordPageDe.tsx` created; `EntryCard` and `CreateCardForm` extracted to shared files if not already
-- [x] 3.3 `src/pages/lookup_word_de.astro` created with ownership gate matching `lookup_word.astro`
-- [x] 3.4 `src/lib/i18n/locales/{pl,en}/lookup.json` and `common.json` updated with `lookup_de.*` and `set.lookupWordDe` keys
-- [x] 3.5 `src/components/sets/SetDetailPage.tsx` — "Wyszukaj słowo niemieckie" button added linking to `/lookup_word_de?setId=...`
-- [x] 3.6 `npm run build` succeeds
-- [x] 3.7 `npx eslint src/lib/dict-de-client.ts src/components/lookup/LookupWordPageDe.tsx src/components/sets/SetDetailPage.tsx` passes
+- [x] 3.1 `src/lib/dict-de-client.ts` created with `lookupWordDeClient`, `DictionaryLookupError`, `DictionaryLookupResult` — ff686b5
+- [x] 3.2 `src/components/lookup/LookupWordPageDe.tsx` created; `EntryCard` and `CreateCardForm` extracted to shared files if not already — ff686b5
+- [x] 3.3 `src/pages/lookup_word_de.astro` created with ownership gate matching `lookup_word.astro` — ff686b5
+- [x] 3.4 `src/lib/i18n/locales/{pl,en}/lookup.json` and `common.json` updated with `lookup_de.*` and `set.lookupWordDe` keys — ff686b5
+- [x] 3.5 `src/components/sets/SetDetailPage.tsx` — "Wyszukaj słowo niemieckie" button added linking to `/lookup_word_de?setId=...` — ff686b5
+- [x] 3.6 `npm run build` succeeds — ff686b5
+- [x] 3.7 `npx eslint src/lib/dict-de-client.ts src/components/lookup/LookupWordPageDe.tsx src/components/sets/SetDetailPage.tsx` passes — ff686b5
+- [x] 3.16 Example rows grouped under their sense as `"<German> — <Polish>"` pairs (service + `EntryCard`); cache prefix bumped to `pons:de:v2`; service test #16 covers it — ff686b5
 
 #### Manual
 
