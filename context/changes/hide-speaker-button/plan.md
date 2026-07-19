@@ -128,15 +128,15 @@ None — pure client-side UI behavior, no data or schema changes.
 
 #### Automated
 
-- [x] 1.1 Type checking / build passes: `npm run build`
-- [x] 1.2 Lint passes on the changed file: `npx eslint src/components/sets/FlashcardBrowseCard.tsx`
-- [x] 1.3 Component tests pass: `npm test -- FlashcardBrowseCard`
+- [x] 1.1 Type checking / build passes: `npm run build` — 754361b
+- [x] 1.2 Lint passes on the changed file: `npx eslint src/components/sets/FlashcardBrowseCard.tsx` — 754361b
+- [x] 1.3 Component tests pass: `npm test -- FlashcardBrowseCard` — 754361b
 
 #### Manual
 
-- [x] 1.4 On `/browse`, clicking the card fades the button out during the flip and back in after
-- [x] 1.5 Same behavior on `/review` when revealing the back
-- [x] 1.6 Advancing to the next card shows the button immediately (no flicker)
-- [x] 1.7 Rapid back-and-forth flipping keeps the button in sync (never stuck hidden)
-- [x] 1.8 With OS reduce-motion enabled, the button stays visible throughout
-- [x] 1.9 While hidden, the button cannot be clicked to trigger TTS
+- [x] 1.4 On `/browse`, clicking the card fades the button out during the flip and back in after — 754361b
+- [x] 1.5 Same behavior on `/review` when revealing the back — 754361b
+- [x] 1.6 Advancing to the next card shows the button immediately (no flicker) — 754361b
+- [x] 1.7 Rapid back-and-forth flipping keeps the button in sync (never stuck hidden) — 754361b
+- [x] 1.8 With OS reduce-motion enabled, the button stays visible throughout — 754361b
+- [x] 1.9 While hidden, the button cannot be clicked to trigger TTS — 754361b

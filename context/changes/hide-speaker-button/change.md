@@ -1,7 +1,7 @@
 ---
 change_id: hide-speaker-button
 title: Hide the TTS speaker button while a flashcard flips (browse & review)
-status: implementing
+status: implemented
 created: 2026-07-19
 updated: 2026-07-19
 archived_at: null
