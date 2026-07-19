@@ -11,6 +11,7 @@ import { checkDuplicateFronts } from "@/lib/services/flashcards";
 import { checkRateLimit } from "@/lib/services/ai-rate-limit";
 import { getUserPrompt } from "@/lib/services/user-settings";
 import { lookupWord } from "@/lib/services/dictionary";
+import { lookupWordDe } from "@/lib/services/dictionary-de";
 import { getSecret } from "astro:env/server";
 import { env } from "cloudflare:workers";
 
@@ -30,16 +31,46 @@ const DICTIONARY_TOOL: ToolDefinition = {
   },
 };
 
+const DICTIONARY_TOOL_DE: ToolDefinition = {
+  type: "function",
+  function: {
+    name: "lookup_word_de",
+    description:
+      "Look up a German word in the Pons German→Polish dictionary. Returns Polish translations, part of speech, subject area, and up to a few example sentence pairs (German original with Polish translation) per sense. Use this when generating flashcards for a German-language set where the user wants Polish translations. For English words, use `lookup_word` (Cambridge) instead.",
+    parameters: {
+      type: "object",
+      properties: { word: { type: "string", description: "The German word to look up" } },
+      required: ["word"],
+    },
+  },
+};
+
 async function handleToolCall(name: string, args: Record<string, unknown>): Promise<string> {
-  if (name !== "lookup_word") return JSON.stringify({ error: "Unknown tool" });
   const word = typeof args.word === "string" ? args.word : "";
-  if (!word) return JSON.stringify({ error: "Missing word argument" });
-  try {
-    const entries = await lookupWord(word);
-    return JSON.stringify(entries);
-  } catch {
-    return JSON.stringify({ error: "Dictionary lookup failed" });
+
+  if (name === "lookup_word") {
+    if (!word) return JSON.stringify({ error: "Missing word argument" });
+    try {
+      const entries = await lookupWord(word);
+      return JSON.stringify(entries);
+    } catch {
+      return JSON.stringify({ error: "Dictionary lookup failed" });
+    }
   }
+
+  if (name === "lookup_word_de") {
+    if (!word) return JSON.stringify({ error: "Missing word argument" });
+    // Thread the shared cache through so an AI lookup reuses the endpoint's KV.
+    const kv = env.AI_RATE_LIMIT as KVNamespace | undefined;
+    try {
+      const entries = await lookupWordDe(word, { kv: kv ?? null });
+      return JSON.stringify(entries);
+    } catch {
+      return JSON.stringify({ error: "Dictionary lookup failed" });
+    }
+  }
+
+  return JSON.stringify({ error: "Unknown tool" });
 }
 
 const paramsSchema = generateInputSchema
@@ -137,7 +168,7 @@ export const POST: APIRoute = async (context) => {
     model,
     appUrl,
     systemPromptOverride,
-    tools: [DICTIONARY_TOOL],
+    tools: [DICTIONARY_TOOL, DICTIONARY_TOOL_DE],
     onToolCall: handleToolCall,
   });
 
