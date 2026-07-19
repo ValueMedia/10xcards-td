@@ -107,7 +107,8 @@ export const openApiSpec = {
       },
       DictionaryEntry: {
         type: "object",
-        description: "A single Cambridge Dictionary sense for a looked-up word.",
+        description:
+          'A single dictionary sense for a looked-up word. For Cambridge (EN) lookups, `dictionaryRegion` is "UK"/"US" and `info` carries the CEFR level/usage labels. For Pons DE→PL lookups (`/api/dict/de/{word}`), `dictionaryRegion` is always `null` and `info` carries the Pons sense gloss; `examples` is always empty (Pons `depl` exposes no example sentences).',
         properties: {
           definition: { type: "string", example: "Clever and difficult, sometimes in a bad way." },
           type: { type: "string", nullable: true, description: "Part of speech (e.g. noun, verb, adjective)" },
@@ -195,6 +196,83 @@ export const openApiSpec = {
           },
           "502": {
             description: "Cambridge Dictionary upstream unavailable (network/timeout)",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/api/dict/de/{word}": {
+      parameters: [
+        {
+          name: "word",
+          in: "path",
+          required: true,
+          schema: { type: "string" },
+          description: "German word or phrase to look up (spaces are normalized to hyphens, case-insensitive)",
+        },
+      ],
+      get: {
+        summary: "Look up a German word in the Pons DE→PL dictionary",
+        description:
+          "Calls the Pons Online Dictionary API (`l=depl`) for Polish translations, part of speech, and the German sense gloss. Unlike `/api/dict/{word}` (Cambridge), responses are cached for 30 days in the `AI_RATE_LIMIT` KV namespace under `pons:de:<word>` — repeat lookups are cache hits and do not consume the shared 1000/month Pons quota. Shares the same 30 requests/minute per-user rate limit as the Cambridge endpoint. Also used internally by the AI generation pipeline (`POST /api/sets/{id}/generate`) via the `lookup_word_de` OpenRouter tool. Pons `depl` exposes no example sentences, so `examples` is always empty and `dictionaryRegion` is always `null`.",
+        tags: ["Dictionary"],
+        security: [{ cookieAuth: [] }],
+        responses: {
+          "200": {
+            description: "Lookup succeeded. `entries` is empty when the word is unknown (Pons 204/404).",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    word: { type: "string" },
+                    entries: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/DictionaryEntry" },
+                    },
+                  },
+                  required: ["word", "entries"],
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Missing or empty word parameter",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "401": {
+            description: "Unauthorized",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "429": {
+            description: "Rate limit exceeded (30 per minute, shared with Cambridge lookup)",
+            headers: {
+              "Retry-After": {
+                schema: { type: "string", example: "60" },
+                description: "Seconds until rate limit resets",
+              },
+            },
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          "502": {
+            description:
+              "Pons API unavailable (network/timeout/quota exhausted/secret missing). Errors are never cached.",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/Error" },

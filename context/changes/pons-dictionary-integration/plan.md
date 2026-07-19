@@ -503,34 +503,34 @@ Project: `node`. Mocks: `vi.mock("@/lib/services/dictionary-de", () => ({ lookup
 
 #### Automated
 
-- [x] 1.1 `PONS_API_SECRET` declared in `astro.config.mjs` env schema, `npm run build` succeeds
-- [x] 1.2 `src/lib/services/dictionary-de.ts` created with `lookupWordDe`, `ponsCacheKey`, `PONS_CACHE_TTL_SECONDS` exports
-- [x] 1.3 `src/lib/services/dictionary-de.test.ts` — all 15 cases pass under `npx vitest run --project workers`
-- [x] 1.4 `npx eslint src/lib/services/dictionary-de.ts src/lib/services/dictionary-de.test.ts` passes
+- [x] 1.1 `PONS_API_SECRET` declared in `astro.config.mjs` env schema, `npm run build` succeeds — a2b2817
+- [x] 1.2 `src/lib/services/dictionary-de.ts` created with `lookupWordDe`, `ponsCacheKey`, `PONS_CACHE_TTL_SECONDS` exports — a2b2817
+- [x] 1.3 `src/lib/services/dictionary-de.test.ts` — all 15 cases pass under `npx vitest run --project workers` — a2b2817
+- [x] 1.4 `npx eslint src/lib/services/dictionary-de.ts src/lib/services/dictionary-de.test.ts` passes — a2b2817
 
 #### Manual
 
-- [ ] 1.5 Scratch `npx tsx` script confirms `lookupWordDe("Haus", { kv: null, skipCache: true })` returns Polish translations with a real `PONS_API_SECRET`
+- [x] 1.5 Scratch `npx tsx` script confirms `lookupWordDe("Haus", { kv: null, skipCache: true })` returns Polish translations with a real `PONS_API_SECRET` — a2b2817
 
 ### Phase 2: API endpoint + rate-limit + OpenAPI spec + middleware
 
 #### Automated
 
-- [ ] 2.1 `src/pages/api/dict/de/[word].ts` created with the 7-step body order (auth, trim, KV, rate-limit, lookup, 502, 200)
-- [ ] 2.2 `src/pages/api/dict/de/[word].test.ts` — all 6 cases pass under `npx vitest run --project node`
-- [ ] 2.3 `src/lib/openapi/openapi-spec.ts` updated with `/api/dict/de/{word}` path reusing `DictionaryEntry` schema
-- [ ] 2.4 `src/middleware.ts` — `/lookup_word_de` added to `PROTECTED_PAGE_ROUTES`
-- [ ] 2.5 `npx vitest run` full suite green (no Cambridge regression)
-- [ ] 2.6 `npm run build` succeeds
-- [ ] 2.7 `npx eslint src/pages/api/dict/de/\[word\].ts src/lib/openapi/openapi-spec.ts src/middleware.ts` passes
+- [x] 2.1 `src/pages/api/dict/de/[word].ts` created with the 7-step body order (auth, trim, KV, rate-limit, lookup, 502, 200)
+- [x] 2.2 `src/pages/api/dict/de/[word].test.ts` — all 6 cases pass under `npx vitest run --project node`
+- [x] 2.3 `src/lib/openapi/openapi-spec.ts` updated with `/api/dict/de/{word}` path reusing `DictionaryEntry` schema
+- [x] 2.4 `src/middleware.ts` — `/lookup_word_de` added to `PROTECTED_PAGE_ROUTES`
+- [x] 2.5 `npx vitest run` full suite green (no Cambridge regression)
+- [x] 2.6 `npm run build` succeeds
+- [x] 2.7 `npx eslint src/pages/api/dict/de/\[word\].ts src/lib/openapi/openapi-spec.ts src/middleware.ts` passes
 
 #### Manual
 
-- [ ] 2.8 `/docs/api` shows `/api/dict/de/{word}` under "Dictionary" tag
-- [ ] 2.9 `curl` authenticated `/api/dict/de/Haus` returns 200 with Polish translations
-- [ ] 2.10 `curl` unauthenticated returns 401
-- [ ] 2.11 31 rapid requests → 429 with `Retry-After: 60`
-- [ ] 2.12 Second lookup of same word is measurably faster (cache hit); `pons:de:haus` visible in local KV
+- [x] 2.8 `/docs/api` shows `/api/dict/de/{word}` under "Dictionary" tag
+- [x] 2.9 `curl` authenticated `/api/dict/de/Haus` returns 200 with Polish translations
+- [x] 2.10 `curl` unauthenticated returns 401
+- [x] 2.11 31 rapid requests → 429 with `Retry-After: 60`
+- [x] 2.12 Second lookup of same word is measurably faster (cache hit); `pons:de:haus` visible in local KV
 
 ### Phase 3: UI — `/lookup_word_de` page + i18n + client wrapper
 
