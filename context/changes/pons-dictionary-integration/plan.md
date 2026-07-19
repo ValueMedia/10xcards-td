@@ -560,11 +560,11 @@ Project: `node`. Mocks: `vi.mock("@/lib/services/dictionary-de", () => ({ lookup
 
 #### Automated
 
-- [x] 4.1 `src/pages/api/sets/[id]/generate.ts` — `DICTIONARY_TOOL_DE` declared, `handleToolCall` dispatches both tools, `tools: [DICTIONARY_TOOL, DICTIONARY_TOOL_DE]` passed
-- [x] 4.2 `src/pages/api/sets/[id]/generate.test.ts` — 3 new cases pass (`lookup_word_de` dispatch, unknown-tool fallback, both tools in `tools` array)
-- [x] 4.3 `npx vitest run` full suite green
-- [x] 4.4 `npm run build` succeeds
-- [x] 4.5 `npx eslint src/pages/api/sets/\[id\]/generate.ts` passes
+- [x] 4.1 `src/pages/api/sets/[id]/generate.ts` — `DICTIONARY_TOOL_DE` declared, `handleToolCall` dispatches both tools, `tools: [DICTIONARY_TOOL, DICTIONARY_TOOL_DE]` passed — 2cd38b4
+- [x] 4.2 `src/pages/api/sets/[id]/generate.test.ts` — 3 new cases pass (`lookup_word_de` dispatch, unknown-tool fallback, both tools in `tools` array) — 2cd38b4
+- [x] 4.3 `npx vitest run` full suite green — 2cd38b4
+- [x] 4.4 `npm run build` succeeds — 2cd38b4
+- [x] 4.5 `npx eslint src/pages/api/sets/\[id\]/generate.ts` passes — 2cd38b4
 
 #### Manual
 
