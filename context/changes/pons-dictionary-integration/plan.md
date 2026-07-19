@@ -547,14 +547,14 @@ Project: `node`. Mocks: `vi.mock("@/lib/services/dictionary-de", () => ({ lookup
 
 #### Manual
 
-- [ ] 3.8 German set detail page → "Wyszukaj słowo niemieckie" → `/lookup_word_de?setId=...` with correct set name
-- [ ] 3.9 Lookup `Haus` → Polish translations within ~2s, no region badge, subject label visible
-- [ ] 3.10 Lookup `qqqqxyz` → "no translation found" empty state
-- [ ] 3.11 Create-card form saves a flashcard to the set (verified on set detail page)
-- [ ] 3.12 Unauthenticated access redirects to `/auth/signin`
-- [ ] 3.13 Direct access without `?setId=...` redirects to `/dashboard`
-- [ ] 3.14 Access as non-owner of someone else's set redirects to `/dashboard`
-- [ ] 3.15 Cambridge `/lookup_word` page still works unchanged (regression)
+- [x] 3.8 German set detail page → "Wyszukaj słowo niemieckie" → `/lookup_word_de?setId=...` with correct set name — ff686b5
+- [x] 3.9 Lookup `Haus` → Polish translations within ~2s, no region badge, subject label visible — ff686b5
+- [x] 3.10 Lookup `qqqqxyz` → "no translation found" empty state — ff686b5
+- [x] 3.11 Create-card form saves a flashcard to the set (verified on set detail page) — ff686b5
+- [x] 3.12 Unauthenticated access redirects to `/auth/signin` — ff686b5
+- [x] 3.13 Direct access without `?setId=...` redirects to `/dashboard` — ff686b5
+- [x] 3.14 Access as non-owner of someone else's set redirects to `/dashboard` — ff686b5
+- [x] 3.15 Cambridge `/lookup_word` page still works unchanged (regression) — ff686b5
 
 ### Phase 4: AI tool integration in `generate.ts`
 
