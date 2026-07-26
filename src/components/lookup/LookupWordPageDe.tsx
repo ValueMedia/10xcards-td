@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-react/no-array-index-key -- Pons senses can repeat a definition (e.g. "dom" for several senses of "Haus"); the React key is composite (index + type + region + definition) and the index prefix is an intentional disambiguator, not a bare-index key. */
 import { useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -194,6 +195,8 @@ function ResultsList({ result }: { result: DictionaryLookupResult }) {
         {result.entries.map((entry, index) => (
           // Senses can repeat a definition (e.g. Pons returns "dom" for several
           // senses of "Haus"), so the index disambiguates otherwise-equal keys.
+          // The full key is composite (index + type + region + definition); the
+          // index prefix is intentional, not a bare-index key.
           <EntryCard
             key={`${index}-${entry.type ?? ""}-${entry.dictionaryRegion ?? ""}-${entry.definition}`}
             word={result.word}

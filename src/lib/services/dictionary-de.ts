@@ -103,9 +103,13 @@ export async function lookupWordDe(word: string, opts: LookupOpts = {}): Promise
   const normalized = normalizeWord(word);
 
   if (kv && !skipCache) {
-    const cached = await kv.get(ponsCacheKey(word), "json");
-    if (cached) {
-      return cached as DictionaryEntry[];
+    try {
+      const cached = await kv.get(ponsCacheKey(word), "json");
+      if (cached) {
+        return cached as DictionaryEntry[];
+      }
+    } catch {
+      // cache read is best-effort — fall through to a live Pons fetch
     }
   }
 
@@ -129,9 +133,13 @@ export async function lookupWordDe(word: string, opts: LookupOpts = {}): Promise
   const entries = mapPonsResponse(top);
 
   if (kv && !skipCache) {
-    await kv.put(ponsCacheKey(word), JSON.stringify(entries), {
-      expirationTtl: PONS_CACHE_TTL_SECONDS,
-    });
+    try {
+      await kv.put(ponsCacheKey(word), JSON.stringify(entries), {
+        expirationTtl: PONS_CACHE_TTL_SECONDS,
+      });
+    } catch {
+      // cache write is best-effort — do not fail the lookup
+    }
   }
 
   return entries;

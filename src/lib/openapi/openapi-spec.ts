@@ -108,7 +108,7 @@ export const openApiSpec = {
       DictionaryEntry: {
         type: "object",
         description:
-          'A single dictionary sense for a looked-up word. For Cambridge (EN) lookups, `dictionaryRegion` is "UK"/"US" and `info` carries the CEFR level/usage labels. For Pons DE→PL lookups (`/api/dict/de/{word}`), `dictionaryRegion` is always `null` and `info` carries the Pons sense gloss; `examples` is always empty (Pons `depl` exposes no example sentences).',
+          'A single dictionary sense for a looked-up word. For Cambridge (EN) lookups, `dictionaryRegion` is "UK"/"US" and `info` carries the CEFR level/usage labels. For Pons DE→PL lookups (`/api/dict/de/{word}`), `dictionaryRegion` is always `null` and `info` carries the Pons sense gloss; `examples` carries up to 6 German↔Polish example pairs joined by ` — ` (Pons `depl` example rows grouped under each sense).',
         properties: {
           definition: { type: "string", example: "Clever and difficult, sometimes in a bad way." },
           type: { type: "string", nullable: true, description: "Part of speech (e.g. noun, verb, adjective)" },
@@ -121,7 +121,8 @@ export const openApiSpec = {
           examples: {
             type: "array",
             items: { type: "string" },
-            description: "Up to 2 example sentences",
+            description:
+              "Up to 2 example sentences (Cambridge) or up to 6 German↔Polish example pairs joined by ` — ` (Pons DE→PL)",
           },
         },
         required: ["definition", "type", "dictionaryRegion", "info", "examples"],
@@ -218,7 +219,7 @@ export const openApiSpec = {
       get: {
         summary: "Look up a German word in the Pons DE→PL dictionary",
         description:
-          "Calls the Pons Online Dictionary API (`l=depl`) for Polish translations, part of speech, and the German sense gloss. Unlike `/api/dict/{word}` (Cambridge), responses are cached for 30 days in the `AI_RATE_LIMIT` KV namespace under `pons:de:<word>` — repeat lookups are cache hits and do not consume the shared 1000/month Pons quota. Shares the same 30 requests/minute per-user rate limit as the Cambridge endpoint. Also used internally by the AI generation pipeline (`POST /api/sets/{id}/generate`) via the `lookup_word_de` OpenRouter tool. Pons `depl` exposes no example sentences, so `examples` is always empty and `dictionaryRegion` is always `null`.",
+          "Calls the Pons Online Dictionary API (`l=depl`) for Polish translations, part of speech, and the German sense gloss. Unlike `/api/dict/{word}` (Cambridge), responses are cached for 30 days in the `AI_RATE_LIMIT` KV namespace under `pons:de:v2:<word>` — repeat lookups are cache hits and do not consume the shared 1000/month Pons quota. Shares the same 30 requests/minute per-user rate limit as the Cambridge endpoint. Also used internally by the AI generation pipeline (`POST /api/sets/{id}/generate`) via the `lookup_word_de` OpenRouter tool. Pons `depl` example rows are grouped as up to 6 German↔Polish ` — ` pairs per sense in `examples`; `dictionaryRegion` is always `null`.",
         tags: ["Dictionary"],
         security: [{ cookieAuth: [] }],
         responses: {

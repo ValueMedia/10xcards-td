@@ -145,6 +145,8 @@ PONS_API_SECRET: envField.string({ context: "server", access: "secret", optional
   - Apply the same `cleanDefinition` rule as Cambridge (`dictionary.ts:16-22`): trim, capitalize first char, strip trailing `:`, collapse whitespace, append `.`. Duplicate the helper locally (do not import from `dictionary.ts`).
 - Cap result at **8 entries** to keep payloads reasonable (Cambridge caps examples per sense at 2, but not senses per word; for Pons DE→PL a hard cap on total senses avoids a 50-entry dump for polysemous words like `stellen`).
 
+> **Addendum (verified against the live Pons `depl` API during Phase 3, recorded in progress 3.16):** the actual response shape is `hits[].roms[].arabs[].translations[]` — there is no `senses` level. `type` is read from `rom.wordclass`; `info` from a `<span class="sense">` inside the headword `source`, falling back to `arab.header`; examples are grouped as up to **6** `<German> — <Polish>` pairs per sense (not 2 from a `sense.examples` array). The mapping contract above assumed a shape the live API does not expose; the shipped implementation in `dictionary-de.ts` tracks the real shape, and the cache key was bumped to `pons:de:v2:` to invalidate stale `v1` entries.
+
 #### 1.3 Service unit tests
 
 **File**: `src/lib/services/dictionary-de.test.ts` (new)
