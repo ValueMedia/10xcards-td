@@ -568,5 +568,5 @@ Project: `node`. Mocks: `vi.mock("@/lib/services/dictionary-de", () => ({ lookup
 
 #### Manual
 
-- [ ] 4.6 `/generate` on a German set with a short German input text → `lookup_word_de` tool calls visible in `npm run dev` logs; generated flashcards have Polish fronts/backs
-- [ ] 4.7 `/generate` on an English set → still uses `lookup_word` (not `lookup_word_de`) — regression check
+- [x] 4.6 `/generate` on a German set with a short German input text → `lookup_word_de` tool calls visible in `npm run dev` logs; generated flashcards have Polish fronts/backs — 2cd38b4
+- [x] 4.7 `/generate` on an English set → still uses `lookup_word` (not `lookup_word_de`) — regression check — 2cd38b4

@@ -1,9 +1,9 @@
 ---
 change_id: pons-dictionary-integration
 title: Zbadanie integracji słownika niemieckiego (Pons + darmowe alternatywy)
-status: implementing
+status: implemented
 created: 2026-07-19
-updated: 2026-07-19
+updated: 2026-07-26
 archived_at: null
 ---
 
