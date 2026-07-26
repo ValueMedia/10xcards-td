@@ -6,9 +6,9 @@ const isAutoConfirmed = import.meta.env.DEV;
 const locale = Astro.locals.locale;
 const t = getTranslations(locale);
 
-const heading = isAutoConfirmed ? t("auth.confirmEmail.titleDev") : t("auth.confirmEmail.titleProd");
-const description = isAutoConfirmed ? t("auth.confirmEmail.descDev") : t("auth.confirmEmail.descProd");
-const linkText = isAutoConfirmed ? t("auth.confirmEmail.goToSignIn") : t("auth.confirmEmail.backToSignIn");
+const heading = isAutoConfirmed ? t("auth.registrationSuccessful") : t("auth.checkYourEmail");
+const description = isAutoConfirmed ? t("auth.registrationSuccessfulDesc") : t("auth.checkYourEmailDesc");
+const linkText = isAutoConfirmed ? t("auth.goToSignIn") : t("auth.backToSignIn");
 const emoji = isAutoConfirmed ? "✅" : "📧";
 ---
 
