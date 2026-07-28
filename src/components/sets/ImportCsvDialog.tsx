@@ -168,8 +168,8 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="border-white/10 bg-[#0f1529] text-white sm:max-w-lg">
-        <DialogHeader>
+      <DialogContent className="flex max-h-[calc(100dvh-2rem)] flex-col border-white/10 bg-[#0f1529] text-white sm:max-w-2xl">
+        <DialogHeader className="shrink-0">
           <DialogTitle>Import from CSV / TXT</DialogTitle>
           <DialogDescription className="text-blue-100/50">
             {step === "upload"
@@ -195,9 +195,9 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
         )}
 
         {(step === "preview" || step === "importing") && (
-          <div className="space-y-3">
+          <div className="flex min-h-0 flex-1 flex-col gap-3">
             {proposals.length > 0 ? (
-              <ul className="max-h-96 space-y-2 overflow-y-auto pr-1">
+              <ul className="min-h-0 space-y-2 overflow-y-auto pr-1">
                 {proposals.map((p) => (
                   <li
                     key={p._key}
@@ -226,11 +226,11 @@ export function ImportCsvDialog({ open, onOpenChange, setId, onImport }: Props) 
                 All cards removed — go back to select a different file.
               </p>
             )}
-            {error && <p className="text-sm text-red-400">{error}</p>}
+            {error && <p className="shrink-0 text-sm text-red-400">{error}</p>}
           </div>
         )}
 
-        <DialogFooter className="flex-row items-center justify-between gap-2">
+        <DialogFooter className="shrink-0 flex-row items-center justify-between gap-2 sm:justify-between">
           {step !== "upload" && (
             <button
               type="button"
