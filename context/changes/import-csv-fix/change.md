@@ -1,7 +1,7 @@
 ---
 change_id: import-csv-fix
 title: Widen CSV import dialog so the proposal list and import button fit inside it
-status: implementing
+status: implemented
 created: 2026-07-28
 updated: 2026-07-29
 archived_at: null

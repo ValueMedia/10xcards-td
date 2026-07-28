@@ -155,17 +155,17 @@ Not applicable — no data, schema, or API contract touched. Revert is a single-
 
 #### Automated
 
-- [x] 1.1 Lint passes on the changed file: `npx eslint src/components/sets/ImportCsvDialog.tsx`
-- [x] 1.2 Production build and type check pass: `npm run build`
-- [x] 1.3 Deterministic test floor stays green: `npm test`
+- [x] 1.1 Lint passes on the changed file: `npx eslint src/components/sets/ImportCsvDialog.tsx` — 932d94a
+- [x] 1.2 Production build and type check pass: `npm run build` — 932d94a
+- [x] 1.3 Deterministic test floor stays green: `npm test` — 932d94a
 
 #### Manual
 
-- [x] 1.4 Nothing crosses the dialog's right edge with a 28+ card CSV; no page content shows over the popup
-- [x] 1.5 Long rows ellipsised; trash button visible on every row
-- [x] 1.6 `← Back` left, `Import N cards` right, both inside the panel
-- [x] 1.7 Shortened viewport / 150% zoom: dialog capped, header and footer visible, only the list scrolls
-- [x] 1.8 Short list shrinks the dialog; empty state renders with footer intact
-- [x] 1.9 Import still works end-to-end and the dialog closes
-- [x] 1.10 ~375 px viewport: dialog and footer stay on screen
-- [x] 1.11 `Create flashcard` and `Rename set` dialogs visually unchanged
+- [x] 1.4 Nothing crosses the dialog's right edge with a 28+ card CSV; no page content shows over the popup — 932d94a
+- [x] 1.5 Long rows ellipsised; trash button visible on every row — 932d94a
+- [x] 1.6 `← Back` left, `Import N cards` right, both inside the panel — 932d94a
+- [x] 1.7 Shortened viewport / 150% zoom: dialog capped, header and footer visible, only the list scrolls — 932d94a
+- [x] 1.8 Short list shrinks the dialog; empty state renders with footer intact — 932d94a
+- [x] 1.9 Import still works end-to-end and the dialog closes — 932d94a
+- [x] 1.10 ~375 px viewport: dialog and footer stay on screen — 932d94a
+- [x] 1.11 `Create flashcard` and `Rename set` dialogs visually unchanged — 932d94a
